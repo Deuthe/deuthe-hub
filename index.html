@@ -23,7 +23,7 @@
             <div class="nav-header">Overview</div>
             <ul class="nav-links">
                 <li><a href="#intro" class="active">01. Context & Problem</a></li>
-                <li><a href="#hardware">02. Hardware Stack</a></li>
+                <li><a href="#hardware">02. Hardware Components</a></li>
             </ul>
         </div>
 
@@ -77,7 +77,7 @@
             </section>
 
             <section id="hardware">
-                <h2>02. Hardware Stack</h2>
+                <h2>02. Hardware Main Components</h2>
                 <p>The environment was built to simulate a realistic "free" enterprise scenario, reutilizing devices I already owned.</p>
                 
                 <figure>
@@ -392,11 +392,16 @@ sudo systemctl enable --now target</div>
    - Configure 'open-iscsi' initiator on Ubuntu.
    - Perform comparative benchmarks (EXT4/XFS over iSCSI).
 
-2. IoT Integration:
+2. Internal SSD Performance Test:
+   - Allocate a 100GB LUN on the internal 256GB NVMe SSD.
+   - Compare IOPS/Throughput against the USB HDD to quantify the mechanical 
+     bottleneck.
+
+3. IoT Integration:
    - Finalize the ESP32 MQTT data ingestion pipeline.
    - Log sensor data directly to the SAN volume.
 
-3. Advanced Virtualization: For a medium/large home lab setup.
+4. Advanced Virtualization: For a medium/large home lab setup.
    - Use the SAN as shared storage for a Proxmox Cluster.
    - Test High Availability (HA) and VM Live Migration.</div>
 
