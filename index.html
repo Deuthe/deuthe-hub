@@ -10,251 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
-    <style>
-        /* --- CSS VARIABLES --- */
-        :root {
-            --bg: #ffffff;
-            --fg: #111111;
-            --surface: #f4f4f5;
-            --border: #e4e4e7;
-            --accent: #0047FF; /* Enterprise Blue */
-            --code-bg: #1a1b26; /* Deep Blue-Black */
-            --code-fg: #a9b1d6;
-            --sidebar-width: 280px;
-            --font-sans: 'Inter', sans-serif;
-            --font-mono: 'JetBrains Mono', monospace;
-        }
-
-        [data-theme="dark"] {
-            --bg: #09090b;
-            --fg: #ededed;
-            --surface: #18181b;
-            --border: #27272a;
-            --accent: #3b82f6;
-        }
-
-        /* --- RESET & BASE --- */
-        * { box-sizing: border-box; margin: 0; padding: 0; scroll-behavior: smooth; }
-        
-        body {
-            background: var(--bg);
-            color: var(--fg);
-            font-family: var(--font-sans);
-            line-height: 1.7;
-            font-size: 16px;
-            display: flex;
-            min-height: 100vh;
-            transition: background 0.3s, color 0.3s;
-        }
-
-        a { text-decoration: none; color: var(--fg); transition: 0.2s; }
-        a:hover { color: var(--accent); }
-        
-        /* --- SIDEBAR --- */
-        .sidebar {
-            width: var(--sidebar-width);
-            height: 100vh;
-            position: sticky;
-            top: 0;
-            border-right: 1px solid var(--border);
-            padding: 2rem;
-            display: flex;
-            flex-direction: column;
-            background: var(--bg);
-            overflow-y: auto;
-            flex-shrink: 0;
-        }
-
-        .brand {
-            font-family: var(--font-mono);
-            font-weight: 800;
-            font-size: 0.9rem;
-            letter-spacing: -0.03em;
-            margin-bottom: 3rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .nav-group { margin-bottom: 2.5rem; }
-        .nav-header {
-            font-family: var(--font-mono);
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            color: var(--fg);
-            opacity: 0.5;
-            margin-bottom: 1rem;
-            letter-spacing: 0.1em;
-            font-weight: 700;
-        }
-
-        .nav-links { list-style: none; }
-        .nav-links li { margin-bottom: 0.5rem; }
-        .nav-links a {
-            display: block;
-            font-size: 0.9rem;
-            color: var(--fg);
-            opacity: 0.7;
-            padding: 4px 0;
-            border-left: 2px solid transparent;
-            padding-left: 10px;
-            margin-left: -12px;
-        }
-        .nav-links a:hover, .nav-links a.active {
-            opacity: 1;
-            color: var(--accent);
-            border-left-color: var(--accent);
-        }
-
-        .theme-toggle {
-            margin-top: auto;
-            cursor: pointer;
-            font-family: var(--font-mono);
-            font-size: 0.8rem;
-            opacity: 0.6;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        /* --- CONTENT --- */
-        .content-wrapper {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-        }
-
-        main {
-            width: 100%;
-            max-width: 850px;
-            padding: 5rem 4rem 8rem 4rem;
-        }
-
-        /* --- TYPOGRAPHY --- */
-        h1 { font-size: 2.5rem; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 1.5rem; font-weight: 700; }
-        h2 { font-size: 1.75rem; margin: 4rem 0 1.5rem 0; letter-spacing: -0.02em; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
-        h3 { font-size: 1.25rem; margin: 2rem 0 1rem 0; font-weight: 600; }
-        p { margin-bottom: 1.5rem; opacity: 0.9; }
-
-        /* Status Badges */
-        .status-badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 100px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            margin-right: 10px;
-            font-family: var(--font-mono);
-        }
-        .status-success { background: #dcfce7; color: #166534; }
-        .status-neutral { background: #f3f4f6; color: #374151; }
-        [data-theme="dark"] .status-success { background: #064e3b; color: #6ee7b7; }
-        [data-theme="dark"] .status-neutral { background: #374151; color: #e5e7eb; }
-
-        /* --- NEW "ORIGINAL" CODE BLOCKS --- */
-        .code-wrapper {
-            position: relative;
-            margin: 2.5rem 0;
-            background: var(--code-bg);
-            border-radius: 6px;
-            border-left: 4px solid var(--accent); /* The "Tech Snippet" Look */
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-        }
-
-        /* Floating Language Badge (Inside the box) */
-        .code-lang {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            font-family: var(--font-mono);
-            font-size: 0.65rem;
-            font-weight: 700;
-            color: var(--code-fg);
-            opacity: 0.3;
-            border: 1px solid var(--code-fg);
-            padding: 2px 6px;
-            border-radius: 4px;
-            pointer-events: none;
-            text-transform: uppercase;
-        }
-
-        pre {
-            color: var(--code-fg);
-            padding: 1.5rem 1.5rem 1.5rem 2rem;
-            overflow-x: auto;
-            font-family: var(--font-mono);
-            font-size: 0.9rem;
-            white-space: pre-wrap;
-        }
-
-        /* Minimalist Copy Button */
-        .copy-btn {
-            position: absolute;
-            top: 0.8rem;
-            right: 3.5rem; /* Left of the lang badge */
-            background: transparent;
-            border: none;
-            color: var(--code-fg);
-            font-family: var(--font-mono);
-            font-size: 0.7rem;
-            cursor: pointer;
-            opacity: 0; /* Hidden by default */
-            transition: opacity 0.2s;
-            padding: 4px 8px;
-        }
-        
-        .code-wrapper:hover .copy-btn {
-            opacity: 0.7;
-        }
-        .copy-btn:hover {
-            opacity: 1;
-            text-decoration: underline;
-        }
-
-        /* --- TABLES --- */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 2rem 0;
-            font-size: 0.9rem;
-            border: 1px solid var(--border);
-        }
-        th, td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--border); }
-        th { background: var(--surface); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; }
-        
-        /* --- IMAGES --- */
-        figure { margin: 3rem 0; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
-        img { width: 100%; display: block; cursor: zoom-in; }
-        figcaption {
-            padding: 0.8rem;
-            font-size: 0.8rem;
-            color: var(--fg);
-            opacity: 0.6;
-            font-family: var(--font-mono);
-            text-align: center;
-            background: var(--surface);
-            border-top: 1px solid var(--border);
-        }
-
-        /* --- NOTES --- */
-        .personal-note {
-            background: var(--surface);
-            border-left: 3px solid var(--accent);
-            padding: 1.5rem;
-            font-size: 0.95rem;
-            margin: 2rem 0;
-            font-style: italic;
-            border-radius: 0 4px 4px 0;
-        }
-
-        @media (max-width: 1000px) {
-            body { flex-direction: column; }
-            .sidebar { width: 100%; height: auto; position: relative; border-right: none; border-bottom: 1px solid var(--border); padding: 1.5rem; }
-            .content-wrapper { display: block; }
-            main { padding: 3rem 2rem; }
-        }
-    </style>
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
 
@@ -267,7 +23,7 @@
             <div class="nav-header">Overview</div>
             <ul class="nav-links">
                 <li><a href="#intro" class="active">01. Context & Problem</a></li>
-                <li><a href="#hardware">02. Hardware Used</a></li>
+                <li><a href="#hardware">02. Hardware Stack</a></li>
             </ul>
         </div>
 
@@ -276,7 +32,7 @@
             <ul class="nav-links">
                 <li><a href="#setup">03. The Setup (Clean Start)</a></li>
                 <li><a href="#iscsi">04. iSCSI Implementation</a></li>
-                <li><a href="#chap">05. CHAP Problems</a></li>
+                <li><a href="#chap">05. The CHAP Drama</a></li>
             </ul>
         </div>
 
@@ -285,7 +41,7 @@
             <ul class="nav-links">
                 <li><a href="#vlan">06. VLAN Security</a></li>
                 <li><a href="#benchmarks">07. Benchmarks</a></li>
-                <li><a href="#future">08. For The Future</a></li>
+                <li><a href="#future">08. Future Steps</a></li>
             </ul>
         </div>
 
@@ -310,7 +66,7 @@
             <section id="intro">
                 <h2>01. Context & Problem Statement</h2>
                 <p>
-                    [cite_start]During my first project meeting, my mentors explicitly stated that a standard NAS (Network Attached Storage) project would not be sufficiently challenging for Semester 6. A NAS operates at the file level, introducing overhead that makes it suboptimal for enterprise virtualization workloads[cite: 38, 68].
+                    During my first project meeting, my mentors explicitly stated that a standard NAS (Network Attached Storage) project would not be sufficiently challenging for Semester 6. A NAS operates at the file level, introducing overhead that makes it suboptimal for enterprise virtualization workloads.
                 </p>
                 <div class="personal-note">
                     "A NAS is fine for previous semesters, but is a toy compared, let's say to a SAN, if you want to show something better, build a SAN." - First mentor feedback
@@ -322,7 +78,7 @@
 
             <section id="hardware">
                 <h2>02. Hardware Stack</h2>
-                [cite_start]<p>The environment was built to simulate a realistic "zero-cost" enterprise scenario, utilizing devices I already owned[cite: 39, 41, 46].</p>
+                <p>The environment was built to simulate a realistic "zero-cost" enterprise scenario, utilizing devices I already owned.</p>
                 <table>
                     <thead>
                         <tr>
@@ -355,7 +111,7 @@
                     </tbody>
                 </table>
                 <figure>
-                    
+                    <img src="assets/img/topology.png" alt="Network Topology Diagram">
                     <figcaption>Figure 1: Network Topology with VLAN isolation</figcaption>
                 </figure>
             </section>
@@ -373,10 +129,17 @@
                 <p>
                     [cite_start]I installed <strong>Ubuntu Server 24.04.3 LTS</strong> via a bootable USB created with Rufus[cite: 191]. [cite_start]During installation, I set the static IP to <code>192.168.2.200</code>[cite: 194]. [cite_start]After booting, I plugged in the 1TB drive[cite: 196].
                 </p>
-                
+
                 <div class="code-wrapper">
-                    <div class="code-lang">BASH</div>
-                    <button class="copy-btn" onclick="copy(this)">COPY</button>
+                    <div class="code-header">
+                        <div class="code-controls">
+                            <div class="dot red"></div>
+                            <div class="dot yellow"></div>
+                            <div class="dot green"></div>
+                        </div>
+                        <div class="code-lang">BASH / TERMINAL</div>
+                        <button class="copy-btn" onclick="copy(this)">COPY</button>
+                    </div>
 <pre><code># 1. Wipe the old NTFS partition
 sudo mkfs.ext4 -F /dev/sda
 
@@ -397,8 +160,15 @@ echo "UUID=2e35... /san ext4 defaults 0 2" | sudo tee -a /etc/fstab</code></pre>
                 </p>
                 
                 <div class="code-wrapper">
-                    <div class="code-lang">TARGETCLI</div>
-                    <button class="copy-btn" onclick="copy(this)">COPY</button>
+                    <div class="code-header">
+                        <div class="code-controls">
+                            <div class="dot red"></div>
+                            <div class="dot yellow"></div>
+                            <div class="dot green"></div>
+                        </div>
+                        <div class="code-lang">TARGETCLI</div>
+                        <button class="copy-btn" onclick="copy(this)">COPY</button>
+                    </div>
 <pre><code>sudo targetcli
 
 # Create the Backstore (The Virtual Disk)
@@ -411,20 +181,15 @@ echo "UUID=2e35... /san ext4 defaults 0 2" | sudo tee -a /etc/fstab</code></pre>
 /iscsi/iqn.2025-11.nl.fontys:san/tpg1/luns create /backstores/fileio/lun0</code></pre>
                 </div>
 
-                <figure>
-                    
-                    <figcaption>Figure 6: Verifying LUN creation in targetcli</figcaption>
-                </figure>
-
                 <div class="personal-note">
-                    <strong>Safety Tip:</strong> I created snapshots using `dd` before configuring the target. [cite_start]This allowed me to rollback instantly if I broke the configuration[cite: 221].
+                    <strong>Safety Tip:</strong> I created snapshots using `dd` before configuring the target. This allowed me to rollback instantly if I broke the configuration.
                 </div>
             </section>
 
             <section id="chap">
                 <h2>05. The CHAP Drama</h2>
                 <p>
-                    This was the hardest part of the implementation. [cite_start]Enterprise storage requires authentication, so I attempted to enable <strong>Mutual CHAP</strong> (where both client and server verify each other)[cite: 226].
+                    This was the hardest part of the implementation. [cite_start]Enterprise storage requires authentication, so I attempted to enable <strong>Mutual CHAP</strong> (where both client and server verify each other)[cite: 262].
                 </p>
                 <p>
                     <strong>The Failure:</strong> My initial attempts failed. Windows 11 refused to connect. I discovered two issues:
@@ -438,8 +203,15 @@ echo "UUID=2e35... /san ext4 defaults 0 2" | sudo tee -a /etc/fstab</code></pre>
                 </p>
                 
                 <div class="code-wrapper">
-                    <div class="code-lang">CONFIG</div>
-                    <button class="copy-btn" onclick="copy(this)">COPY</button>
+                    <div class="code-header">
+                        <div class="code-controls">
+                            <div class="dot red"></div>
+                            <div class="dot yellow"></div>
+                            <div class="dot green"></div>
+                        </div>
+                        <div class="code-lang">SECURITY CONFIG</div>
+                        <button class="copy-btn" onclick="copy(this)">COPY</button>
+                    </div>
 <pre><code># Create ACL for the laptop
 /iscsi/.../tpg1/acls create iqn.1991-05.com.microsoft:kevin-s-lap
 
@@ -452,7 +224,7 @@ set auth mutual_userid= disabled</code></pre>
                     Once this was applied, I connected via the Windows GUI Initiator. The 100GB LUN appeared as "Disk 1" in Disk Management. [cite_start]I initialized it as GPT and formatted it as NTFS (Volume Label: <code>SAN-100GB</code>) [cite: 251-257].
                 </p>
                 <figure>
-                    
+                    <img src="assets/img/disk-management.png" alt="Windows formatting the 100GB iSCSI LUN">
                     <figcaption>Figure 15: Windows formatting the 100GB iSCSI LUN as S: Drive</figcaption>
                 </figure>
             </section>
@@ -460,25 +232,25 @@ set auth mutual_userid= disabled</code></pre>
             <section id="vlan">
                 <h2>06. VLAN Security</h2>
                 <p>
-                    Authentication isn't enough. I needed network isolation. [cite_start]I accessed the Netgear switch interface (found at <code>192.168.2.4</code>) and configured <strong>802.1Q Advanced VLANs</strong>[cite: 325, 333].
+                    Authentication isn't enough. I needed network isolation. [cite_start]I accessed the Netgear switch interface (found at <code>192.168.2.4</code>) and configured <strong>802.1Q Advanced VLANs</strong>[cite: 325].
                 </p>
                 <ul>
-                    [cite_start]<li><strong>VLAN 1 (Home):</strong> Ports 1 & 5 (Router Uplink)[cite: 328].</li>
-                    [cite_start]<li><strong>VLAN 10 (SAN Fabric):</strong> Ports 2, 3, 4 (NUC & Laptops)[cite: 328].</li>
+                    <li><strong>VLAN 1 (Home):</strong> Ports 1 & 5 (Router Uplink).</li>
+                    <li><strong>VLAN 10 (SAN Fabric):</strong> Ports 2, 3, 4 (NUC & Laptops).</li>
                 </ul>
                 <figure>
-                    
+                    <img src="assets/img/vlan-config.png" alt="Netgear VLAN configuration GUI">
                     <figcaption>Figure 22: Configuring VLAN 10 on the Netgear GS105E</figcaption>
                 </figure>
                 <p>
-                    <strong>Result:</strong> When my laptop is on Wi-Fi, the SAN IP <code>192.168.2.200</code> is unreachable. It only becomes visible when physically plugged into ports 2-4. [cite_start]This effectively "air-gaps" the storage traffic from the home network[cite: 353].
+                    <strong>Result:</strong> When my laptop is on Wi-Fi, the SAN IP <code>192.168.2.200</code> is unreachable. It only becomes visible when physically plugged into ports 2-4. [cite_start]This effectively "air-gaps" the storage traffic from the home network [cite: 346-347].
                 </p>
             </section>
 
             <section id="benchmarks">
                 <h2>07. Performance Benchmarks</h2>
                 <p>
-                    [cite_start]I ran <strong>CrystalDiskMark 9.0.1</strong> (4GiB test file, 5 runs) to compare the iSCSI SAN against a temporary SMB (NAS) share I set up on the same NUC[cite: 276, 279].
+                    [cite_start]I ran <strong>CrystalDiskMark 9.0.1</strong> (4GiB test file, 5 runs) to compare the iSCSI SAN against a temporary SMB (NAS) share I set up on the same NUC [cite: 276-282].
                 </p>
                 <table>
                     <thead>
@@ -500,7 +272,7 @@ set auth mutual_userid= disabled</code></pre>
                             <td>Random Read (4K)</td>
                             <td><strong>101.51 MB/s</strong></td>
                             <td>11.25 MB/s</td>
-                            [cite_start]<td><strong>SAN Wins (~9x):</strong> Massive advantage for VM booting[cite: 291].</td>
+                            [cite_start]<td><strong>SAN Wins (~9x):</strong> Massive advantage for VM booting[cite: 304].</td>
                         </tr>
                         <tr>
                             <td>Random Write</td>
@@ -511,7 +283,7 @@ set auth mutual_userid= disabled</code></pre>
                     </tbody>
                 </table>
                 <figure>
-                    
+                    <img src="assets/img/benchmarks.png" alt="Benchmark Results Comparison">
                     <figcaption>Figure 19 & 20: CrystalDiskMark Results Comparison</figcaption>
                 </figure>
             </section>
@@ -523,8 +295,15 @@ set auth mutual_userid= disabled</code></pre>
                 </p>
                 
                 <div class="code-wrapper">
-                    <div class="code-lang">BASH</div>
-                    <button class="copy-btn" onclick="copy(this)">COPY</button>
+                    <div class="code-header">
+                        <div class="code-controls">
+                            <div class="dot red"></div>
+                            <div class="dot yellow"></div>
+                            <div class="dot green"></div>
+                        </div>
+                        <div class="code-lang">BASH</div>
+                        <button class="copy-btn" onclick="copy(this)">COPY</button>
+                    </div>
 <pre><code>sudo mkdir /san/esp32_data
 sudo chown nobody:nogroup /san/esp32_data</code></pre>
                 </div>
@@ -540,56 +319,6 @@ sudo chown nobody:nogroup /san/esp32_data</code></pre>
         </main>
     </div>
 
-    <script>
-        const text = "Project Zero-Cost: Enterprise iSCSI SAN";
-        const typeEl = document.getElementById('typewriter');
-        let i = 0;
-        function typeWriter() {
-            if (i < text.length) {
-                typeEl.innerHTML += text.charAt(i);
-                i++;
-                setTimeout(typeWriter, 50);
-            }
-        }
-        window.onload = typeWriter;
-
-        const toggle = document.getElementById('themeToggle');
-        const html = document.documentElement;
-        if (localStorage.getItem('theme') === 'dark') {
-            html.setAttribute('data-theme', 'dark');
-        }
-        toggle.addEventListener('click', () => {
-            const current = html.getAttribute('data-theme');
-            const next = current === 'dark' ? 'light' : 'dark';
-            html.setAttribute('data-theme', next);
-            localStorage.setItem('theme', next);
-        });
-
-        const sections = document.querySelectorAll('section');
-        const navLinks = document.querySelectorAll('.nav-links a');
-        window.addEventListener('scroll', () => {
-            let current = '';
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                if (scrollY >= sectionTop - 150) {
-                    current = section.getAttribute('id');
-                }
-            });
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href').includes(current)) {
-                    link.classList.add('active');
-                }
-            });
-        });
-
-        function copy(btn) {
-            const code = btn.nextElementSibling.innerText;
-            navigator.clipboard.writeText(code);
-            const original = btn.innerText;
-            btn.innerText = "COPIED";
-            setTimeout(() => btn.innerText = original, 2000);
-        }
-    </script>
+    <script src="assets/js/script.js"></script>
 </body>
 </html>
