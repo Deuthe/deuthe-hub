@@ -69,7 +69,7 @@
                     During my first project meeting, my mentors explicitly stated that a standard NAS (Network Attached Storage) project would not be sufficiently challenging for Semester 6. A NAS operates at the file level, introducing overhead that makes it suboptimal for enterprise virtualization workloads.
                 </p>
                 <div class="personal-note">
-                    "A NAS is fine for previous semesters, but is a toy compared, let's say to a SAN, if you want to show something better, build a SAN." - First mentor feedback
+                    "A NAS is fine for previous semesters, but is a toy compared, let's say to a SAN, if you want to show something better, build a SAN." - First mentor feedback.
                 </div>
                 <p>
                     <strong>The Challenge:</strong> How can I design, implement, and validate a functional SAN using only hardware I have at home, while proving its superiority over NAS in performance?
@@ -112,7 +112,7 @@
                 </table>
                 <figure>
                     <img src="assets/img/topology.png" alt="Network Topology Diagram">
-                    <figcaption>Figure 1: Network Topology with VLAN isolation</figcaption>
+                    <figcaption>Figure 1: Network Topology with VLAN isolation.</figcaption>
                 </figure>
             </section>
 
@@ -133,34 +133,73 @@
                     I ran <code>sudo fdisk -l /dev/sda</code> and saw it had an old NTFS partition. I decided to wipe it.
                 </p>
                 
-                <div class="command-text"># 1. Wipe the old NTFS partition
-sudo mkfs.ext4 -F /dev/sda
+                <div class="step-image-container">
+                    <span class="step-comment"># Checking the current disk state</span>
+                    <img src="assets/img/fdisk.png" class="step-img" alt="fdisk output">
+                </div>
 
-# 2. Create mount point and mount
-sudo mkdir /san
-sudo mount /dev/sda /san
+                <div class="step-image-container">
+                    <span class="step-comment"># 1. Wipe the old NTFS partition</span>
+                    <img src="assets/img/mkfs.png" class="step-img" alt="mkfs command">
+                </div>
 
-# 3. Persist in /etc/fstab
-# Extracted UUID via 'sudo blkid /dev/sda'
-echo "UUID=2e35... /san ext4 defaults 0 2" | sudo tee -a /etc/fstab</div>
+                <div class="step-image-container">
+                    <span class="step-comment"># 2. Create mount point and mount</span>
+                    <img src="assets/img/mkdirmount.png" class="step-img" alt="mkdir and mount commands">
+                </div>
             </section>
 
             <section id="iscsi">
                 <h2>04. iSCSI Implementation</h2>
+                
+                <h3>Installing the iSCSI Target</h3>
                 <p>
-                    I utilized the Linux-IO (LIO) stack via <code>targetcli-fb</code>. Instead of passing the whole physical disk, I created a 100GB file-backed LUN. This mimics a virtual disk.
+                    Now, I have to install the iSCSI Target into the NUC. <code>targetcli</code> normally saves its configurations in <code>/etc/target/saveconfig.json</code>.
+                </p>
+
+                <div class="command-text">sudo apt install targetcli-fb -y
+sudo systemctl enable --now target</div>
+
+                <p>
+                    With this, the service will be running and the configs will be saved.
+                </p>
+
+                <h3>Creating the 100 GB LUN</h3>
+                <p>
+                    After that, we created the 100 GB LUN, that’s where the virtual disk of the SAN will serve the other devices. A LUN is a Logical Unit Number, the block device iSCSI presents.
+                </p>
+
+                <div class="step-image-container">
+                    <span class="step-comment"># Creating the 100GB file-backed LUN (Figure 6)</span>
+                    <img src="assets/img/lun-creation.png" class="step-img" alt="Creating 100GB LUN with dd">
+                </div>
+
+                <p>Here we verify that it is working:</p>
+
+                <div class="step-image-container">
+                    <span class="step-comment"># Verifying the LUN file (Figure 7)</span>
+                    <img src="assets/img/lun-verify.png" class="step-img" alt="Verifying LUN file">
+                </div>
+
+                <h3>Target Configuration</h3>
+                <p>
+                    I utilized the Linux-IO (LIO) stack via <code>targetcli-fb</code> to map this new file as a storage object.
                 </p>
                 
-                <div class="command-text">sudo targetcli
+                <div class="step-image-container">
+                    <span class="step-comment"># Creating the Backstore (The Virtual Disk)</span>
+                    <img src="assets/img/backstore.png" class="step-img" alt="Creating backstore in targetcli">
+                </div>
 
-# Create the Backstore (The Virtual Disk)
-/backstores/fileio create name=lun0 file_or_dev=/san/lun0.img size=100G
+                <div class="step-image-container">
+                    <span class="step-comment"># Creating the Target IQN (The Identity)</span>
+                    <img src="assets/img/target.png" class="step-img" alt="Creating IQN in targetcli">
+                </div>
 
-# Create the Target IQN (The Identity)
-/iscsi create iqn.2025-11.nl.fontys:san
-
-# Map the LUN to the Target
-/iscsi/iqn.2025-11.nl.fontys:san/tpg1/luns create /backstores/fileio/lun0</div>
+                <div class="step-image-container">
+                    <span class="step-comment"># Mapping the LUN to the Target</span>
+                    <img src="assets/img/maplun.png" class="step-img" alt="Mapping LUN in targetcli">
+                </div>
 
                 <div class="personal-note">
                     <strong>Safety Tip:</strong> I created snapshots using `dd` before configuring the target. This allowed me to rollback instantly if I broke the configuration.
@@ -182,22 +221,71 @@ echo "UUID=2e35... /san ext4 defaults 0 2" | sudo tee -a /etc/fstab</div>
                 <p>
                     <strong>The Fix:</strong> I switched to <strong>Unidirectional CHAP</strong> and shortened the password to 12 characters.
                 </p>
-                
-                <div class="command-text"># Create ACL for the laptop
-/iscsi/.../tpg1/acls create iqn.1991-05.com.microsoft:kevin-s-lap
 
-# Set Authentication (Unidirectional only)
-cd /iscsi/.../tpg1/acls/iqn.1991-05.com.microsoft:kevin-s-lap
-set auth userid=kevin password=KevinPass123
-set auth mutual_userid= disabled</div>
+                <h3>Phase 1: Configuration on the NUC</h3>
+                <div class="personal-note">
+                    <strong>What is an ACL?</strong> An Access Control List (ACL) acts like a whitelist. Before authentication even begins, iSCSI checks if your laptop's specific IQN is allowed to see the target.
+                </div>
+
+                <div class="personal-note">
+                    <strong>Prerequisite:</strong> Before creating the ACL, I had to find the correct IQN for my Windows machine. I pressed <code>Win + R</code>, typed <code>iscsicpl</code>, and checked the <strong>Configuration</strong> tab to copy the exact Initiator Name.
+                </div>
+
+                <div class="step-image-container">
+                    <span class="step-comment"># Checking Windows Initiator Name (Configuration Tab)</span>
+                    <img src="assets/img/iscsiproperties.png" class="step-img" alt="Windows iSCSI Initiator Properties Configuration">
+                </div>
+                
+                <div class="command-text"># Create ACL for the laptop using the name found in iscsicpl
+/iscsi/.../tpg1/acls create iqn.1991-05.com.microsoft:kevin-s-lap</div>
+
+                <div class="step-image-container">
+                    <span class="step-comment"># Set Authentication (Unidirectional only)</span>
+                    <img src="assets/img/unidirectionchap.png" class="step-img" alt="Setting Unidirectional CHAP in targetcli">
+                </div>
+
+                <h3>Phase 2: Connecting the Windows Client</h3>
+                <p>
+                    With the Target ready, I went back to the iSCSI Initiator (`iscsicpl`). I navigated to the <strong>Discovery</strong> tab, clicked <strong>Discover Portal</strong>, and added the IP address of the NUC (`192.168.2.200`) while leaving the port as default.
+                </p>
+
+                <div class="step-image-container">
+                    <span class="step-comment"># Adding the Discovery Portal</span>
+                    <img src="assets/img/discover.png" class="step-img" alt="Adding IP to Discovery Portal">
+                </div>
 
                 <p>
-                    Once this was applied, I connected via the Windows GUI Initiator. The 100GB LUN appeared as "Disk 1" in Disk Management. I initialized it as GPT and formatted it as NTFS (Volume Label: <code>SAN-100GB</code>).
+                    After discovery, I went to the <strong>Targets</strong> tab, selected my SAN, and clicked <strong>Connect</strong>. I opened the <strong>Advanced</strong> settings and checked <strong>Enable CHAP log on</strong> to input my credentials.
                 </p>
-                <figure>
-                    <img src="assets/img/disk-management.png" alt="Windows formatting the 100GB iSCSI LUN">
-                    <figcaption>Figure 15: Windows formatting the 100GB iSCSI LUN as S: Drive</figcaption>
-                </figure>
+
+                <div class="step-image-container">
+                    <span class="step-comment"># Enabling CHAP in Advanced Settings</span>
+                    <img src="assets/img/advanced.png" class="step-img" alt="Enabling CHAP in Connection Settings">
+                </div>
+
+                <h3>Phase 3: Initializing the Disk</h3>
+                <p>
+                    Once the connection was successful, I pressed <code>Win + R</code> and typed <code>diskmgmt.msc</code> to open Disk Management. The unformatted disk appeared immediately as "Disk 1".
+                </p>
+
+                <div class="step-image-container">
+                    <span class="step-comment"># Disk 1 appears as Unallocated</span>
+                    <img src="assets/img/unallocated.png" class="step-img" alt="Disk Management showing unallocated volume">
+                </div>
+
+                <p>
+                    I initialized it as GPT and formatted it as NTFS (Volume Label: <code>SAN-100GB</code>).
+                </p>
+                
+                <div class="step-image-container">
+                    <span class="step-comment"># Disk 1 initialized and formatted (NTFS)</span>
+                    <img src="assets/img/afterformat.png" class="step-img" alt="Disk Management after formatting">
+                </div>
+
+                <div class="step-image-container">
+                    <span class="step-comment"># Successfully mounted as S: Drive in Explorer</span>
+                    <img src="assets/img/explorer.png" class="step-img" alt="Windows Explorer showing S drive">
+                </div>
             </section>
 
             <section id="vlan">
@@ -209,10 +297,21 @@ set auth mutual_userid= disabled</div>
                     <li><strong>VLAN 1 (Home):</strong> Ports 1 & 5 (Router Uplink).</li>
                     <li><strong>VLAN 10 (SAN Fabric):</strong> Ports 2, 3, 4 (NUC & Laptops).</li>
                 </ul>
-                <figure>
-                    <img src="assets/img/vlan-config.png" alt="Netgear VLAN configuration GUI">
-                    <figcaption>Figure 22: Configuring VLAN 10 on the Netgear GS105E</figcaption>
-                </figure>
+
+                <div class="step-image-container">
+                    <span class="step-comment"># Step 1: Defining VLAN Membership (Tagging)</span>
+                    <img src="assets/img/vlan-config.png" class="step-img" alt="Netgear VLAN Membership Configuration">
+                </div>
+
+                <p>
+                    However, setting membership isn't enough. I also had to configure the <strong>PVID (Port VLAN ID)</strong>. This ensures that any traffic coming <em>from</em> my laptop (which doesn't send VLAN tags) is automatically tagged as VLAN 10 by the switch.
+                </p>
+
+                <div class="step-image-container">
+                    <span class="step-comment"># Step 2: Setting PVID to force ports into VLAN 10</span>
+                    <img src="assets/img/pvid.png" class="step-img" alt="Netgear PVID Configuration">
+                </div>
+
                 <p>
                     <strong>Result:</strong> When my laptop is on Wi-Fi, the SAN IP <code>192.168.2.200</code> is unreachable. It only becomes visible when physically plugged into ports 2-4. This effectively "air-gaps" the storage traffic from the home network.
                 </p>
@@ -223,6 +322,18 @@ set auth mutual_userid= disabled</div>
                 <p>
                     I ran <strong>CrystalDiskMark 9.0.1</strong> (4GiB test file, 5 runs) to compare the iSCSI SAN against a temporary SMB (NAS) share I set up on the same NUC.
                 </p>
+                
+                <div class="benchmark-grid">
+                    <figure>
+                        <img src="assets/img/resultsan.png" alt="iSCSI SAN Benchmark Result">
+                        <figcaption>SAN Results (iSCSI - USB Backend)</figcaption>
+                    </figure>
+                    <figure>
+                        <img src="assets/img/resultnas.png" alt="SMB NAS Benchmark Result">
+                        <figcaption>NAS Results (SMB - SATA Backend)</figcaption>
+                    </figure>
+                </div>
+
                 <table>
                     <thead>
                         <tr>
@@ -249,14 +360,18 @@ set auth mutual_userid= disabled</div>
                             <td>Random Write</td>
                             <td>0.16 MB/s</td>
                             <td>9.05 MB/s</td>
-                            <td><strong>HDD Bottleneck:</strong> The USB translation layer struggled with small block writes.</td>
+                            <td><strong>NAS Wins:</strong> Internal SATA vs USB Overhead.</td>
                         </tr>
                     </tbody>
                 </table>
-                <figure>
-                    <img src="assets/img/benchmarks.png" alt="Benchmark Results Comparison">
-                    <figcaption>Figure 19 & 20: CrystalDiskMark Results Comparison</figcaption>
-                </figure>
+
+                <h3>Detailed Analysis</h3>
+                <p>
+                    The NAS looks better on the sequential write because it uses internal SATA; on the USB HDD (used for the SAN), there is a translation layer which makes the sequential write of the HDD slower.
+                </p>
+                <p>
+                    However, the <strong>random read is 9 times faster</strong> on the SAN. That’s the block-level advantage: Windows can optimize I/O way better with iSCSI than with SMB/NFS, making it far superior for latency-sensitive workloads like virtualization.
+                </p>
             </section>
 
             <section id="future">
