@@ -1,4 +1,4 @@
-// 1. Typewriter Effect for the Title
+// 1. Typewriter Effect
 const text = "Project Zero-Cost: Enterprise iSCSI SAN";
 const typeEl = document.getElementById('typewriter');
 let i = 0;
@@ -16,7 +16,6 @@ window.onload = typeWriter;
 const toggle = document.getElementById('themeToggle');
 const html = document.documentElement;
 
-// Check saved preference
 if (localStorage.getItem('theme') === 'dark') {
     html.setAttribute('data-theme', 'dark');
 }
@@ -28,7 +27,7 @@ toggle.addEventListener('click', () => {
     localStorage.setItem('theme', next);
 });
 
-// 3. Navigation Highlight (ScrollSpy)
+// 3. Nav Highlight (ScrollSpy)
 const sections = document.querySelectorAll('section');
 const navLinks = document.querySelectorAll('.nav-links a');
 
@@ -48,9 +47,8 @@ window.addEventListener('scroll', () => {
     });
 });
 
-// 4. Copy Code Function
+// 4. Copy Function
 function copy(btn) {
-    // Navigate up to header, then next sibling (pre), then inner text
     const codeWrapper = btn.closest('.code-wrapper');
     const pre = codeWrapper.querySelector('pre');
     const code = pre.innerText;
@@ -58,6 +56,6 @@ function copy(btn) {
     navigator.clipboard.writeText(code);
     
     const original = btn.innerText;
-    btn.innerText = "COPIED!";
+    btn.innerText = "Copied!";
     setTimeout(() => btn.innerText = original, 2000);
 }

@@ -131,15 +131,8 @@
                 </p>
                 
                 <div class="code-wrapper">
-                    <div class="code-header">
-                        <div class="code-controls">
-                            <div class="dot red"></div>
-                            <div class="dot yellow"></div>
-                            <div class="dot green"></div>
-                        </div>
-                        <div class="code-lang">BASH</div>
-                        <button class="copy-btn" onclick="copy(this)">COPY</button>
-                    </div>
+                    <div class="code-label">BASH</div>
+                    <button class="copy-btn" onclick="copy(this)">Copy Code</button>
 <pre><code># 1. Wipe the old NTFS partition
 sudo mkfs.ext4 -F /dev/sda
 
@@ -160,15 +153,8 @@ echo "UUID=2e35... /san ext4 defaults 0 2" | sudo tee -a /etc/fstab</code></pre>
                 </p>
                 
                 <div class="code-wrapper">
-                    <div class="code-header">
-                        <div class="code-controls">
-                            <div class="dot red"></div>
-                            <div class="dot yellow"></div>
-                            <div class="dot green"></div>
-                        </div>
-                        <div class="code-lang">TARGETCLI</div>
-                        <button class="copy-btn" onclick="copy(this)">COPY</button>
-                    </div>
+                    <div class="code-label">TARGETCLI</div>
+                    <button class="copy-btn" onclick="copy(this)">Copy Code</button>
 <pre><code>sudo targetcli
 
 # Create the Backstore (The Virtual Disk)
@@ -203,24 +189,15 @@ echo "UUID=2e35... /san ext4 defaults 0 2" | sudo tee -a /etc/fstab</code></pre>
                 </p>
                 
                 <div class="code-wrapper">
-                    <div class="code-header">
-                        <div class="code-controls">
-                            <div class="dot red"></div>
-                            <div class="dot yellow"></div>
-                            <div class="dot green"></div>
-                        </div>
-                        <div class="code-lang">SECURITY CONFIG</div>
-                        <button class="copy-btn" onclick="copy(this)">COPY</button>
-                    </div>
-<pre><code># 1. Create Access Control List (ACL) for the laptop
-> /iscsi/iqn.2025-11.nl.fontys:san/tpg1/acls create iqn.1991-05.com.microsoft:kevin-s-lap
+                    <div class="code-label">CONFIG</div>
+                    <button class="copy-btn" onclick="copy(this)">Copy Code</button>
+<pre><code># Create ACL for the laptop
+/iscsi/.../tpg1/acls create iqn.1991-05.com.microsoft:kevin-s-lap
 
-# 2. Enter the ACL directory
-> cd /iscsi/iqn.2025-11.nl.fontys:san/tpg1/acls/iqn.1991-05.com.microsoft:kevin-s-lap
-
-# 3. Configure Unidirectional Authentication
-> set auth userid=kevin password=KevinPass123
-> set auth mutual_userid= disabled</code></pre>
+# Set Authentication (Unidirectional only)
+cd /iscsi/.../tpg1/acls/iqn.1991-05.com.microsoft:kevin-s-lap
+set auth userid=kevin password=KevinPass123
+set auth mutual_userid= disabled</code></pre>
                 </div>
                 <p>
                     Once this was applied, I connected via the Windows GUI Initiator. The 100GB LUN appeared as "Disk 1" in Disk Management. I initialized it as GPT and formatted it as NTFS (Volume Label: <code>SAN-100GB</code>).
@@ -297,15 +274,8 @@ echo "UUID=2e35... /san ext4 defaults 0 2" | sudo tee -a /etc/fstab</code></pre>
                 </p>
                 
                 <div class="code-wrapper">
-                    <div class="code-header">
-                        <div class="code-controls">
-                            <div class="dot red"></div>
-                            <div class="dot yellow"></div>
-                            <div class="dot green"></div>
-                        </div>
-                        <div class="code-lang">BASH</div>
-                        <button class="copy-btn" onclick="copy(this)">COPY</button>
-                    </div>
+                    <div class="code-label">BASH</div>
+                    <button class="copy-btn" onclick="copy(this)">Copy Code</button>
 <pre><code>sudo mkdir /san/esp32_data
 sudo chown nobody:nogroup /san/esp32_data</code></pre>
                 </div>

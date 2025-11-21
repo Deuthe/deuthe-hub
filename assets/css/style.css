@@ -1,43 +1,36 @@
-/* --- 1. VARIABLES & THEME CONFIG --- */
+/* --- VARIABLES --- */
 :root {
-    /* Layout Dimensions */
-    --sidebar-width: 280px;
-    --content-width: 850px;
-
-    /* Light Mode Colors */
+    /* Colors */
     --bg: #ffffff;
     --fg: #111111;
     --surface: #f4f4f5;
     --border: #e4e4e7;
     --accent: #0047FF; /* Enterprise Blue */
     
-    /* Glass Code Block Colors (Light Mode) */
-    /* Dark semi-transparent background for contrast against white page */
-    --code-bg: rgba(22, 24, 35, 0.95); 
-    --code-header: rgba(255, 255, 255, 0.05);
-    --code-fg: #e5e5e5;
-    --code-border: rgba(0, 0, 0, 0.1);
+    /* Clean Documentation Code Styles */
+    --code-bg: #F9FAFB;      /* Very Light Grey */
+    --code-border: #E5E7EB;  /* Subtle Border */
+    --code-text: #1F2937;    /* Dark Grey Text */
     
-    /* Typography */
+    --sidebar-width: 280px;
     --font-sans: 'Inter', sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
 }
 
 [data-theme="dark"] {
-    /* Dark Mode Colors */
     --bg: #09090b;
     --fg: #ededed;
     --surface: #18181b;
     --border: #27272a;
     --accent: #3b82f6;
-
-    /* Glass Code Block Colors (Dark Mode) */
-    /* Lighter transparency to blend with dark page */
-    --code-bg: rgba(0, 0, 0, 0.5);
-    --code-border: rgba(255, 255, 255, 0.1);
+    
+    /* Dark Mode Code Styles */
+    --code-bg: #111113;
+    --code-border: #333;
+    --code-text: #e5e5e5;
 }
 
-/* --- 2. RESET & BASE STYLES --- */
+/* --- RESET --- */
 * { box-sizing: border-box; margin: 0; padding: 0; scroll-behavior: smooth; }
 
 body {
@@ -49,15 +42,12 @@ body {
     display: flex;
     min-height: 100vh;
     transition: background 0.3s, color 0.3s;
-    /* Subtle pattern to make the glass effect pop */
-    background-image: radial-gradient(var(--border) 1px, transparent 1px);
-    background-size: 40px 40px;
 }
 
 a { text-decoration: none; color: var(--fg); transition: 0.2s; }
 a:hover { color: var(--accent); }
 
-/* --- 3. LEFT SIDEBAR NAVIGATION --- */
+/* --- SIDEBAR --- */
 .sidebar {
     width: var(--sidebar-width);
     height: 100vh;
@@ -70,7 +60,6 @@ a:hover { color: var(--accent); }
     background: var(--bg);
     overflow-y: auto;
     flex-shrink: 0;
-    z-index: 10;
 }
 
 .brand {
@@ -85,7 +74,6 @@ a:hover { color: var(--accent); }
 }
 
 .nav-group { margin-bottom: 2.5rem; }
-
 .nav-header {
     font-family: var(--font-mono);
     font-size: 0.7rem;
@@ -99,7 +87,6 @@ a:hover { color: var(--accent); }
 
 .nav-links { list-style: none; }
 .nav-links li { margin-bottom: 0.5rem; }
-
 .nav-links a {
     display: block;
     font-size: 0.9rem;
@@ -110,7 +97,6 @@ a:hover { color: var(--accent); }
     padding-left: 10px;
     margin-left: -12px;
 }
-
 .nav-links a:hover, .nav-links a.active {
     opacity: 1;
     color: var(--accent);
@@ -128,7 +114,7 @@ a:hover { color: var(--accent); }
     gap: 10px;
 }
 
-/* --- 4. MAIN CONTENT AREA --- */
+/* --- MAIN CONTENT --- */
 .content-wrapper {
     flex: 1;
     display: flex;
@@ -137,9 +123,8 @@ a:hover { color: var(--accent); }
 
 main {
     width: 100%;
-    max-width: var(--content-width);
+    max-width: 850px;
     padding: 5rem 4rem 8rem 4rem;
-    background: transparent;
 }
 
 /* Typography */
@@ -148,152 +133,81 @@ h2 { font-size: 1.75rem; margin: 4rem 0 1.5rem 0; letter-spacing: -0.02em; paddi
 h3 { font-size: 1.25rem; margin: 2rem 0 1rem 0; font-weight: 600; }
 p { margin-bottom: 1.5rem; opacity: 0.9; }
 
-/* --- 5. GLASSMORPHISM CODE BLOCKS (The "Original" Look) --- */
+/* --- CLEAN DOCUMENTATION CODE BLOCKS --- */
 .code-wrapper {
+    position: relative;
     margin: 2.5rem 0;
-    border-radius: 12px;
-    border: 1px solid var(--code-border);
     background-color: var(--code-bg);
-    
-    /* The Glass Effect: Blurs whatever is behind the box */
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    
-    overflow: hidden;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.code-wrapper:hover {
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-}
-
-.code-header {
-    background: var(--code-header);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    padding: 0.8rem 1.2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-}
-
-/* The Mac/Terminal Window Dots */
-.code-controls { display: flex; gap: 8px; }
-.dot { width: 10px; height: 10px; border-radius: 50%; opacity: 0.8; }
-.dot.red { background: #ff5f56; }
-.dot.yellow { background: #ffbd2e; }
-.dot.green { background: #27c93f; }
-
-.code-lang {
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    font-weight: 700;
-    color: rgba(255, 255, 255, 0.4);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 2px 8px;
+    border: 1px solid var(--code-border);
+    /* The Accent Line */
+    border-left: 4px solid var(--accent);
     border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.code-label {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: var(--code-border);
+    color: #6B7280;
+    padding: 4px 12px;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    border-bottom-left-radius: 4px;
+    pointer-events: none;
+    text-transform: uppercase;
 }
 
 pre {
-    padding: 1.5rem;
+    padding: 1.5rem 1.5rem 1.5rem 2rem;
     overflow-x: auto;
-    color: var(--code-fg);
     font-family: var(--font-mono);
-    font-size: 0.9rem;
+    color: var(--code-text);
     line-height: 1.6;
-    /* Inner shadow for depth */
-    box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
 }
 
 .copy-btn {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
     background: transparent;
-    border: 1px solid rgba(255,255,255,0.2);
-    color: rgba(255,255,255,0.6);
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    padding: 4px 8px;
-    border-radius: 4px;
+    border: none;
+    color: var(--accent);
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s;
+    opacity: 0;
+    transition: opacity 0.2s;
 }
 
-.copy-btn:hover {
-    background: rgba(255,255,255,0.1);
-    color: #fff;
-    border-color: rgba(255,255,255,0.4);
-}
+.code-wrapper:hover .copy-btn { opacity: 1; }
+.copy-btn:hover { text-decoration: underline; }
 
-/* --- 6. TABLES & IMAGES --- */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 2rem 0;
-    font-size: 0.9rem;
-    border: 1px solid var(--border);
-}
+/* --- TABLES & IMAGES --- */
+table { width: 100%; border-collapse: collapse; margin: 2rem 0; font-size: 0.9rem; border: 1px solid var(--border); }
 th, td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--border); }
 th { background: var(--surface); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; }
 
-figure {
-    margin: 3rem 0;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    overflow: hidden;
-    background: var(--bg);
-}
+figure { margin: 3rem 0; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
 img { width: 100%; display: block; cursor: zoom-in; }
-figcaption {
-    padding: 0.8rem;
-    font-size: 0.8rem;
-    color: var(--fg);
-    opacity: 0.6;
-    font-family: var(--font-mono);
-    text-align: center;
-    background: var(--surface);
-    border-top: 1px solid var(--border);
-}
+figcaption { padding: 0.8rem; font-size: 0.8rem; color: var(--fg); opacity: 0.6; font-family: var(--font-mono); text-align: center; background: var(--surface); border-top: 1px solid var(--border); }
 
-/* --- 7. MISC COMPONENTS --- */
-.status-badge {
-    display: inline-block;
-    padding: 4px 10px;
-    border-radius: 100px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    margin-right: 10px;
-    font-family: var(--font-mono);
-}
+/* --- MISC --- */
+.status-badge { display: inline-block; padding: 4px 10px; border-radius: 100px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-right: 10px; font-family: var(--font-mono); }
 .status-success { background: #dcfce7; color: #166534; }
 .status-neutral { background: #f3f4f6; color: #374151; }
-
-/* Dark mode adjustments for badges */
 [data-theme="dark"] .status-success { background: #064e3b; color: #6ee7b7; }
 [data-theme="dark"] .status-neutral { background: #374151; color: #e5e7eb; }
 
-.personal-note {
-    background: var(--surface);
-    border-left: 3px solid var(--accent);
-    padding: 1.5rem;
-    font-size: 0.95rem;
-    margin: 2rem 0;
-    font-style: italic;
-    border-radius: 0 4px 4px 0;
-}
+.personal-note { background: var(--surface); border-left: 3px solid var(--accent); padding: 1.5rem; font-size: 0.95rem; margin: 2rem 0; font-style: italic; border-radius: 0 4px 4px 0; }
 
-/* --- 8. RESPONSIVE --- */
+/* --- RESPONSIVE --- */
 @media (max-width: 1000px) {
     body { flex-direction: column; }
-    .sidebar { 
-        width: 100%; 
-        height: auto; 
-        position: relative; 
-        border-right: none; 
-        border-bottom: 1px solid var(--border); 
-        padding: 1.5rem; 
-    }
+    .sidebar { width: 100%; height: auto; position: relative; border-right: none; border-bottom: 1px solid var(--border); padding: 1.5rem; }
     .content-wrapper { display: block; }
     main { padding: 3rem 2rem; }
 }
