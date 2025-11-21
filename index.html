@@ -66,7 +66,7 @@
             <section id="intro">
                 <h2>01. Context & Problem Statement</h2>
                 <p>
-                    During my first project meeting, my mentors explicitly stated that a standard NAS (Network Attached Storage) project would not be sufficiently challenging for Semester 6. A NAS operates at the file level, introducing overhead that makes it suboptimal for enterprise virtualization workloads.
+                    [cite_start]During my first project meeting, my mentors explicitly stated that a standard NAS (Network Attached Storage) project would not be sufficiently challenging for Semester 6. A NAS operates at the file level, introducing overhead that makes it suboptimal for enterprise virtualization workloads[cite: 38, 68].
                 </p>
                 <div class="personal-note">
                     "A NAS is fine for previous semesters, but is a toy compared, let's say to a SAN, if you want to show something better, build a SAN." - First mentor feedback
@@ -78,7 +78,7 @@
 
             <section id="hardware">
                 <h2>02. Hardware Stack</h2>
-                <p>The environment was built to simulate a realistic "zero-cost" enterprise scenario, utilizing devices I already owned.</p>
+                [cite_start]<p>The environment was built to simulate a realistic "zero-cost" enterprise scenario, utilizing devices I already owned[cite: 39, 41].</p>
                 <table>
                     <thead>
                         <tr>
@@ -91,45 +91,45 @@
                         <tr>
                             <td><strong>Intel NUC</strong></td>
                             <td>iSCSI Target</td>
-                            <td>i5, 8GB RAM, Ubuntu Server 24.04</td>
+                            [cite_start]<td>i5, 8GB RAM, Ubuntu Server 24.04 [cite: 170]</td>
                         </tr>
                         <tr>
                             <td><strong>1TB HDD</strong></td>
                             <td>Physical Storage</td>
-                            <td>USB 3.0 Expansion Drive</td>
+                            [cite_start]<td>USB 3.0 Expansion Drive [cite: 39]</td>
                         </tr>
                         <tr>
                             <td><strong>Netgear GS105E</strong></td>
                             <td>Managed Switch</td>
-                            <td>VLAN 10 (Ports 2-4) / VLAN 1 (Ports 1,5)</td>
+                            [cite_start]<td>VLAN 10 (Ports 2-4) / VLAN 1 (Ports 1,5) [cite: 325]</td>
                         </tr>
                         <tr>
                             <td><strong>Uni Laptop</strong></td>
                             <td>Client (Initiator)</td>
-                            <td>Windows 11, Microsoft iSCSI Initiator</td>
+                            [cite_start]<td>Windows 11, Microsoft iSCSI Initiator [cite: 238]</td>
                         </tr>
                     </tbody>
                 </table>
                 <figure>
                     <img src="assets/img/topology.png" alt="Network Topology Diagram">
-                    <figcaption>Figure 1: Network Topology with VLAN isolation</figcaption>
+                    [cite_start]<figcaption>Figure 1: Network Topology with VLAN isolation [cite: 150]</figcaption>
                 </figure>
             </section>
 
             <section id="setup">
                 <h2>03. The Setup: Getting a Clean Start</h2>
                 <p>
-                    I started by restoring my Intel NUC to factory defaults. [cite_start]It had been used as a home lab before, but I needed to start from zero to document the process accurately[cite: 185].
+                    I started by restoring my Intel NUC to factory defaults. It had been used as a home lab before, but I needed to start from zero to document the process accurately.
                 </p>
                 <h3>Hardware Upgrade</h3>
                 <p>
-                    I swapped my old Linksys switch for a <strong>Netgear GS105E</strong>. [cite_start]This was crucial because it supports 802.1Q VLAN tagging, which allows me to segment the network properly later[cite: 188].
+                    [cite_start]I swapped my old Linksys switch for a <strong>Netgear GS105E</strong>[cite: 188]. This was crucial because it supports 802.1Q VLAN tagging, which allows me to segment the network properly later.
                 </p>
                 <h3>Fresh Install & Mounting</h3>
                 <p>
                     [cite_start]I installed <strong>Ubuntu Server 24.04.3 LTS</strong> via a bootable USB created with Rufus[cite: 191]. [cite_start]During installation, I set the static IP to <code>192.168.2.200</code>[cite: 194]. [cite_start]After booting, I plugged in the 1TB drive[cite: 196].
                 </p>
-
+                
                 <div class="code-wrapper">
                     <div class="code-header">
                         <div class="code-controls">
@@ -137,7 +137,7 @@
                             <div class="dot yellow"></div>
                             <div class="dot green"></div>
                         </div>
-                        <div class="code-lang">BASH / TERMINAL</div>
+                        <div class="code-lang">BASH</div>
                         <button class="copy-btn" onclick="copy(this)">COPY</button>
                     </div>
 <pre><code># 1. Wipe the old NTFS partition
@@ -182,24 +182,24 @@ echo "UUID=2e35... /san ext4 defaults 0 2" | sudo tee -a /etc/fstab</code></pre>
                 </div>
 
                 <div class="personal-note">
-                    <strong>Safety Tip:</strong> I created snapshots using `dd` before configuring the target. This allowed me to rollback instantly if I broke the configuration.
+                    <strong>Safety Tip:</strong> I created snapshots using `dd` before configuring the target. [cite_start]This allowed me to rollback instantly if I broke the configuration[cite: 220].
                 </div>
             </section>
 
             <section id="chap">
                 <h2>05. The CHAP Drama</h2>
                 <p>
-                    This was the hardest part of the implementation. [cite_start]Enterprise storage requires authentication, so I attempted to enable <strong>Mutual CHAP</strong> (where both client and server verify each other)[cite: 262].
+                    This was the hardest part of the implementation. Enterprise storage requires authentication, so I attempted to enable <strong>Mutual CHAP</strong> (where both client and server verify each other).
                 </p>
                 <p>
-                    <strong>The Failure:</strong> My initial attempts failed. Windows 11 refused to connect. I discovered two issues:
+                    <strong>The Failure:</strong> My initial attempts failed. [cite_start]Windows 11 refused to connect[cite: 244]. I discovered two issues:
                 </p>
                 <ol>
                     [cite_start]<li>My password was 21 characters long (too long for some initiators)[cite: 177].</li>
-                    [cite_start]<li>Windows 11 has a known bug with Mutual CHAP in the Microsoft Initiator[cite: 268].</li>
+                    [cite_start]<li>Windows 11 has a known bug with Mutual CHAP in the Microsoft Initiator[cite: 178].</li>
                 </ol>
                 <p>
-                    [cite_start]<strong>The Fix:</strong> I switched to <strong>Unidirectional CHAP</strong> and shortened the password to 12 characters [cite: 270-271].
+                    [cite_start]<strong>The Fix:</strong> I switched to <strong>Unidirectional CHAP</strong> and shortened the password to 12 characters[cite: 270].
                 </p>
                 
                 <div class="code-wrapper">
@@ -225,32 +225,32 @@ set auth mutual_userid= disabled</code></pre>
                 </p>
                 <figure>
                     <img src="assets/img/disk-management.png" alt="Windows formatting the 100GB iSCSI LUN">
-                    <figcaption>Figure 15: Windows formatting the 100GB iSCSI LUN as S: Drive</figcaption>
+                    [cite_start]<figcaption>Figure 15: Windows formatting the 100GB iSCSI LUN as S: Drive [cite: 259]</figcaption>
                 </figure>
             </section>
 
             <section id="vlan">
                 <h2>06. VLAN Security</h2>
                 <p>
-                    Authentication isn't enough. I needed network isolation. [cite_start]I accessed the Netgear switch interface (found at <code>192.168.2.4</code>) and configured <strong>802.1Q Advanced VLANs</strong>[cite: 325].
+                    Authentication isn't enough. I needed network isolation. [cite_start]I accessed the Netgear switch interface (found at <code>192.168.2.4</code>) and configured <strong>802.1Q Advanced VLANs</strong>[cite: 332].
                 </p>
                 <ul>
-                    <li><strong>VLAN 1 (Home):</strong> Ports 1 & 5 (Router Uplink).</li>
-                    <li><strong>VLAN 10 (SAN Fabric):</strong> Ports 2, 3, 4 (NUC & Laptops).</li>
+                    [cite_start]<li><strong>VLAN 1 (Home):</strong> Ports 1 & 5 (Router Uplink)[cite: 329].</li>
+                    [cite_start]<li><strong>VLAN 10 (SAN Fabric):</strong> Ports 2, 3, 4 (NUC & Laptops)[cite: 328].</li>
                 </ul>
                 <figure>
                     <img src="assets/img/vlan-config.png" alt="Netgear VLAN configuration GUI">
-                    <figcaption>Figure 22: Configuring VLAN 10 on the Netgear GS105E</figcaption>
+                    [cite_start]<figcaption>Figure 22: Configuring VLAN 10 on the Netgear GS105E [cite: 336]</figcaption>
                 </figure>
                 <p>
-                    <strong>Result:</strong> When my laptop is on Wi-Fi, the SAN IP <code>192.168.2.200</code> is unreachable. It only becomes visible when physically plugged into ports 2-4. [cite_start]This effectively "air-gaps" the storage traffic from the home network [cite: 346-347].
+                    <strong>Result:</strong> When my laptop is on Wi-Fi, the SAN IP <code>192.168.2.200</code> is unreachable. It only becomes visible when physically plugged into ports 2-4. [cite_start]This effectively "air-gaps" the storage traffic from the home network[cite: 346].
                 </p>
             </section>
 
             <section id="benchmarks">
                 <h2>07. Performance Benchmarks</h2>
                 <p>
-                    [cite_start]I ran <strong>CrystalDiskMark 9.0.1</strong> (4GiB test file, 5 runs) to compare the iSCSI SAN against a temporary SMB (NAS) share I set up on the same NUC [cite: 276-282].
+                    [cite_start]I ran <strong>CrystalDiskMark 9.0.1</strong> (4GiB test file, 5 runs) to compare the iSCSI SAN against a temporary SMB (NAS) share I set up on the same NUC[cite: 276].
                 </p>
                 <table>
                     <thead>
@@ -272,7 +272,7 @@ set auth mutual_userid= disabled</code></pre>
                             <td>Random Read (4K)</td>
                             <td><strong>101.51 MB/s</strong></td>
                             <td>11.25 MB/s</td>
-                            [cite_start]<td><strong>SAN Wins (~9x):</strong> Massive advantage for VM booting[cite: 304].</td>
+                            [cite_start]<td><strong>SAN Wins (~9x):</strong> Massive advantage for VM booting[cite: 291].</td>
                         </tr>
                         <tr>
                             <td>Random Write</td>
@@ -284,14 +284,14 @@ set auth mutual_userid= disabled</code></pre>
                 </table>
                 <figure>
                     <img src="assets/img/benchmarks.png" alt="Benchmark Results Comparison">
-                    <figcaption>Figure 19 & 20: CrystalDiskMark Results Comparison</figcaption>
+                    [cite_start]<figcaption>Figure 19 & 20: CrystalDiskMark Results Comparison [cite: 285, 287]</figcaption>
                 </figure>
             </section>
 
             <section id="future">
                 <h2>08. Future Steps: ESP32 Ingestion</h2>
                 <p>
-                    To prepare for the next phase (IoT), I created a dedicated directory on the SAN. [cite_start]An ESP32-C3 will eventually log temperature data here via an MQTT broker running on the NUC[cite: 354].
+                    To prepare for the next phase (IoT), I created a dedicated directory on the SAN. [cite_start]An ESP32-C3 will eventually log temperature data here via an MQTT broker running on the NUC[cite: 368].
                 </p>
                 
                 <div class="code-wrapper">
@@ -308,7 +308,7 @@ set auth mutual_userid= disabled</code></pre>
 sudo chown nobody:nogroup /san/esp32_data</code></pre>
                 </div>
                 <p>
-                    The SAN is now fully operational, secure, and ready for data ingestion.
+                    [cite_start]The SAN is now fully operational, secure, and ready for data ingestion[cite: 354].
                 </p>
             </section>
 
