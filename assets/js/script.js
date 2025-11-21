@@ -46,16 +46,3 @@ window.addEventListener('scroll', () => {
         }
     });
 });
-
-// 4. Copy Function
-function copy(btn) {
-    const codeWrapper = btn.closest('.code-wrapper');
-    const pre = codeWrapper.querySelector('pre');
-    const code = pre.innerText;
-    
-    navigator.clipboard.writeText(code);
-    
-    const original = btn.innerText;
-    btn.innerText = "Copied!";
-    setTimeout(() => btn.innerText = original, 2000);
-}
