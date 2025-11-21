@@ -1,325 +1,554 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Zero-Cost SAN | Kevin Guzman</title>
+    <title>Building an Enterprise SAN | Kevin Guzman</title>
+    <meta name="description" content="A technical deep-dive into implementing an iSCSI SAN using consumer hardware.">
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
     <style>
-        /* --- CSS VARIABLES (Easy to change) --- */
+        /* --- CSS VARIABLES --- */
         :root {
-            --bg-color: #f4f4f5;       /* Light grey/off-white */
-            --text-color: #18181b;     /* Almost black */
-            --accent-color: #2563eb;   /* Enterprise Blue */
-            --code-bg: #27272a;        /* Dark terminal bg */
-            --code-text: #e4e4e7;      /* Light terminal text */
-            --border-color: #d4d4d8;
-            --font-main: 'Inter', sans-serif;
+            --bg: #ffffff;
+            --fg: #111111;
+            --surface: #f4f4f5;
+            --border: #e4e4e7;
+            --accent: #0047FF; /* International Klein Blue */
+            --code-bg: #1a1b26;
+            --code-fg: #a9b1d6;
+            --nav-width: 280px;
+            --toc-width: 240px;
+            --header-height: 60px;
+            --font-sans: 'Inter', sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
         }
 
+        [data-theme="dark"] {
+            --bg: #09090b;
+            --fg: #fafafa;
+            --surface: #18181b;
+            --border: #27272a;
+            --accent: #3b82f6;
+        }
+
         /* --- RESET & BASE --- */
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * { box-sizing: border-box; margin: 0; padding: 0; scroll-behavior: smooth; }
         
         body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: var(--font-main);
-            line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
+            background: var(--bg);
+            color: var(--fg);
+            font-family: var(--font-sans);
+            line-height: 1.7;
+            font-size: 16px;
+            transition: background 0.3s, color 0.3s;
+            overflow-x: hidden;
         }
 
-        /* --- STATUS BAR (The "Infrastructure" Vibe) --- */
-        .status-bar {
-            position: fixed;
+        a { text-decoration: none; color: var(--accent); font-weight: 500; transition: 0.2s; }
+        a:hover { text-decoration: underline; }
+
+        /* --- LAYOUT GRID --- */
+        .layout {
+            display: grid;
+            grid-template-columns: var(--nav-width) 1fr var(--toc-width);
+            min-height: 100vh;
+        }
+
+        /* --- SIDEBAR NAVIGATION (LEFT) --- */
+        .sidebar {
+            position: sticky;
             top: 0;
-            width: 100%;
-            background: var(--text-color);
-            color: white;
-            font-family: var(--font-mono);
-            font-size: 0.75rem;
-            padding: 0.5rem 1rem;
+            height: 100vh;
+            border-right: 1px solid var(--border);
+            padding: 2rem 1.5rem;
             display: flex;
-            justify-content: space-between;
-            z-index: 100;
-            letter-spacing: 0.05em;
-        }
-        .status-dot {
-            height: 8px; width: 8px;
-            background-color: #22c55e; /* Green */
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 8px;
+            flex-direction: column;
+            background: var(--bg);
+            z-index: 10;
+            overflow-y: auto;
         }
 
-        /* --- LAYOUT --- */
-        .container {
-            max-width: 800px;
-            margin: 6rem auto 4rem auto; /* Top margin for status bar */
-            padding: 0 2rem;
+        .brand {
+            font-weight: 800;
+            font-size: 1.2rem;
+            letter-spacing: -0.02em;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        /* --- TYPOGRAPHY --- */
-        h1 {
-            font-size: clamp(2.5rem, 5vw, 4rem);
-            font-weight: 600;
-            line-height: 1.1;
-            letter-spacing: -0.03em;
-            margin-bottom: 1rem;
+        .nav-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .nav-links a {
+            color: var(--fg);
+            opacity: 0.6;
+            font-size: 0.9rem;
+            padding: 0.5rem;
+            border-radius: 4px;
+            text-decoration: none;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: var(--surface);
+            opacity: 1;
+            color: var(--accent);
+        }
+
+        .theme-toggle {
+            margin-top: auto;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            opacity: 0.7;
+        }
+
+        /* --- MAIN CONTENT (CENTER) --- */
+        main {
+            padding: 4rem 4rem;
+            border-right: 1px solid var(--border);
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        h1 { font-size: 3rem; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 1rem; }
+        h2 { font-size: 2rem; margin: 3rem 0 1.5rem 0; letter-spacing: -0.02em; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
+        h3 { font-size: 1.4rem; margin: 2rem 0 1rem 0; font-weight: 600; }
+        p { margin-bottom: 1.5rem; max-width: 75ch; color: var(--fg); opacity: 0.9; }
+
+        /* --- TABLE OF CONTENTS (RIGHT) --- */
+        .toc {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            padding: 4rem 1.5rem;
+            font-size: 0.85rem;
+            display: none; /* Hidden on mobile */
         }
         
-        .subtitle {
-            font-size: 1.25rem;
-            color: #52525b;
-            font-weight: 300;
-            margin-bottom: 3rem;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 3rem;
+        .toc h4 { text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.1em; margin-bottom: 1rem; opacity: 0.5; }
+        .toc ul { list-style: none; border-left: 1px solid var(--border); }
+        .toc li a {
+            display: block;
+            padding: 0.4rem 0 0.4rem 1.5rem;
+            color: var(--fg);
+            opacity: 0.5;
+            text-decoration: none;
+            border-left: 2px solid transparent;
+            margin-left: -1px;
+            transition: 0.2s;
         }
-
-        h2 {
-            font-size: 1.75rem;
-            margin-top: 4rem;
-            margin-bottom: 1.5rem;
-            letter-spacing: -0.02em;
-        }
-
-        h3 {
-            font-size: 1.25rem;
-            margin-top: 2rem;
-            margin-bottom: 1rem;
-            font-weight: 600;
-        }
-
-        p {
-            margin-bottom: 1.5rem;
-            font-size: 1.05rem;
-            color: #3f3f46;
+        .toc li a.active {
+            border-left-color: var(--accent);
+            opacity: 1;
+            color: var(--accent);
         }
 
         /* --- COMPONENTS --- */
         
-        /* The Callout Box (For Executive Summary) */
-        .executive-summary {
-            background: #e4e4e7;
-            padding: 2rem;
-            border-left: 4px solid var(--text-color);
-            margin-bottom: 3rem;
+        /* Code Blocks */
+        .code-wrapper {
+            position: relative;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            font-size: 0.75rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: var(--font-sans);
+            opacity: 0;
+            transition: 0.2s;
+        }
+        .code-wrapper:hover .copy-btn { opacity: 1; }
+        pre {
+            background: var(--code-bg);
+            color: var(--code-fg);
+            padding: 1.5rem;
+            overflow-x: auto;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
         }
 
-        /* Tables (Minimalist) */
+        /* Tables */
         table {
             width: 100%;
             border-collapse: collapse;
             margin: 2rem 0;
             font-size: 0.95rem;
+            border: 1px solid var(--border);
         }
-        th {
-            text-align: left;
-            border-bottom: 2px solid var(--text-color);
-            padding: 1rem 0.5rem;
-            font-family: var(--font-mono);
-            text-transform: uppercase;
-            font-size: 0.85rem;
-        }
-        td {
-            border-bottom: 1px solid var(--border-color);
-            padding: 1rem 0.5rem;
-        }
-        tr:last-child td { border-bottom: none; }
+        th, td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--border); }
+        th { background: var(--surface); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        tr:hover { background: var(--surface); }
 
-        /* Code Blocks */
-        pre {
-            background: var(--code-bg);
-            color: var(--code-text);
-            padding: 1.5rem;
+        /* Citations */
+        .citation {
+            font-size: 0.75em;
+            vertical-align: super;
+            color: var(--accent);
+            opacity: 0.8;
+            margin-left: 2px;
+        }
+
+        /* Images */
+        figure { margin: 2rem 0; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+        img { width: 100%; display: block; transition: transform 0.3s; cursor: zoom-in; }
+        figcaption { padding: 0.8rem; font-size: 0.85rem; background: var(--surface); color: var(--fg); opacity: 0.7; text-align: center; border-top: 1px solid var(--border); }
+
+        /* Lightbox */
+        .lightbox {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); z-index: 1000;
+            display: none; align-items: center; justify-content: center;
+        }
+        .lightbox img { max-width: 90%; max-height: 90%; cursor: zoom-out; border: none; }
+
+        /* Status Badge */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
             border-radius: 4px;
-            overflow-x: auto;
-            font-family: var(--font-mono);
-            font-size: 0.9rem;
-            margin: 2rem 0;
-            border: 1px solid #3f3f46;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
         }
-
-        /* Images / Diagrams */
-        figure {
-            margin: 3rem 0;
-        }
-        img {
-            width: 100%;
-            height: auto;
-            display: block;
-            background-color: #e4e4e7; /* Placeholder color */
-            border: 1px solid var(--border-color);
-        }
-        figcaption {
-            font-family: var(--font-mono);
-            font-size: 0.8rem;
-            color: #71717a;
-            margin-top: 0.5rem;
-            text-align: right;
-        }
-
-        /* Footer */
-        footer {
-            margin-top: 6rem;
-            padding-top: 2rem;
-            border-top: 1px solid var(--border-color);
-            font-family: var(--font-mono);
-            font-size: 0.85rem;
-            color: #71717a;
-            display: flex;
-            justify-content: space-between;
-        }
+        .status-success { background: #dcfce7; color: #166534; }
+        .status-warn { background: #fef9c3; color: #854d0e; }
+        [data-theme="dark"] .status-success { background: #064e3b; color: #6ee7b7; }
 
         /* --- RESPONSIVE --- */
-        @media (max-width: 600px) {
-            h1 { font-size: 2.5rem; }
-            .container { padding: 0 1.5rem; }
-        }
+        @media (min-width: 1200px) { .toc { display: block; } }
+        @media (max-width: 1024px) { .layout { grid-template-columns: 1fr; } .sidebar, .toc { display: none; } main { padding: 2rem; border: none; } }
     </style>
 </head>
 <body>
 
-    <div class="status-bar">
-        <div><span class="status-dot"></span>SYSTEM: ONLINE</div>
-        <div>MODE: iSCSI SAN</div>
-        <div>LATENCY: 1ms</div>
-    </div>
-
-    <div class="container">
-        <header>
-            <p style="font-family: var(--font-mono); font-size: 0.85rem; margin-bottom: 1rem; color: #71717a;">
-                DOC_ID: FONTYS-INFRA-2025 // S6
-            </p>
-            <h1>Project Zero-Cost: Enterprise iSCSI SAN</h1>
-            <div class="subtitle">
-                Designing, implementing, and evaluating a block-level storage network using consumer-grade hardware. 
-                <br><br>
-                <strong>Author:</strong> Kevin Guzman
+    <div class="layout">
+        <nav class="sidebar">
+            <div class="brand">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20h20M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="M12 4v16"/><path d="M2 12h20"/><path d="M2 8h20"/><path d="M2 16h20"/></svg>
+                INFRA_LAB_01
             </div>
-        </header>
+            <ul class="nav-links">
+                <li><a href="#intro">1. Introduction</a></li>
+                <li><a href="#context">2. Context & Problem</a></li>
+                <li><a href="#design">3. Architecture Design</a></li>
+                <li><a href="#setup">4. Implementation</a></li>
+                <li><a href="#security">5. Security Measures</a></li>
+                <li><a href="#benchmark">6. Performance Benchmarks</a></li>
+                <li><a href="#conclusion">7. Conclusion</a></li>
+            </ul>
+            <div class="theme-toggle" id="themeToggle">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                <span>Toggle Theme</span>
+            </div>
+        </nav>
 
         <main>
-            <section class="executive-summary">
-                <h3 style="margin-top:0;">Executive Summary</h3>
-                <p>
-                    In modern enterprise infrastructure, Storage Area Networks (SANs) are the standard for high-performance virtualization. 
-                    This research demonstrates the validation of a fully functional <strong>iSCSI SAN</strong> using exclusively consumer-grade hardware.
+            <header style="margin-bottom: 4rem;">
+                <span style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--accent);">ADVANCED INFRASTRUCTURE // SEMESTER 6</span>
+                <h1 id="typewriter"></h1>
+                <p style="font-size: 1.2rem; color: var(--fg); opacity: 0.7;">
+                    Designing, implementing, and evaluating a Storage Area Network (SAN) using consumer-grade hardware and open-source tools.
                 </p>
-                <p style="margin-bottom:0;">
-                    <strong>Key Result:</strong> The iSCSI implementation delivered <strong>~900% higher random read IOPS</strong> compared to a traditional SMB NAS configuration on identical hardware.
-                </p>
+                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                    <span class="status-badge status-success">Project Complete</span>
+                    <span class="status-badge status-warn">Budget: €0.00</span>
+                </div>
+            </header>
+
+            <section id="intro">
+                <h2>1. Introduction</h2>
+                <p>This research document details the personal project of building a functional SAN from scratch. Unlike Network Attached Storage (NAS) which operates at the file level, this project focuses on block-level storage to demonstrate advanced infrastructure skills.</p>
+                <p>The core objective was to build a system capable of supporting enterprise virtualization workloads using only existing home hardware, specifically proving that consumer-grade devices can mimic enterprise storage behavior.</p>
             </section>
 
-            <article>
-                <h2>1. Context & Problem</h2>
-                <p>
-                    While Network Attached Storage (NAS) systems are common in home labs, they operate at the file level (SMB/NFS). This introduces overhead that makes them suboptimal for VM hosting or databases.
-                </p>
-                <p>
-                    My mentors challenged me: <em>"A NAS is fine for Semester 4. If you want to show readiness for the real world, build a SAN."</em>
-                </p>
-
-                <h2>2. Infrastructure Design</h2>
-                <p>The architecture utilizes a dedicated VLAN to isolate storage traffic, ensuring security and performance.</p>
+            <section id="context">
+                <h2>2. Context & Problem Statement</h2>
+                <h3>2.1 The Limitations of NAS</h3>
+                <p>Mentors advised that a standard NAS project was insufficient for Semester 6 competencies. NAS introduces overhead from file system translation and metadata operations, resulting in higher latency and lower IOPS.</p>
                 
+                <h3>2.2 The Solution: iSCSI SAN</h3>
+                <p>Storage Area Networks provide direct block-level access, presenting raw disks to clients. This enables near-native performance critical for virtualization. The challenge was to implement this without the expensive hardware usually associated with SANs (Fibre Channel, dedicated arrays).</p>
+            </section>
+
+            <section id="design">
+                <h2>3. Architecture & Hardware</h2>
+                <p>The infrastructure creates a "zero-cost" simulation of enterprise storage using repurposed hardware.</p>
+
                 <table>
                     <thead>
                         <tr>
                             <th>Device</th>
                             <th>Role</th>
                             <th>IP Address</th>
+                            <th>Specs/Notes</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>Intel NUC (i5)</td>
+                            <td><strong>Intel NUC</strong></td>
                             <td>iSCSI Target</td>
                             <td>192.168.2.200</td>
+                            <td>i5, 8GB RAM, Ubuntu Server 24.04</td>
                         </tr>
                         <tr>
-                            <td>Windows 11 PC</td>
-                            <td>Initiator (Client)</td>
+                            <td><strong>Surface Laptop</strong></td>
+                            <td>Initiator 1</td>
+                            <td>192.168.2.202</td>
+                            <td>Secondary client for multi-path testing</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Uni Laptop</strong></td>
+                            <td>Initiator 2</td>
                             <td>192.168.2.201</td>
+                            <td>Windows 11, Microsoft iSCSI Initiator</td>
                         </tr>
                         <tr>
-                            <td>Netgear GS105E</td>
-                            <td>Managed Switch</td>
+                            <td><strong>Netgear GS105E</strong></td>
+                            <td>Switch</td>
                             <td>192.168.2.4</td>
+                            <td>Managed, VLAN-capable</td>
                         </tr>
                     </tbody>
                 </table>
 
                 <figure>
-                    <div style="aspect-ratio: 16/9; background: #e4e4e7; display: flex; align-items: center; justify-content: center; color: #a1a1aa; font-family: var(--font-mono);">
-                        [Insert Network Topology Diagram Here]
-                    </div>
-                    <figcaption>Fig 1.0 - Layer 2 VLAN Topology</figcaption>
+                    <img src="topology.png" alt="Network Topology Diagram" onclick="openLightbox(this.src)">
+                    <figcaption>Figure 1: Logical Topology with VLAN 10 Isolation</figcaption>
                 </figure>
+            </section>
 
-                <h2>3. Implementation (CLI)</h2>
-                <p>Configuration was performed using the Linux IO (LIO) stack via <code>targetcli</code>.</p>
+            <section id="setup">
+                <h2>4. Implementation</h2>
+                <p>The implementation utilized the <strong>LIO (Linux-IO)</strong> stack via <code>targetcli</code>. Below are the specific configurations used to bring the SAN online.</p>
 
-<pre><code># Create the backstore (file-based)
-/backstores/fileio create name=sanlun0 file_or_dev=/san/lun0.img size=100G
+                <h3>4.1 Backend Storage Preparation</h3>
+                <p>The 1TB external HDD was wiped and formatted with ext4. A permanent mount point was created to ensure stability across reboots.</p>
+                <div class="code-wrapper">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code># Wipe old partitions
+sudo mkfs.ext4 -F /dev/sda
 
-# Create the iSCSI Target
+# Create mount point
+sudo mkdir /san
+sudo mount /dev/sda /san
+
+# Verify block device
+lsblk
+# Result: sda -> 931.5G disk</code></pre>
+                </div>
+
+                <h3>4.2 Configuring the iSCSI Target</h3>
+                <p>Using <code>targetcli</code>, a 100GB file-backed LUN was created. This mimics a physical disk for the clients.</p>
+                <div class="code-wrapper">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>sudo targetcli
+
+# 1. Create the backstore (virtual disk)
+/backstores/fileio create name=lun0 file_or_dev=/san/lun0.img size=100G
+
+# 2. Create the IQN (Identity)
 /iscsi create iqn.2025-11.nl.fontys:san
 
-# Set CHAP Security (Unidirectional)
-/iscsi/iqn.../tpg1 set auth userid=kevin password=KevinPass12</code></pre>
+# 3. Map the LUN to the Target
+/iscsi/iqn.2025-11.nl.fontys:san/tpg1/luns create /backstores/fileio/lun0</code></pre>
+                </div>
+                <p class="note"><strong>Note:</strong> Snapshots were created using `dd` to allow for instant rollback during testing.</p>
+            </section>
 
-                <h2>4. Benchmark Results</h2>
-                <p>Performance was measured using <strong>CrystalDiskMark</strong> (Queues: 32, Threads: 1). The Random 4K Read test highlights the massive advantage of block-level storage.</p>
+            <section id="security">
+                <h2>5. Security Measures</h2>
+                <p>Enterprise storage must be secure. Two layers of security were implemented: Authentication (Layer 7) and Network Isolation (Layer 2).</p>
+
+                <h3>5.1 The CHAP Challenge</h3>
+                <p>Initial attempts to use Mutual CHAP failed due to a known Windows 11 limitation. The final configuration used <strong>Unidirectional CHAP</strong>.</p>
+                <div class="code-wrapper">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code># Access Control List creation
+create acl iqn.1991-05.com.microsoft:kevin-s-lap
+
+# Setting Authentication
+set auth userid=kevin password=KevinPass123
+# Mutual auth disabled due to Windows bug</code></pre>
+                </div>
+
+                <h3>5.2 VLAN Isolation</h3>
+                <p>The Netgear GS105E was configured to isolate ports 2, 3, and 4 into <strong>VLAN 10</strong>. This "air-gaps" the SAN traffic from the standard home Wi-Fi traffic (VLAN 1).</p>
+                <ul>
+                    <li><strong>VLAN 1:</strong> Internet & Home Router.</li>
+                    <li><strong>VLAN 10:</strong> SAN Traffic Only (NUC + Clients).</li>
+                </ul>
+            </section>
+
+            <section id="benchmark">
+                <h2>6. Performance Benchmarks</h2>
+                <p>Benchmarks were conducted using <strong>CrystalDiskMark 9.0.1</strong>. The comparison focused on the iSCSI SAN versus a simulated NAS (SMB) on the same hardware.</p>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem;">
+                    <figure>
+                        <img src="bench_san.png" alt="SAN Benchmark Results" onclick="openLightbox(this.src)">
+                        <figcaption>Fig 19: iSCSI SAN Results</figcaption>
+                    </figure>
+                    <figure>
+                        <img src="bench_nas.png" alt="NAS Benchmark Results" onclick="openLightbox(this.src)">
+                        <figcaption>Fig 20: NAS SMB Results</figcaption>
+                    </figure>
+                </div>
 
                 <table>
                     <thead>
                         <tr>
-                            <th>Metric</th>
-                            <th>iSCSI SAN</th>
-                            <th>SMB NAS</th>
-                            <th>Difference</th>
+                            <th>Metric (CrystalDiskMark)</th>
+                            <th>iSCSI SAN (Block)</th>
+                            <th>NAS (File)</th>
+                            <th>Analysis</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>Seq. Read</td>
-                            <td>117 MB/s</td>
-                            <td>117 MB/s</td>
-                            <td>0% (Tie)</td>
+                            <td>Seq. Read (Q8T1)</td>
+                            <td>117.41 MB/s</td>
+                            <td>117.52 MB/s</td>
+                            <td><strong>Tie:</strong> Saturated Gigabit Ethernet</td>
                         </tr>
                         <tr>
-                            <td>Random Read 4K</td>
+                            <td>Random Read (4K Q32)</td>
                             <td><strong>101.51 MB/s</strong></td>
                             <td>11.25 MB/s</td>
-                            <td>+900%</td>
+                            <td><strong>SAN Wins (~9x):</strong> Block-level efficiency</td>
                         </tr>
                         <tr>
-                            <td>Random Write 4K</td>
+                            <td>Random Write (4K)</td>
                             <td>0.16 MB/s</td>
                             <td>9.05 MB/s</td>
-                            <td>-98%</td>
+                            <td><strong>HDD Bottleneck:</strong> USB translation layer struggle</td>
                         </tr>
                     </tbody>
                 </table>
+                <p><strong>Analysis:</strong> While sequential speeds were network-bound, the random read performance of the SAN was vastly superior. This confirms why enterprises prefer SAN for databases and VM boot drives.</p>
+            </section>
 
-                <h2>5. Conclusion</h2>
-                <p>
-                    This project successfully proves that enterprise-grade storage behavior can be simulated on zero-cost hardware. 
-                    By utilizing iSCSI, I achieved significant latency reduction for read-heavy workloads, validating the technology's use in virtualization environments.
-                </p>
-            </article>
+            <section id="conclusion">
+                <h2>7. Conclusion & Recommendations</h2>
+                <p>The project successfully answered the main research question: A functional, secure SAN can be built with consumer hardware for €0.</p>
+                <ul>
+                    <li><strong>Functionality:</strong> Validated via multi-client access and daily use as "S:" drive.</li>
+                    <li><strong>Security:</strong> Secured via CHAP and VLAN 10.</li>
+                    <li><strong>Future Proofing:</strong> Directory structure prepared for ESP32 MQTT ingestion.</li>
+                </ul>
+                <p><strong>Recommendation:</strong> For production use, the USB HDD backend must be replaced with a SATA SSD to resolve the random write bottleneck.</p>
+            </section>
+
+            <footer style="margin-top: 5rem; padding-top: 2rem; border-top: 1px solid var(--border); font-size: 0.9rem; color: var(--fg); opacity: 0.6;">
+                <p><strong>Author:</strong> Kevin Guzman | Fontys University of Applied Sciences</p>
+                <p>Advanced ICT & Infrastructure | November 2025</p>
+            </footer>
         </main>
 
-        <footer>
-            <div>&copy; 2025 Kevin Guzman</div>
-            <div>Fontys University of Applied Sciences</div>
-        </footer>
+        <aside class="toc">
+            <h4>Contents</h4>
+            <ul>
+                <li><a href="#intro">1. Introduction</a></li>
+                <li><a href="#context">2. Context</a></li>
+                <li><a href="#design">3. Architecture</a></li>
+                <li><a href="#setup">4. Implementation</a></li>
+                <li><a href="#security">5. Security</a></li>
+                <li><a href="#benchmark">6. Benchmarks</a></li>
+                <li><a href="#conclusion">7. Conclusion</a></li>
+            </ul>
+        </aside>
     </div>
 
+    <div class="lightbox" id="lightbox" onclick="this.style.display='none'">
+        <img id="lightbox-img" src="">
+    </div>
+
+    <script>
+        // --- 1. Typing Animation ---
+        const text = "Enterprise iSCSI SAN Implementation";
+        const typeEl = document.getElementById('typewriter');
+        let i = 0;
+        function typeWriter() {
+            if (i < text.length) {
+                typeEl.innerHTML += text.charAt(i);
+                i++;
+                setTimeout(typeWriter, 50);
+            }
+        }
+        window.onload = typeWriter;
+
+        // --- 2. Dark Mode ---
+        const toggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+        
+        // Check local storage
+        if (localStorage.getItem('theme') === 'dark') {
+            html.setAttribute('data-theme', 'dark');
+        }
+
+        toggle.addEventListener('click', () => {
+            const current = html.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+        });
+
+        // --- 3. Scroll Spy (TOC Highlighting) ---
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                const id = entry.target.getAttribute('id');
+                if (entry.intersectionRatio > 0) {
+                    document.querySelector(`.toc li a[href="#${id}"]`).classList.add('active');
+                    document.querySelector(`.nav-links a[href="#${id}"]`).classList.add('active');
+                } else {
+                    document.querySelector(`.toc li a[href="#${id}"]`).classList.remove('active');
+                    document.querySelector(`.nav-links a[href="#${id}"]`).classList.remove('active');
+                }
+            });
+        });
+
+        document.querySelectorAll('section').forEach((section) => {
+            observer.observe(section);
+        });
+
+        // --- 4. Copy Code ---
+        function copyCode(btn) {
+            const code = btn.nextElementSibling.innerText;
+            navigator.clipboard.writeText(code);
+            const original = btn.innerText;
+            btn.innerText = "Copied!";
+            setTimeout(() => btn.innerText = original, 2000);
+        }
+
+        // --- 5. Lightbox ---
+        function openLightbox(src) {
+            document.getElementById('lightbox-img').src = src;
+            document.getElementById('lightbox').style.display = 'flex';
+        }
+    </script>
 </body>
 </html>
