@@ -1,35 +1,43 @@
-/* --- VARIABLES --- */
+/* --- 1. VARIABLES & THEME CONFIG --- */
 :root {
+    /* Layout Dimensions */
+    --sidebar-width: 280px;
+    --content-width: 850px;
+
+    /* Light Mode Colors */
     --bg: #ffffff;
     --fg: #111111;
     --surface: #f4f4f5;
     --border: #e4e4e7;
-    --accent: #0047FF;
-    --sidebar-width: 280px;
+    --accent: #0047FF; /* Enterprise Blue */
     
-    /* New Glass-Terminal Variables */
-    /* 85% opacity dark blue-grey */
-    --code-bg: rgba(20, 22, 31, 0.85); 
+    /* Glass Code Block Colors (Light Mode) */
+    /* Dark semi-transparent background for contrast against white page */
+    --code-bg: rgba(22, 24, 35, 0.95); 
     --code-header: rgba(255, 255, 255, 0.05);
     --code-fg: #e5e5e5;
     --code-border: rgba(0, 0, 0, 0.1);
     
+    /* Typography */
     --font-sans: 'Inter', sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
 }
 
 [data-theme="dark"] {
+    /* Dark Mode Colors */
     --bg: #09090b;
     --fg: #ededed;
     --surface: #18181b;
     --border: #27272a;
     --accent: #3b82f6;
-    /* Darker glass for dark mode */
-    --code-bg: rgba(0, 0, 0, 0.6);
+
+    /* Glass Code Block Colors (Dark Mode) */
+    /* Lighter transparency to blend with dark page */
+    --code-bg: rgba(0, 0, 0, 0.5);
     --code-border: rgba(255, 255, 255, 0.1);
 }
 
-/* --- RESET --- */
+/* --- 2. RESET & BASE STYLES --- */
 * { box-sizing: border-box; margin: 0; padding: 0; scroll-behavior: smooth; }
 
 body {
@@ -41,7 +49,7 @@ body {
     display: flex;
     min-height: 100vh;
     transition: background 0.3s, color 0.3s;
-    /* Optional: Subtle grid background pattern on the body for the glass effect to blur */
+    /* Subtle pattern to make the glass effect pop */
     background-image: radial-gradient(var(--border) 1px, transparent 1px);
     background-size: 40px 40px;
 }
@@ -49,7 +57,7 @@ body {
 a { text-decoration: none; color: var(--fg); transition: 0.2s; }
 a:hover { color: var(--accent); }
 
-/* --- SIDEBAR --- */
+/* --- 3. LEFT SIDEBAR NAVIGATION --- */
 .sidebar {
     width: var(--sidebar-width);
     height: 100vh;
@@ -59,7 +67,7 @@ a:hover { color: var(--accent); }
     padding: 2rem;
     display: flex;
     flex-direction: column;
-    background: var(--bg); /* Sidebar stays solid for readability */
+    background: var(--bg);
     overflow-y: auto;
     flex-shrink: 0;
     z-index: 10;
@@ -120,7 +128,7 @@ a:hover { color: var(--accent); }
     gap: 10px;
 }
 
-/* --- MAIN CONTENT --- */
+/* --- 4. MAIN CONTENT AREA --- */
 .content-wrapper {
     flex: 1;
     display: flex;
@@ -129,29 +137,35 @@ a:hover { color: var(--accent); }
 
 main {
     width: 100%;
-    max-width: 850px;
+    max-width: var(--content-width);
     padding: 5rem 4rem 8rem 4rem;
-    background: var(--bg); /* Ensure text is readable */
+    background: transparent;
 }
 
+/* Typography */
 h1 { font-size: 2.5rem; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 1.5rem; font-weight: 700; }
 h2 { font-size: 1.75rem; margin: 4rem 0 1.5rem 0; letter-spacing: -0.02em; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
 h3 { font-size: 1.25rem; margin: 2rem 0 1rem 0; font-weight: 600; }
 p { margin-bottom: 1.5rem; opacity: 0.9; }
 
-/* --- GLASSMORPHISM CODE BLOCKS --- */
+/* --- 5. GLASSMORPHISM CODE BLOCKS (The "Original" Look) --- */
 .code-wrapper {
     margin: 2.5rem 0;
     border-radius: 12px;
     border: 1px solid var(--code-border);
     background-color: var(--code-bg);
     
-    /* The Glass Effect */
+    /* The Glass Effect: Blurs whatever is behind the box */
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     
     overflow: hidden;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.code-wrapper:hover {
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
 }
 
 .code-header {
@@ -163,14 +177,10 @@ p { margin-bottom: 1.5rem; opacity: 0.9; }
     align-items: center;
     font-family: var(--font-mono);
     font-size: 0.75rem;
-    color: rgba(255,255,255,0.6);
 }
 
-.code-controls {
-    display: flex;
-    gap: 8px;
-}
-/* Subtle dots */
+/* The Mac/Terminal Window Dots */
+.code-controls { display: flex; gap: 8px; }
 .dot { width: 10px; height: 10px; border-radius: 50%; opacity: 0.8; }
 .dot.red { background: #ff5f56; }
 .dot.yellow { background: #ffbd2e; }
@@ -180,8 +190,8 @@ p { margin-bottom: 1.5rem; opacity: 0.9; }
     text-transform: uppercase;
     letter-spacing: 0.05em;
     font-weight: 700;
-    color: rgba(255,255,255,0.4);
-    border: 1px solid rgba(255,255,255,0.1);
+    color: rgba(255, 255, 255, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     padding: 2px 8px;
     border-radius: 4px;
 }
@@ -193,7 +203,7 @@ pre {
     font-family: var(--font-mono);
     font-size: 0.9rem;
     line-height: 1.6;
-    /* Subtle shadow inside */
+    /* Inner shadow for depth */
     box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
 }
 
@@ -208,32 +218,82 @@ pre {
     cursor: pointer;
     transition: all 0.2s;
 }
+
 .copy-btn:hover {
     background: rgba(255,255,255,0.1);
     color: #fff;
     border-color: rgba(255,255,255,0.4);
 }
 
-/* --- OTHER ELEMENTS --- */
-table { width: 100%; border-collapse: collapse; margin: 2rem 0; font-size: 0.9rem; border: 1px solid var(--border); }
+/* --- 6. TABLES & IMAGES --- */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 2rem 0;
+    font-size: 0.9rem;
+    border: 1px solid var(--border);
+}
 th, td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--border); }
 th { background: var(--surface); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; }
 
-figure { margin: 3rem 0; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+figure {
+    margin: 3rem 0;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--bg);
+}
 img { width: 100%; display: block; cursor: zoom-in; }
-figcaption { padding: 0.8rem; font-size: 0.8rem; color: var(--fg); opacity: 0.6; font-family: var(--font-mono); text-align: center; background: var(--surface); border-top: 1px solid var(--border); }
+figcaption {
+    padding: 0.8rem;
+    font-size: 0.8rem;
+    color: var(--fg);
+    opacity: 0.6;
+    font-family: var(--font-mono);
+    text-align: center;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+}
 
-.status-badge { display: inline-block; padding: 4px 10px; border-radius: 100px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-right: 10px; font-family: var(--font-mono); }
+/* --- 7. MISC COMPONENTS --- */
+.status-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-right: 10px;
+    font-family: var(--font-mono);
+}
 .status-success { background: #dcfce7; color: #166534; }
 .status-neutral { background: #f3f4f6; color: #374151; }
+
+/* Dark mode adjustments for badges */
 [data-theme="dark"] .status-success { background: #064e3b; color: #6ee7b7; }
 [data-theme="dark"] .status-neutral { background: #374151; color: #e5e7eb; }
 
-.personal-note { background: var(--surface); border-left: 3px solid var(--accent); padding: 1.5rem; font-size: 0.95rem; margin: 2rem 0; font-style: italic; border-radius: 0 4px 4px 0; }
+.personal-note {
+    background: var(--surface);
+    border-left: 3px solid var(--accent);
+    padding: 1.5rem;
+    font-size: 0.95rem;
+    margin: 2rem 0;
+    font-style: italic;
+    border-radius: 0 4px 4px 0;
+}
 
+/* --- 8. RESPONSIVE --- */
 @media (max-width: 1000px) {
     body { flex-direction: column; }
-    .sidebar { width: 100%; height: auto; position: relative; border-right: none; border-bottom: 1px solid var(--border); padding: 1.5rem; }
+    .sidebar { 
+        width: 100%; 
+        height: auto; 
+        position: relative; 
+        border-right: none; 
+        border-bottom: 1px solid var(--border); 
+        padding: 1.5rem; 
+    }
     .content-wrapper { display: block; }
     main { padding: 3rem 2rem; }
 }
