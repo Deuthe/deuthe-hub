@@ -18,10 +18,9 @@
             --surface: #f4f4f5;
             --border: #e4e4e7;
             --accent: #0047FF; /* Enterprise Blue */
-            --code-bg: #1a1b26;
+            --code-bg: #1a1b26; /* Deep Blue-Black */
             --code-fg: #a9b1d6;
             --sidebar-width: 280px;
-            --toc-width: 240px;
             --font-sans: 'Inter', sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
         }
@@ -51,7 +50,7 @@
         a { text-decoration: none; color: var(--fg); transition: 0.2s; }
         a:hover { color: var(--accent); }
         
-        /* --- LEFT SIDEBAR (The Design You Liked) --- */
+        /* --- SIDEBAR --- */
         .sidebar {
             width: var(--sidebar-width);
             height: 100vh;
@@ -118,20 +117,20 @@
             gap: 10px;
         }
 
-        /* --- MAIN CONTENT AREA --- */
+        /* --- CONTENT --- */
         .content-wrapper {
             flex: 1;
             display: flex;
-            justify-content: center; /* Centers the text column */
+            justify-content: center;
         }
 
         main {
             width: 100%;
-            max-width: 850px; /* Optimal reading width */
+            max-width: 850px;
             padding: 5rem 4rem 8rem 4rem;
         }
 
-        /* --- TYPOGRAPHY & ELEMENTS --- */
+        /* --- TYPOGRAPHY --- */
         h1 { font-size: 2.5rem; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 1.5rem; font-weight: 700; }
         h2 { font-size: 1.75rem; margin: 4rem 0 1.5rem 0; letter-spacing: -0.02em; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
         h3 { font-size: 1.25rem; margin: 2rem 0 1rem 0; font-weight: 600; }
@@ -153,39 +152,67 @@
         [data-theme="dark"] .status-success { background: #064e3b; color: #6ee7b7; }
         [data-theme="dark"] .status-neutral { background: #374151; color: #e5e7eb; }
 
-        /* Code Blocks */
+        /* --- NEW "ORIGINAL" CODE BLOCKS --- */
         .code-wrapper {
-            margin: 2rem 0;
-            border-radius: 8px;
-            overflow: hidden;
-            border: 1px solid var(--border);
+            position: relative;
+            margin: 2.5rem 0;
             background: var(--code-bg);
+            border-radius: 6px;
+            border-left: 4px solid var(--accent); /* The "Tech Snippet" Look */
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
         }
-        .code-header {
-            background: #16161e;
-            color: #7aa2f7;
-            padding: 0.6rem 1rem;
+
+        /* Floating Language Badge (Inside the box) */
+        .code-lang {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
             font-family: var(--font-mono);
-            font-size: 0.7rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #2d2d2d;
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--code-fg);
+            opacity: 0.3;
+            border: 1px solid var(--code-fg);
+            padding: 2px 6px;
+            border-radius: 4px;
+            pointer-events: none;
             text-transform: uppercase;
         }
+
         pre {
             color: var(--code-fg);
-            padding: 1.5rem;
+            padding: 1.5rem 1.5rem 1.5rem 2rem;
             overflow-x: auto;
             font-family: var(--font-mono);
             font-size: 0.9rem;
+            white-space: pre-wrap;
         }
-        .copy-btn {
-            background: transparent; border: none; color: white; cursor: pointer; font-size: 0.7rem; opacity: 0.7; font-family: var(--font-mono);
-        }
-        .copy-btn:hover { opacity: 1; }
 
-        /* Tables */
+        /* Minimalist Copy Button */
+        .copy-btn {
+            position: absolute;
+            top: 0.8rem;
+            right: 3.5rem; /* Left of the lang badge */
+            background: transparent;
+            border: none;
+            color: var(--code-fg);
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            cursor: pointer;
+            opacity: 0; /* Hidden by default */
+            transition: opacity 0.2s;
+            padding: 4px 8px;
+        }
+        
+        .code-wrapper:hover .copy-btn {
+            opacity: 0.7;
+        }
+        .copy-btn:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+
+        /* --- TABLES --- */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -196,7 +223,7 @@
         th, td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--border); }
         th { background: var(--surface); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; }
         
-        /* Images */
+        /* --- IMAGES --- */
         figure { margin: 3rem 0; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
         img { width: 100%; display: block; cursor: zoom-in; }
         figcaption {
@@ -210,7 +237,7 @@
             border-top: 1px solid var(--border);
         }
 
-        /* Personal Note Box */
+        /* --- NOTES --- */
         .personal-note {
             background: var(--surface);
             border-left: 3px solid var(--accent);
@@ -221,7 +248,6 @@
             border-radius: 0 4px 4px 0;
         }
 
-        /* --- RESPONSIVE --- */
         @media (max-width: 1000px) {
             body { flex-direction: column; }
             .sidebar { width: 100%; height: auto; position: relative; border-right: none; border-bottom: 1px solid var(--border); padding: 1.5rem; }
@@ -284,10 +310,10 @@
             <section id="intro">
                 <h2>01. Context & Problem Statement</h2>
                 <p>
-                    During my first project meeting, my mentors explicitly stated that a standard NAS (Network Attached Storage) project would not be sufficiently challenging for Semester 6. A NAS operates at the file level, introducing overhead that makes it suboptimal for enterprise virtualization workloads.
+                    [cite_start]During my first project meeting, my mentors explicitly stated that a standard NAS (Network Attached Storage) project would not be sufficiently challenging for Semester 6. A NAS operates at the file level, introducing overhead that makes it suboptimal for enterprise virtualization workloads[cite: 38, 68].
                 </p>
                 <div class="personal-note">
-                    "A NAS is fine for previous semesters, but is a toy compared, let's say to a SAN, if you want to show something better, build a SAN."  - First mentor feedback
+                    "A NAS is fine for previous semesters, but is a toy compared, let's say to a SAN, if you want to show something better, build a SAN." - First mentor feedback
                 </div>
                 <p>
                     <strong>The Challenge:</strong> How can I design, implement, and validate a functional SAN using only hardware I have at home, while proving its superiority over NAS in performance?
@@ -296,7 +322,7 @@
 
             <section id="hardware">
                 <h2>02. Hardware Stack</h2>
-                <p>The environment was built to simulate a realistic "zero-cost" enterprise scenario, utilizing devices I already owned.</p>
+                [cite_start]<p>The environment was built to simulate a realistic "zero-cost" enterprise scenario, utilizing devices I already owned[cite: 39, 41, 46].</p>
                 <table>
                     <thead>
                         <tr>
@@ -329,7 +355,7 @@
                     </tbody>
                 </table>
                 <figure>
-                    <img src="topology.png" alt="Network Topology Diagram">
+                    
                     <figcaption>Figure 1: Network Topology with VLAN isolation</figcaption>
                 </figure>
             </section>
@@ -337,18 +363,20 @@
             <section id="setup">
                 <h2>03. The Setup: Getting a Clean Start</h2>
                 <p>
-                    I started by restoring my Intel NUC to factory defaults. It had been used as a home lab before, but I needed to start from zero to document the process accurately.
+                    I started by restoring my Intel NUC to factory defaults. [cite_start]It had been used as a home lab before, but I needed to start from zero to document the process accurately[cite: 185].
                 </p>
                 <h3>Hardware Upgrade</h3>
                 <p>
-                    I swapped my old Linksys switch for a <strong>Netgear GS105E</strong>. This was crucial because it supports 802.1Q VLAN tagging, which allows me to segment the network properly later.
+                    I swapped my old Linksys switch for a <strong>Netgear GS105E</strong>. [cite_start]This was crucial because it supports 802.1Q VLAN tagging, which allows me to segment the network properly later[cite: 188].
                 </p>
                 <h3>Fresh Install & Mounting</h3>
                 <p>
-                    I installed <strong>Ubuntu Server 24.04.3 LTS</strong> via a bootable USB created with Rufus. During installation, I set the static IP to <code>192.168.2.200</code>. After booting, I plugged in the 1TB drive.
+                    [cite_start]I installed <strong>Ubuntu Server 24.04.3 LTS</strong> via a bootable USB created with Rufus[cite: 191]. [cite_start]During installation, I set the static IP to <code>192.168.2.200</code>[cite: 194]. [cite_start]After booting, I plugged in the 1TB drive[cite: 196].
                 </p>
+                
                 <div class="code-wrapper">
-                    <div class="code-header"><span>BASH TERMINAL</span> <button class="copy-btn" onclick="copy(this)">COPY</button></div>
+                    <div class="code-lang">BASH</div>
+                    <button class="copy-btn" onclick="copy(this)">COPY</button>
 <pre><code># 1. Wipe the old NTFS partition
 sudo mkfs.ext4 -F /dev/sda
 
@@ -365,10 +393,12 @@ echo "UUID=2e35... /san ext4 defaults 0 2" | sudo tee -a /etc/fstab</code></pre>
             <section id="iscsi">
                 <h2>04. iSCSI Implementation</h2>
                 <p>
-                    I utilized the Linux-IO (LIO) stack via <code>targetcli-fb</code>. Instead of passing the whole physical disk, I created a 100GB file-backed LUN. This mimics a virtual disk.
+                    [cite_start]I utilized the Linux-IO (LIO) stack via <code>targetcli-fb</code>[cite: 209]. Instead of passing the whole physical disk, I created a 100GB file-backed LUN. [cite_start]This mimics a virtual disk[cite: 214].
                 </p>
+                
                 <div class="code-wrapper">
-                    <div class="code-header"><span>TARGETCLI CONFIG</span> <button class="copy-btn" onclick="copy(this)">COPY</button></div>
+                    <div class="code-lang">TARGETCLI</div>
+                    <button class="copy-btn" onclick="copy(this)">COPY</button>
 <pre><code>sudo targetcli
 
 # Create the Backstore (The Virtual Disk)
@@ -380,28 +410,36 @@ echo "UUID=2e35... /san ext4 defaults 0 2" | sudo tee -a /etc/fstab</code></pre>
 # Map the LUN to the Target
 /iscsi/iqn.2025-11.nl.fontys:san/tpg1/luns create /backstores/fileio/lun0</code></pre>
                 </div>
+
+                <figure>
+                    
+                    <figcaption>Figure 6: Verifying LUN creation in targetcli</figcaption>
+                </figure>
+
                 <div class="personal-note">
-                    <strong>Safety Tip:</strong> I created snapshots using `dd` before configuring the target. This allowed me to rollback instantly if I broke the configuration.
+                    <strong>Safety Tip:</strong> I created snapshots using `dd` before configuring the target. [cite_start]This allowed me to rollback instantly if I broke the configuration[cite: 221].
                 </div>
             </section>
 
             <section id="chap">
                 <h2>05. The CHAP Drama</h2>
                 <p>
-                    This was the hardest part of the implementation. Enterprise storage requires authentication, so I attempted to enable <strong>Mutual CHAP</strong> (where both client and server verify each other).
+                    This was the hardest part of the implementation. [cite_start]Enterprise storage requires authentication, so I attempted to enable <strong>Mutual CHAP</strong> (where both client and server verify each other)[cite: 226].
                 </p>
                 <p>
                     <strong>The Failure:</strong> My initial attempts failed. Windows 11 refused to connect. I discovered two issues:
                 </p>
                 <ol>
-                    <li>My password was 21 characters long (too long for some initiators).</li>
-                    <li>Windows 11 has a known bug with Mutual CHAP in the Microsoft Initiator.</li>
+                    [cite_start]<li>My password was 21 characters long (too long for some initiators)[cite: 177].</li>
+                    [cite_start]<li>Windows 11 has a known bug with Mutual CHAP in the Microsoft Initiator[cite: 268].</li>
                 </ol>
                 <p>
-                    <strong>The Fix:</strong> I switched to <strong>Unidirectional CHAP</strong> and shortened the password to 12 characters.
+                    [cite_start]<strong>The Fix:</strong> I switched to <strong>Unidirectional CHAP</strong> and shortened the password to 12 characters [cite: 270-271].
                 </p>
+                
                 <div class="code-wrapper">
-                    <div class="code-header"><span>TARGETCLI SECURITY FIX</span> <button class="copy-btn" onclick="copy(this)">COPY</button></div>
+                    <div class="code-lang">CONFIG</div>
+                    <button class="copy-btn" onclick="copy(this)">COPY</button>
 <pre><code># Create ACL for the laptop
 /iscsi/.../tpg1/acls create iqn.1991-05.com.microsoft:kevin-s-lap
 
@@ -411,28 +449,36 @@ set auth userid=kevin password=KevinPass123
 set auth mutual_userid= disabled</code></pre>
                 </div>
                 <p>
-                    Once this was applied, I connected via the Windows GUI Initiator. The 100GB LUN appeared as "Disk 1" in Disk Management. I initialized it as GPT and formatted it as NTFS (Volume Label: <code>SAN-100GB</code>).
+                    Once this was applied, I connected via the Windows GUI Initiator. The 100GB LUN appeared as "Disk 1" in Disk Management. [cite_start]I initialized it as GPT and formatted it as NTFS (Volume Label: <code>SAN-100GB</code>) [cite: 251-257].
                 </p>
+                <figure>
+                    
+                    <figcaption>Figure 15: Windows formatting the 100GB iSCSI LUN as S: Drive</figcaption>
+                </figure>
             </section>
 
             <section id="vlan">
                 <h2>06. VLAN Security</h2>
                 <p>
-                    Authentication isn't enough. I needed network isolation. I accessed the Netgear switch interface (found at <code>192.168.2.4</code>) and configured <strong>802.1Q Advanced VLANs</strong>.
+                    Authentication isn't enough. I needed network isolation. [cite_start]I accessed the Netgear switch interface (found at <code>192.168.2.4</code>) and configured <strong>802.1Q Advanced VLANs</strong>[cite: 325, 333].
                 </p>
                 <ul>
-                    <li><strong>VLAN 1 (Home):</strong> Ports 1 & 5 (Router Uplink).</li>
-                    <li><strong>VLAN 10 (SAN Fabric):</strong> Ports 2, 3, 4 (NUC & Laptops).</li>
+                    [cite_start]<li><strong>VLAN 1 (Home):</strong> Ports 1 & 5 (Router Uplink)[cite: 328].</li>
+                    [cite_start]<li><strong>VLAN 10 (SAN Fabric):</strong> Ports 2, 3, 4 (NUC & Laptops)[cite: 328].</li>
                 </ul>
+                <figure>
+                    
+                    <figcaption>Figure 22: Configuring VLAN 10 on the Netgear GS105E</figcaption>
+                </figure>
                 <p>
-                    <strong>Result:</strong> When my laptop is on Wi-Fi, the SAN IP <code>192.168.2.200</code> is unreachable. It only becomes visible when physically plugged into ports 2-4. This effectively "air-gaps" the storage traffic from the home network.
+                    <strong>Result:</strong> When my laptop is on Wi-Fi, the SAN IP <code>192.168.2.200</code> is unreachable. It only becomes visible when physically plugged into ports 2-4. [cite_start]This effectively "air-gaps" the storage traffic from the home network[cite: 353].
                 </p>
             </section>
 
             <section id="benchmarks">
                 <h2>07. Performance Benchmarks</h2>
                 <p>
-                    I ran <strong>CrystalDiskMark 9.0.1</strong> (4GiB test file, 5 runs) to compare the iSCSI SAN against a temporary SMB (NAS) share I set up on the same NUC.
+                    [cite_start]I ran <strong>CrystalDiskMark 9.0.1</strong> (4GiB test file, 5 runs) to compare the iSCSI SAN against a temporary SMB (NAS) share I set up on the same NUC[cite: 276, 279].
                 </p>
                 <table>
                     <thead>
@@ -448,24 +494,24 @@ set auth mutual_userid= disabled</code></pre>
                             <td>Seq. Read (Q8T1)</td>
                             <td>117.41 MB/s</td>
                             <td>117.52 MB/s</td>
-                            <td><strong>Tie:</strong> Both saturated the Gigabit Ethernet link.</td>
+                            [cite_start]<td><strong>Tie:</strong> Both saturated the Gigabit Ethernet link[cite: 289].</td>
                         </tr>
                         <tr>
                             <td>Random Read (4K)</td>
                             <td><strong>101.51 MB/s</strong></td>
                             <td>11.25 MB/s</td>
-                            <td><strong>SAN Wins (~9x):</strong> Massive advantage for VM booting.</td>
+                            [cite_start]<td><strong>SAN Wins (~9x):</strong> Massive advantage for VM booting[cite: 291].</td>
                         </tr>
                         <tr>
                             <td>Random Write</td>
                             <td>0.16 MB/s</td>
                             <td>9.05 MB/s</td>
-                            <td><strong>HDD Bottleneck:</strong> The USB translation layer struggled with small block writes.</td>
+                            [cite_start]<td><strong>HDD Bottleneck:</strong> The USB translation layer struggled with small block writes[cite: 305].</td>
                         </tr>
                     </tbody>
                 </table>
                 <figure>
-                    <img src="benchmarks.png" alt="Benchmark Results Comparison">
+                    
                     <figcaption>Figure 19 & 20: CrystalDiskMark Results Comparison</figcaption>
                 </figure>
             </section>
@@ -473,10 +519,12 @@ set auth mutual_userid= disabled</code></pre>
             <section id="future">
                 <h2>08. Future Steps: ESP32 Ingestion</h2>
                 <p>
-                    To prepare for the next phase (IoT), I created a dedicated directory on the SAN. An ESP32-C3 will eventually log temperature data here via an MQTT broker running on the NUC.
+                    To prepare for the next phase (IoT), I created a dedicated directory on the SAN. [cite_start]An ESP32-C3 will eventually log temperature data here via an MQTT broker running on the NUC[cite: 354].
                 </p>
+                
                 <div class="code-wrapper">
-                    <div class="code-header"><span>BASH</span> <button class="copy-btn" onclick="copy(this)">COPY</button></div>
+                    <div class="code-lang">BASH</div>
+                    <button class="copy-btn" onclick="copy(this)">COPY</button>
 <pre><code>sudo mkdir /san/esp32_data
 sudo chown nobody:nogroup /san/esp32_data</code></pre>
                 </div>
@@ -493,7 +541,6 @@ sudo chown nobody:nogroup /san/esp32_data</code></pre>
     </div>
 
     <script>
-        // --- 1. Typewriter Effect ---
         const text = "Project Zero-Cost: Enterprise iSCSI SAN";
         const typeEl = document.getElementById('typewriter');
         let i = 0;
@@ -506,14 +553,11 @@ sudo chown nobody:nogroup /san/esp32_data</code></pre>
         }
         window.onload = typeWriter;
 
-        // --- 2. Dark Mode ---
         const toggle = document.getElementById('themeToggle');
         const html = document.documentElement;
-        
         if (localStorage.getItem('theme') === 'dark') {
             html.setAttribute('data-theme', 'dark');
         }
-
         toggle.addEventListener('click', () => {
             const current = html.getAttribute('data-theme');
             const next = current === 'dark' ? 'light' : 'dark';
@@ -521,10 +565,8 @@ sudo chown nobody:nogroup /san/esp32_data</code></pre>
             localStorage.setItem('theme', next);
         });
 
-        // --- 3. Nav Highlight ---
         const sections = document.querySelectorAll('section');
         const navLinks = document.querySelectorAll('.nav-links a');
-
         window.addEventListener('scroll', () => {
             let current = '';
             sections.forEach(section => {
@@ -541,6 +583,13 @@ sudo chown nobody:nogroup /san/esp32_data</code></pre>
             });
         });
 
+        function copy(btn) {
+            const code = btn.nextElementSibling.innerText;
+            navigator.clipboard.writeText(code);
+            const original = btn.innerText;
+            btn.innerText = "COPIED";
+            setTimeout(() => btn.innerText = original, 2000);
+        }
     </script>
 </body>
 </html>
