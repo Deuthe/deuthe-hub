@@ -8,7 +8,7 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
     <style>
         /* --- CSS VARIABLES --- */
@@ -17,10 +17,10 @@
             --fg: #111111;
             --surface: #f4f4f5;
             --border: #e4e4e7;
-            --accent: #0047FF; /* International Klein Blue */
+            --accent: #0047FF; /* Enterprise Blue */
             --code-bg: #1a1b26;
             --code-fg: #a9b1d6;
-            --nav-width: 260px;
+            --sidebar-width: 280px;
             --toc-width: 240px;
             --font-sans: 'Inter', sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
@@ -28,7 +28,7 @@
 
         [data-theme="dark"] {
             --bg: #09090b;
-            --fg: #fafafa;
+            --fg: #ededed;
             --surface: #18181b;
             --border: #27272a;
             --accent: #3b82f6;
@@ -43,116 +43,101 @@
             font-family: var(--font-sans);
             line-height: 1.7;
             font-size: 16px;
-            overflow-x: hidden;
-        }
-
-        a { text-decoration: none; color: var(--accent); font-weight: 500; transition: 0.2s; }
-        a:hover { text-decoration: underline; }
-
-        /* --- LAYOUT GRID --- */
-        .layout {
-            display: grid;
-            grid-template-columns: var(--nav-width) 1fr var(--toc-width);
+            display: flex;
             min-height: 100vh;
+            transition: background 0.3s, color 0.3s;
         }
 
-        /* --- SIDEBAR NAVIGATION (LEFT) --- */
+        a { text-decoration: none; color: var(--fg); transition: 0.2s; }
+        a:hover { color: var(--accent); }
+        
+        /* --- LEFT SIDEBAR (The Design You Liked) --- */
         .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
             position: sticky;
             top: 0;
-            height: 100vh;
             border-right: 1px solid var(--border);
-            padding: 2rem 1.5rem;
+            padding: 2rem;
             display: flex;
             flex-direction: column;
             background: var(--bg);
             overflow-y: auto;
+            flex-shrink: 0;
         }
 
         .brand {
             font-family: var(--font-mono);
             font-weight: 800;
-            font-size: 1rem;
+            font-size: 0.9rem;
             letter-spacing: -0.03em;
-            margin-bottom: 2rem;
+            margin-bottom: 3rem;
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        .nav-links {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .nav-links a {
+        .nav-group { margin-bottom: 2.5rem; }
+        .nav-header {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            text-transform: uppercase;
             color: var(--fg);
-            opacity: 0.6;
-            font-size: 0.9rem;
-            padding: 0.5rem;
-            border-radius: 4px;
-            transition: all 0.2s;
+            opacity: 0.5;
+            margin-bottom: 1rem;
+            letter-spacing: 0.1em;
+            font-weight: 700;
         }
 
+        .nav-links { list-style: none; }
+        .nav-links li { margin-bottom: 0.5rem; }
+        .nav-links a {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--fg);
+            opacity: 0.7;
+            padding: 4px 0;
+            border-left: 2px solid transparent;
+            padding-left: 10px;
+            margin-left: -12px;
+        }
         .nav-links a:hover, .nav-links a.active {
-            background: var(--surface);
             opacity: 1;
             color: var(--accent);
-            transform: translateX(5px);
+            border-left-color: var(--accent);
         }
 
         .theme-toggle {
             margin-top: auto;
-            padding-top: 1rem;
-            border-top: 1px solid var(--border);
             cursor: pointer;
-            font-size: 0.85rem;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            opacity: 0.6;
             display: flex;
             align-items: center;
             gap: 10px;
-            opacity: 0.7;
         }
 
-        /* --- MAIN CONTENT (CENTER) --- */
+        /* --- MAIN CONTENT AREA --- */
+        .content-wrapper {
+            flex: 1;
+            display: flex;
+            justify-content: center; /* Centers the text column */
+        }
+
         main {
-            padding: 4rem 4rem 8rem 4rem;
-            border-right: 1px solid var(--border);
-            max-width: 100%;
+            width: 100%;
+            max-width: 850px; /* Optimal reading width */
+            padding: 5rem 4rem 8rem 4rem;
         }
 
-        h1 { font-size: 3rem; letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 1rem; }
-        h2 { font-size: 2rem; margin: 4rem 0 1.5rem 0; letter-spacing: -0.03em; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
-        h3 { font-size: 1.3rem; margin: 2.5rem 0 1rem 0; font-weight: 600; }
-        p { margin-bottom: 1.5rem; max-width: 70ch; color: var(--fg); opacity: 0.9; }
+        /* --- TYPOGRAPHY & ELEMENTS --- */
+        h1 { font-size: 2.5rem; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 1.5rem; font-weight: 700; }
+        h2 { font-size: 1.75rem; margin: 4rem 0 1.5rem 0; letter-spacing: -0.02em; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
+        h3 { font-size: 1.25rem; margin: 2rem 0 1rem 0; font-weight: 600; }
+        p { margin-bottom: 1.5rem; opacity: 0.9; }
 
-        /* --- TABLE OF CONTENTS (RIGHT) --- */
-        .toc {
-            position: sticky;
-            top: 0;
-            height: 100vh;
-            padding: 4rem 1.5rem;
-            font-size: 0.85rem;
-        }
-        
-        .toc h4 { text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.1em; margin-bottom: 1rem; opacity: 0.5; }
-        .toc ul { list-style: none; border-left: 1px solid var(--border); }
-        .toc li a {
-            display: block;
-            padding: 0.4rem 0 0.4rem 1.5rem;
-            color: var(--fg);
-            opacity: 0.5;
-            border-left: 2px solid transparent;
-            margin-left: -1px;
-        }
-        .toc li a.active {
-            border-left-color: var(--accent);
-            opacity: 1;
-            color: var(--accent);
-        }
-
-        /* --- COMPONENTS --- */
+        /* Status Badges */
         .status-badge {
             display: inline-block;
             padding: 4px 10px;
@@ -161,32 +146,34 @@
             font-weight: 700;
             text-transform: uppercase;
             margin-right: 10px;
+            font-family: var(--font-mono);
         }
         .status-success { background: #dcfce7; color: #166534; }
         .status-neutral { background: #f3f4f6; color: #374151; }
         [data-theme="dark"] .status-success { background: #064e3b; color: #6ee7b7; }
-        [data-theme="dark"] .status-neutral { background: #374151; color: #f3f4f6; }
+        [data-theme="dark"] .status-neutral { background: #374151; color: #e5e7eb; }
 
         /* Code Blocks */
         .code-wrapper {
-            position: relative;
             margin: 2rem 0;
             border-radius: 8px;
             overflow: hidden;
             border: 1px solid var(--border);
+            background: var(--code-bg);
         }
         .code-header {
             background: #16161e;
             color: #7aa2f7;
-            padding: 0.5rem 1rem;
+            padding: 0.6rem 1rem;
             font-family: var(--font-mono);
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border-bottom: 1px solid #2d2d2d;
+            text-transform: uppercase;
         }
         pre {
-            background: var(--code-bg);
             color: var(--code-fg);
             padding: 1.5rem;
             overflow-x: auto;
@@ -194,30 +181,33 @@
             font-size: 0.9rem;
         }
         .copy-btn {
-            background: transparent; border: none; color: white; cursor: pointer; font-size: 0.7rem; opacity: 0.7;
+            background: transparent; border: none; color: white; cursor: pointer; font-size: 0.7rem; opacity: 0.7; font-family: var(--font-mono);
         }
+        .copy-btn:hover { opacity: 1; }
 
         /* Tables */
         table {
             width: 100%;
             border-collapse: collapse;
             margin: 2rem 0;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             border: 1px solid var(--border);
         }
         th, td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--border); }
         th { background: var(--surface); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; }
         
         /* Images */
-        figure { margin: 3rem 0; }
-        img { width: 100%; border-radius: 8px; border: 1px solid var(--border); cursor: zoom-in; }
+        figure { margin: 3rem 0; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+        img { width: 100%; display: block; cursor: zoom-in; }
         figcaption {
-            margin-top: 0.5rem;
-            font-size: 0.85rem;
+            padding: 0.8rem;
+            font-size: 0.8rem;
             color: var(--fg);
             opacity: 0.6;
             font-family: var(--font-mono);
             text-align: center;
+            background: var(--surface);
+            border-top: 1px solid var(--border);
         }
 
         /* Personal Note Box */
@@ -228,46 +218,65 @@
             font-size: 0.95rem;
             margin: 2rem 0;
             font-style: italic;
+            border-radius: 0 4px 4px 0;
         }
 
         /* --- RESPONSIVE --- */
-        @media (max-width: 1024px) {
-            .layout { grid-template-columns: 1fr; }
-            .sidebar, .toc { display: none; }
-            main { padding: 2rem; border: none; }
+        @media (max-width: 1000px) {
+            body { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; position: relative; border-right: none; border-bottom: 1px solid var(--border); padding: 1.5rem; }
+            .content-wrapper { display: block; }
+            main { padding: 3rem 2rem; }
         }
     </style>
 </head>
 <body>
 
-    <div class="layout">
-        <nav class="sidebar">
-            <div class="brand">
-                KEVIN_GUZMAN // SAN
-            </div>
+    <nav class="sidebar">
+        <div class="brand">
+            KEVIN_GUZMAN // SAN_PROJECT
+        </div>
+        
+        <div class="nav-group">
+            <div class="nav-header">Overview</div>
             <ul class="nav-links">
-                <li><a href="#intro">01. Context & Problem</a></li>
+                <li><a href="#intro" class="active">01. Context & Problem</a></li>
                 <li><a href="#hardware">02. Hardware Stack</a></li>
+            </ul>
+        </div>
+
+        <div class="nav-group">
+            <div class="nav-header">Implementation Log</div>
+            <ul class="nav-links">
                 <li><a href="#setup">03. The Setup (Clean Start)</a></li>
                 <li><a href="#iscsi">04. iSCSI Implementation</a></li>
-                <li><a href="#security">05. The CHAP Drama</a></li>
+                <li><a href="#chap">05. The CHAP Drama</a></li>
+            </ul>
+        </div>
+
+        <div class="nav-group">
+            <div class="nav-header">Validation</div>
+            <ul class="nav-links">
                 <li><a href="#vlan">06. VLAN Security</a></li>
                 <li><a href="#benchmarks">07. Benchmarks</a></li>
                 <li><a href="#future">08. Future Steps</a></li>
             </ul>
-            <div class="theme-toggle" id="themeToggle">
-                <span>◐ Toggle Theme</span>
-            </div>
-        </nav>
+        </div>
 
+        <div class="theme-toggle" id="themeToggle">
+            <span style="font-size: 1.2rem; margin-right: 8px;">◐</span> Toggle Theme
+        </div>
+    </nav>
+
+    <div class="content-wrapper">
         <main>
             <header style="margin-bottom: 4rem;">
-                <div style="margin-bottom: 1rem;">
-                    <span class="status-badge status-success">Project Complete</span>
+                <div style="margin-bottom: 1.5rem; font-family: var(--font-mono); font-size: 0.8rem;">
+                    <span class="status-badge status-success">Status: Operational</span>
                     <span class="status-badge status-neutral">Budget: €0.00</span>
                 </div>
                 <h1 id="typewriter"></h1>
-                <p style="font-size: 1.2rem; opacity: 0.7;">
+                <p style="font-size: 1.2rem; opacity: 0.7; max-width: 600px;">
                     Designing, implementing, and evaluating a functional Storage Area Network (SAN) using consumer-grade hardware and open-source tools.
                 </p>
             </header>
@@ -287,7 +296,7 @@
 
             <section id="hardware">
                 <h2>02. Hardware Stack</h2>
-                <p>The environment was built to simulate a realistic "zero-cost" enterprise scenario.</p>
+                <p>The environment was built to simulate a realistic "zero-cost" enterprise scenario, utilizing devices I already owned.</p>
                 <table>
                     <thead>
                         <tr>
@@ -339,7 +348,7 @@
                     I installed <strong>Ubuntu Server 24.04.3 LTS</strong> via a bootable USB created with Rufus. During installation, I set the static IP to <code>192.168.2.200</code>. After booting, I plugged in the 1TB drive.
                 </p>
                 <div class="code-wrapper">
-                    <div class="code-header">BASH</div>
+                    <div class="code-header"><span>BASH TERMINAL</span> <button class="copy-btn" onclick="copy(this)">COPY</button></div>
 <pre><code># 1. Wipe the old NTFS partition
 sudo mkfs.ext4 -F /dev/sda
 
@@ -359,7 +368,7 @@ echo "UUID=2e35... /san ext4 defaults 0 2" | sudo tee -a /etc/fstab</code></pre>
                     I utilized the Linux-IO (LIO) stack via <code>targetcli-fb</code>. Instead of passing the whole physical disk, I created a 100GB file-backed LUN. This mimics a virtual disk.
                 </p>
                 <div class="code-wrapper">
-                    <div class="code-header">TARGETCLI CONFIGURATION</div>
+                    <div class="code-header"><span>TARGETCLI CONFIG</span> <button class="copy-btn" onclick="copy(this)">COPY</button></div>
 <pre><code>sudo targetcli
 
 # Create the Backstore (The Virtual Disk)
@@ -376,7 +385,7 @@ echo "UUID=2e35... /san ext4 defaults 0 2" | sudo tee -a /etc/fstab</code></pre>
                 </div>
             </section>
 
-            <section id="security">
+            <section id="chap">
                 <h2>05. The CHAP Drama</h2>
                 <p>
                     This was the hardest part of the implementation. Enterprise storage requires authentication, so I attempted to enable <strong>Mutual CHAP</strong> (where both client and server verify each other).
@@ -392,7 +401,7 @@ echo "UUID=2e35... /san ext4 defaults 0 2" | sudo tee -a /etc/fstab</code></pre>
                     <strong>The Fix:</strong> I switched to <strong>Unidirectional CHAP</strong> and shortened the password to 12 characters.
                 </p>
                 <div class="code-wrapper">
-                    <div class="code-header">TARGETCLI SECURITY FIX</div>
+                    <div class="code-header"><span>TARGETCLI SECURITY FIX</span> <button class="copy-btn" onclick="copy(this)">COPY</button></div>
 <pre><code># Create ACL for the laptop
 /iscsi/.../tpg1/acls create iqn.1991-05.com.microsoft:kevin-s-lap
 
@@ -456,10 +465,7 @@ set auth mutual_userid= disabled</code></pre>
                     </tbody>
                 </table>
                 <figure>
-                    <div style="display: flex; gap: 10px;">
-                         <img src="bench_san.png" alt="SAN Benchmarks">
-                         <img src="bench_nas.png" alt="NAS Benchmarks">
-                    </div>
+                    <img src="benchmarks.png" alt="Benchmark Results Comparison">
                     <figcaption>Figure 19 & 20: CrystalDiskMark Results Comparison</figcaption>
                 </figure>
             </section>
@@ -470,7 +476,7 @@ set auth mutual_userid= disabled</code></pre>
                     To prepare for the next phase (IoT), I created a dedicated directory on the SAN. An ESP32-C3 will eventually log temperature data here via an MQTT broker running on the NUC.
                 </p>
                 <div class="code-wrapper">
-                    <div class="code-header">BASH</div>
+                    <div class="code-header"><span>BASH</span> <button class="copy-btn" onclick="copy(this)">COPY</button></div>
 <pre><code>sudo mkdir /san/esp32_data
 sudo chown nobody:nogroup /san/esp32_data</code></pre>
                 </div>
@@ -484,20 +490,6 @@ sudo chown nobody:nogroup /san/esp32_data</code></pre>
                 <p>Fontys University of Applied Sciences | November 2025</p>
             </footer>
         </main>
-
-        <aside class="toc">
-            <h4>On This Page</h4>
-            <ul>
-                <li><a href="#intro">01. Context</a></li>
-                <li><a href="#hardware">02. Hardware</a></li>
-                <li><a href="#setup">03. Setup</a></li>
-                <li><a href="#iscsi">04. iSCSI</a></li>
-                <li><a href="#security">05. CHAP Security</a></li>
-                <li><a href="#vlan">06. VLANs</a></li>
-                <li><a href="#benchmarks">07. Benchmarks</a></li>
-                <li><a href="#future">08. Future Steps</a></li>
-            </ul>
-        </aside>
     </div>
 
     <script>
@@ -529,17 +521,26 @@ sudo chown nobody:nogroup /san/esp32_data</code></pre>
             localStorage.setItem('theme', next);
         });
 
-        // --- 3. TOC Highlighter ---
-        const observer = new IntersectionObserver(entries => {
-            entries.forEach(entry => {
-                const id = entry.target.getAttribute('id');
-                if (entry.intersectionRatio > 0) {
-                    document.querySelectorAll('.toc a').forEach(a => a.classList.remove('active'));
-                    document.querySelector(`.toc a[href="#${id}"]`).classList.add('active');
+        // --- 3. Nav Highlight ---
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.nav-links a');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (scrollY >= sectionTop - 150) {
+                    current = section.getAttribute('id');
+                }
+            });
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(current)) {
+                    link.classList.add('active');
                 }
             });
         });
-        document.querySelectorAll('section').forEach(section => observer.observe(section));
+
     </script>
 </body>
 </html>
