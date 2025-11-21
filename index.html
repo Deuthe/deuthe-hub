@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Zero-Cost SAN | Kevin Guzman</title>
+    <title>Personal Project SAN | Kevin Guzman</title>
     <meta name="description" content="Building an Enterprise-Grade iSCSI SAN with Consumer Hardware.">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -28,11 +28,11 @@
         </div>
 
         <div class="nav-group">
-            <div class="nav-header">Implementation Log</div>
+            <div class="nav-header">Implementation Logs</div>
             <ul class="nav-links">
                 <li><a href="#setup">03. The Setup (Clean Start)</a></li>
                 <li><a href="#iscsi">04. iSCSI Implementation</a></li>
-                <li><a href="#chap">05. The CHAP Drama</a></li>
+                <li><a href="#chap">05. Chap Problems & Solutions</a></li>
             </ul>
         </div>
 
@@ -41,7 +41,7 @@
             <ul class="nav-links">
                 <li><a href="#vlan">06. VLAN Security</a></li>
                 <li><a href="#benchmarks">07. Benchmarks</a></li>
-                <li><a href="#future">08. Future Steps</a></li>
+                <li><a href="#future">08. For the Future</a></li>
             </ul>
         </div>
 
@@ -54,8 +54,8 @@
         <main>
             <header style="margin-bottom: 4rem;">
                 <div style="margin-bottom: 1.5rem; font-family: var(--font-mono); font-size: 0.8rem;">
-                    <span class="status-badge status-success">Status: Operational</span>
-                    <span class="status-badge status-neutral">Budget: €0.00</span>
+                    <span class="status-badge status-success">Status: Completed</span>
+                    <span class="status-badge status-neutral">Budget: €30.00</span>
                 </div>
                 <h1 id="typewriter"></h1>
                 <p style="font-size: 1.2rem; opacity: 0.7; max-width: 600px;">
@@ -66,7 +66,7 @@
             <section id="intro">
                 <h2>01. Context & Problem Statement</h2>
                 <p>
-                    During my first project meeting, my mentors explicitly stated that a standard NAS (Network Attached Storage) project would not be sufficiently challenging for Semester 6. A NAS operates at the file level, introducing overhead that makes it suboptimal for enterprise virtualization workloads.
+                    During my first personal project meeting, one of my mentors explicitly stated that a standard NAS (Network Attached Storage) project would not be sufficiently challenging for Semester 6. A NAS operates at the file level, introducing overhead that makes it not optimal for enterprise virtualization workloads.
                 </p>
                 <div class="personal-note">
                     "A NAS is fine for previous semesters, but is a toy compared, let's say to a SAN, if you want to show something better, build a SAN." - First mentor feedback.
@@ -78,7 +78,13 @@
 
             <section id="hardware">
                 <h2>02. Hardware Stack</h2>
-                <p>The environment was built to simulate a realistic "zero-cost" enterprise scenario, utilizing devices I already owned.</p>
+                <p>The environment was built to simulate a realistic "free" enterprise scenario, reutilizing devices I already owned.</p>
+                
+                <figure>
+                    <img src="assets/img/setup.png" alt="The Physical Lab Setup: NUC, Switch, HDD">
+                    <figcaption>Figure 1: The Physical Build (NUC + Netgear Switch + Seagate HDD)</figcaption>
+                </figure>
+
                 <table>
                     <thead>
                         <tr>
@@ -112,18 +118,18 @@
                 </table>
                 <figure>
                     <img src="assets/img/topology.png" alt="Network Topology Diagram">
-                    <figcaption>Figure 1: Network Topology with VLAN isolation.</figcaption>
+                    <figcaption>Figure 2: Network Topology with VLAN isolation.</figcaption>
                 </figure>
             </section>
 
             <section id="setup">
-                <h2>03. The Setup: Getting a Clean Start</h2>
+                <h2>03. The Setup: Starting clean</h2>
                 <p>
                     I started by restoring my Intel NUC to factory defaults. It had been used as a home lab before, but I needed to start from zero to document the process accurately.
                 </p>
                 <h3>Hardware Upgrade</h3>
                 <p>
-                    I swapped my old Linksys switch for a <strong>Netgear GS105E</strong>. This was crucial because it supports 802.1Q VLAN tagging, which allows me to segment the network properly later.
+                    I swapped my old Linksys PoE+ switch for a <strong>Netgear GS105E</strong>. This was beneficial to me because it supports 802.1Q VLAN tagging, which allows me to segment the network properly later.
                 </p>
                 <h3>Fresh Install & Mounting</h3>
                 <p>
@@ -166,7 +172,7 @@ sudo systemctl enable --now target</div>
 
                 <h3>Creating the 100 GB LUN</h3>
                 <p>
-                    After that, we created the 100 GB LUN, that’s where the virtual disk of the SAN will serve the other devices. A LUN is a Logical Unit Number, the block device iSCSI presents.
+                    After that, we have to create the 100 GB LUN, that’s where the virtual disk of the SAN will serve the other devices. A LUN is a Logical Unit Number, the block device the iSCSI presents.
                 </p>
 
                 <div class="step-image-container">
@@ -202,12 +208,12 @@ sudo systemctl enable --now target</div>
                 </div>
 
                 <div class="personal-note">
-                    <strong>Safety Tip:</strong> I created snapshots using `dd` before configuring the target. This allowed me to rollback instantly if I broke the configuration.
+                    <strong>Safety Tip:</strong> I created snapshots using `sudo dd if=/dev/zero of=/san/snap_clean.img bs=1G count=0 seek=100` before configuring the target. This allowed me to rollback instantly if I broke the configuration.
                 </div>
             </section>
 
             <section id="chap">
-                <h2>05. The CHAP Drama</h2>
+                <h2>05. Chap Problems & Solutions</h2>
                 <p>
                     This was the hardest part of the implementation. Enterprise storage requires authentication, so I attempted to enable <strong>Mutual CHAP</strong> (where both client and server verify each other).
                 </p>
@@ -228,7 +234,7 @@ sudo systemctl enable --now target</div>
                 </div>
 
                 <div class="personal-note">
-                    <strong>Prerequisite:</strong> Before creating the ACL, I had to find the correct IQN for my Windows machine. I pressed <code>Win + R</code>, typed <code>iscsicpl</code>, and checked the <strong>Configuration</strong> tab to copy the exact Initiator Name.
+                    <strong>Prerequisite:</strong> Before creating the ACL, we have to find the correct IQN for the Windows machine. Press <code>Win + R</code>, type <code>iscsicpl</code>, and check the <strong>Configuration</strong> tab to copy the exact Initiator Name.
                 </div>
 
                 <div class="step-image-container">
@@ -244,9 +250,9 @@ sudo systemctl enable --now target</div>
                     <img src="assets/img/unidirectionchap.png" class="step-img" alt="Setting Unidirectional CHAP in targetcli">
                 </div>
 
-                <h3>Phase 2: Connecting the Windows Client</h3>
+                <h3>Phase 2: Connect the Windows Client</h3>
                 <p>
-                    With the Target ready, I went back to the iSCSI Initiator (`iscsicpl`). I navigated to the <strong>Discovery</strong> tab, clicked <strong>Discover Portal</strong>, and added the IP address of the NUC (`192.168.2.200`) while leaving the port as default.
+                    With the Target ready, I went back to the iSCSI Initiator (`iscsicpl`). I navigated to the <strong>Discovery</strong> tab, clicked <strong>Discover Portal</strong>, and added the IP address of the NUC (`192.168.2.200`) leaving the port as default.
                 </p>
 
                 <div class="step-image-container">
@@ -291,11 +297,11 @@ sudo systemctl enable --now target</div>
             <section id="vlan">
                 <h2>06. VLAN Security</h2>
                 <p>
-                    Authentication isn't enough. I needed network isolation. I accessed the Netgear switch interface (found at <code>192.168.2.4</code>) and configured <strong>802.1Q Advanced VLANs</strong>.
+                    Authentication was not enough for me. I wanted to add a network isolation. I accessed the Netgear switch interface (found at <code>192.168.2.4</code>) and configured <strong>802.1Q Advanced VLANs</strong>.
                 </p>
                 <ul>
                     <li><strong>VLAN 1 (Home):</strong> Ports 1 & 5 (Router Uplink).</li>
-                    <li><strong>VLAN 10 (SAN Fabric):</strong> Ports 2, 3, 4 (NUC & Laptops).</li>
+                    <li><strong>VLAN 10 (SAN):</strong> Ports 2, 3, 4 (NUC & Laptops).</li>
                 </ul>
 
                 <div class="step-image-container">
@@ -318,9 +324,9 @@ sudo systemctl enable --now target</div>
             </section>
 
             <section id="benchmarks">
-                <h2>07. Performance Benchmarks</h2>
+                <h2>07. Benchmarks</h2>
                 <p>
-                    I ran <strong>CrystalDiskMark 9.0.1</strong> (4GiB test file, 5 runs) to compare the iSCSI SAN against a temporary SMB (NAS) share I set up on the same NUC.
+                    I ran <strong>CrystalDiskMark 9.0.1</strong> (4GiB test file, 5 runs) to compare the iSCSI SAN against a traditional NAS setup running on a <strong>separate NUC</strong> with an <strong>internal SATA HDD</strong>.
                 </p>
                 
                 <div class="benchmark-grid">
@@ -367,25 +373,33 @@ sudo systemctl enable --now target</div>
 
                 <h3>Detailed Analysis</h3>
                 <p>
-                    The NAS looks better on the sequential write because it uses internal SATA; on the USB HDD (used for the SAN), there is a translation layer which makes the sequential write of the HDD slower.
+                    The NAS looks better on the sequential write because it uses internal SATA. On the USB HDD (used for the SAN), there is a translation layer which makes the sequential write of the HDD slower.
                 </p>
                 <p>
-                    However, the <strong>random read is 9 times faster</strong> on the SAN. That’s the block-level advantage: Windows can optimize I/O way better with iSCSI than with SMB/NFS, making it far superior for latency-sensitive workloads like virtualization.
+                    The good thing is, the <strong>random read is 9 times faster</strong> on the SAN. That’s the block-level advantage: Windows can optimize I/O way better with iSCSI than with SMB/NFS, making it far superior for latency sensitive workloads like virtualization in Proxmox, Hyper-v or VMware
                 </p>
             </section>
 
             <section id="future">
-                <h2>08. Future Steps: ESP32 Ingestion</h2>
+                <h2>08. Future Roadmap</h2>
                 <p>
-                    To prepare for the next phase (IoT), I created a dedicated directory on the SAN. An ESP32-C3 will eventually log temperature data here via an MQTT broker running on the NUC.
+                    The current implementation is functional and secure for Windows clients. But, to fully validate the SAN's versatility as an enterprise solution, the following steps are planned as a private continuation of this project.:
                 </p>
                 
-                <div class="command-text">sudo mkdir /san/esp32_data
-sudo chown nobody:nogroup /san/esp32_data</div>
+                <div class="command-text"># Planned Improvements:
 
-                <p>
-                    The SAN is now fully operational, secure, and ready for data ingestion.
-                </p>
+1. Linux Client Verification:
+   - Configure 'open-iscsi' initiator on Ubuntu.
+   - Perform comparative benchmarks (EXT4/XFS over iSCSI).
+
+2. IoT Integration:
+   - Finalize the ESP32 MQTT data ingestion pipeline.
+   - Log sensor data directly to the SAN volume.
+
+3. Advanced Virtualization: For a medium/large home lab setup.
+   - Use the SAN as shared storage for a Proxmox Cluster.
+   - Test High Availability (HA) and VM Live Migration.</div>
+
             </section>
 
             <footer style="margin-top: 5rem; padding-top: 2rem; border-top: 1px solid var(--border); font-size: 0.9rem; opacity: 0.6;">

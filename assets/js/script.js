@@ -1,5 +1,5 @@
 // 1. Typewriter Effect
-const text = "Project Zero-Cost: Enterprise iSCSI SAN";
+const text = "Building a Personal iSCSI SAN with Consumer Hardware";
 const typeEl = document.getElementById('typewriter');
 let i = 0;
 
