@@ -33,15 +33,16 @@
                 <li><a href="#setup">03. The Setup (Clean Start)</a></li>
                 <li><a href="#iscsi">04. iSCSI Implementation</a></li>
                 <li><a href="#chap">05. Chap Problems & Solutions</a></li>
+                <li><a href="#enterprise-comparison">06. From Homelab to Enterprise</a></li>
             </ul>
         </div>
 
         <div class="nav-group">
             <div class="nav-header">Validation</div>
             <ul class="nav-links">
-                <li><a href="#vlan">06. VLAN Security</a></li>
-                <li><a href="#benchmarks">07. Benchmarks</a></li>
-                <li><a href="#future">08. For the Future</a></li>
+                <li><a href="#vlan">07. VLAN Security</a></li>
+                <li><a href="#benchmarks">08. Benchmarks</a></li>
+                <li><a href="#future">09. For the Future</a></li>
             </ul>
         </div>
 
@@ -295,8 +296,86 @@ sudo systemctl enable --now target</div>
                 </div>
             </section>
 
+            <section id="enterprise-comparison">
+                <h2>06. From Homelab to Enterprise</h2>
+                <p>
+                    While this project successfully creates a functional SAN with consumer hardware, it's important to understand how it differs from a true enterprise-grade solution. This section analyzes the gap between our homelab setup and a production data center environment.
+                </p>
+
+                <h3>Business Goals of a SAN</h3>
+                <p>An enterprise SAN aims to achieve several key business objectives, which this project simulates:</p>
+                <ul>
+                    <li><strong>High Availability:</strong> Ensuring data is always accessible with minimal downtime. Our block-level access helps, but the single hardware node is a bottleneck.</li>
+                    <li><strong>Disaster Recovery:</strong> Protecting against data loss. We've used software-level snapshots and backups.</li>
+                    <li><strong>High-Performance Storage:</strong> Delivering fast, low-latency access for demanding applications like virtual machines and databases.</li>
+                    <li><strong>Secure Traffic:</strong> Isolating storage data from the general network to maintain integrity, which we achieved with VLANs.</li>
+                </ul>
+
+                <h3>Gap Analysis: Homelab vs. Enterprise</h3>
+                <p>
+                    Here’s a comparison of our project's components against enterprise standards, highlighting the key differences and how to close them.
+                </p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Component</th>
+                            <th>Our Homelab Setup (Baseline)</th>
+                            <th>Enterprise Standard (Target)</th>
+                            <th>The Gap & How to Bridge It</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Storage Media</strong></td>
+                            <td>External USB 3.0 Hard Drive</td>
+                            <td>Internal SAS or NVMe SSD Array</td>
+                            <td><strong>Gap:</strong> Our USB drive has a significant write bottleneck (around 9 MB/s).<br><strong>Solution:</strong> Use internal SSDs for much faster performance.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Compute/Target</strong></td>
+                            <td>Single Intel NUC (i5, 8GB RAM)</td>
+                            <td>High-Availability (HA) Cluster</td>
+                            <td><strong>Gap:</strong> Our single NUC is a single point of failure.<br><strong>Solution:</strong> Use a dual-controller setup where a second machine can take over instantly if the first one fails.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Network Fabric</strong></td>
+                            <td>1 Gigabit Ethernet</td>
+                            <td>10/25 Gigabit Ethernet or Fibre Channel</td>
+                            <td><strong>Gap:</strong> Our network maxes out at around 117 MB/s.<br><strong>Solution:</strong> Upgrade to a 10GbE network for significantly higher throughput.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Security</strong></td>
+                            <td>Unidirectional CHAP</td>
+                            <td>Mutual CHAP + IPsec Encryption</td>
+                            <td><strong>Gap:</strong> Windows 11's iSCSI tool has limitations. <br><strong>Solution:</strong> Use Linux clients, which fully support Mutual CHAP for better security.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Redundancy</strong></td>
+                            <td>Single Disk (No hardware redundancy)</td>
+                            <td>Hardware RAID 10</td>
+                            <td><strong>Gap:</strong> If our single disk fails, all data is lost.<br><strong>Solution:</strong> Use a RAID 10 array, which mirrors and stripes data across multiple disks for both speed and protection against disk failure.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>User Capacity</strong></td>
+                            <td>Designed for a single user or a very small number of simultaneous connections.</td>
+                            <td>Can support hundreds or even thousands of simultaneous users.</td>
+                            <td><strong>Gap:</strong> Our setup lacks the I/O operations per second (IOPS) and network bandwidth to handle multiple users.<br><strong>Solution:</strong> Enterprise SANs use powerful controllers, more RAM, and faster networking to manage a high number of concurrent I/O requests.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Why These Enterprise Standards Matter</h3>
+                <ul>
+                    <li><strong>Dual-Port SSDs & Active-Active Controllers:</strong> Enterprise systems use special SAS drives that can be accessed by two controllers at the same time. This, combined with an "Active-Active" controller setup, eliminates any single point of failure, ensuring the storage is always online.</li>
+                    <li><strong>10GbE+ Networking:</strong> As our benchmarks showed, a 1GbE link is easily saturated. High-performance storage requires a faster network to prevent bottlenecks.</li>
+                    <li><strong>Mutual CHAP:</strong> This two-way authentication is critical in enterprise environments to prevent unauthorized devices from pretending to be a legitimate storage target.</li>
+                    <li><strong>Hardware RAID 10:</strong> For applications that need high I/O performance and strong data protection (like databases or email servers), RAID 10 is a popular choice. It provides excellent speed and can withstand disk failures without data loss.</li>
+                </ul>
+            </section>
+
             <section id="vlan">
-                <h2>06. VLAN Security</h2>
+                <h2>07. VLAN Security</h2>
                 <p>
                     Authentication was not enough for me. I wanted to add a network isolation. I accessed the Netgear switch interface (found at <code>192.168.2.4</code>) and configured <strong>802.1Q Advanced VLANs</strong>.
                 </p>
@@ -325,7 +404,7 @@ sudo systemctl enable --now target</div>
             </section>
 
             <section id="benchmarks">
-                <h2>07. Benchmarks</h2>
+                <h2>08. Benchmarks</h2>
                 <p>
                     I ran <strong>CrystalDiskMark 9.0.1</strong> (4GiB test file, 5 runs) to compare the iSCSI SAN against a traditional NAS setup running on a <strong>separate NUC</strong> with an <strong>internal SATA HDD</strong>.
                 </p>
@@ -382,7 +461,7 @@ sudo systemctl enable --now target</div>
             </section>
 
             <section id="future">
-                <h2>08. Future Roadmap</h2>
+                <h2>09. Future Roadmap</h2>
                 <p>
                     The current implementation is functional and secure for Windows clients. But, to fully validate the SAN's versatility as an enterprise solution, the following steps are planned as a private continuation of this project:
                 </p>
