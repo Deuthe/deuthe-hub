@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyDes Lab Environment - Purdue Model Topology</title>
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --panel-bg: #131c2e;
+            --panel-bg-hover: #18253f;
+            --border-color: #22314d;
+            --text-main: #f1f5f9;
+            --text-muted: #64748b;
+            --text-accent: #38bdf8;
+            --conduit-color: #818cf8;
+            --conduit-glow: rgba(129, 140, 248, 0.15);
+            
+            /* Purdue Level Colors */
+            --l5-color: #ef4444;
+            --l4-color: #c084fc;
+            --l3-color: #60a5fa;
+            --l35-color: #34d399;
+            --l2-color: #fbbf24;
+            --l1-color: #22d3ee;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 40px 20px;
+            letter-spacing: -0.01em;
+        }
+
+        .container {
+            max-width: 1140px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 40px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 24px;
+        }
+
+        h1 { 
+            margin: 0 0 8px 0; 
+            font-size: 26px; 
+            font-weight: 700;
+            color: #ffffff; 
+        }
+        
+        header p { 
+            margin: 0; 
+            color: var(--text-muted); 
+            font-size: 14px; 
+        }
+
+        .topology {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* Dynamic VPN Container Wrapper */
+        .vpn-scope-container {
+            border: 2px dashed rgba(56, 189, 248, 0.4);
+            border-radius: 8px;
+            padding: 24px 16px 16px 16px;
+            background-color: rgba(56, 189, 248, 0.01);
+            position: relative;
+            margin: 12px 0;
+            box-shadow: inset 0 0 20px rgba(56, 189, 248, 0.03);
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .vpn-scope-label {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background-color: #0b0f19;
+            color: var(--text-accent);
+            font-family: "SFMono-Regular", Consolas, monospace;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Purdue Level Styling */
+        .level {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--level-color);
+            border-radius: 6px;
+            padding: 20px;
+            transition: background-color 0.2s ease;
+        }
+
+        .level:hover {
+            background-color: var(--panel-bg-hover);
+        }
+
+        .level-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+        }
+
+        .level-title {
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .subnet-badge {
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+            background: #0b0f19;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: var(--text-accent);
+            border: 1px solid var(--border-color);
+        }
+
+        /* Device Nodes Box Placement */
+        .nodes-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .node {
+            background-color: #0b0f19;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 16px;
+            min-width: 240px;
+            flex: 1;
+        }
+
+        .node.highlight {
+            border-color: var(--level-color);
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.03);
+        }
+
+        .node-name {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 6px;
+            color: #ffffff;
+        }
+
+        .node-ip {
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+        }
+
+        .node-details {
+            font-size: 12px;
+            color: #94a3b8;
+            line-height: 1.5;
+        }
+
+        .node-specs {
+            margin-top: 10px;
+            padding-top: 8px;
+            border-top: 1px dashed var(--border-color);
+            font-size: 11px;
+            color: #64748b;
+        }
+
+        /* Boundary / Firewall Styling */
+        .boundary {
+            background-color: #111827;
+            border: 1px dashed #ef4444;
+            padding: 14px 20px;
+            border-radius: 6px;
+            font-size: 13px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .boundary-main {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .boundary-title {
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #ef4444;
+        }
+
+        .boundary-details {
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .boundary-policies {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            width: 100%;
+            padding-top: 8px;
+            border-top: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .policy-tag {
+            font-size: 11px;
+            background: rgba(239, 68, 68, 0.1);
+            color: #f87171;
+            padding: 2px 8px;
+            border-radius: 3px;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .boundary.industrial {
+            border-color: var(--l3-color);
+            background-color: #0f172a;
+        }
+
+        .boundary.industrial .boundary-title {
+            color: var(--l3-color);
+        }
+
+        .boundary.industrial .boundary-policies {
+            border-top-color: rgba(96, 165, 250, 0.2);
+        }
+
+        .boundary.industrial .policy-tag {
+            background: rgba(96, 165, 250, 0.1);
+            color: #93c5fd;
+            border-color: rgba(96, 165, 250, 0.2);
+        }
+
+        /* Flow Diagram Section */
+        .conduit-flow {
+            background: #111524;
+            border: 1px solid #1e2640;
+            padding: 24px;
+            border-radius: 6px;
+            margin-top: 16px;
+        }
+
+        .flow-title {
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 18px;
+            color: #818cf8;
+        }
+
+        .steps {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            font-size: 12px;
+            flex-wrap: wrap;
+        }
+
+        .step {
+            background: #0b0f19;
+            padding: 14px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            flex: 1;
+            min-width: 180px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .step.active-path {
+            border-color: var(--conduit-color);
+            box-shadow: 0 0 10px var(--conduit-glow);
+        }
+
+        .step-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .step-meta {
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .arrow { 
+            color: var(--conduit-color); 
+            font-weight: bold; 
+            font-size: 18px;
+            text-shadow: 0 0 8px var(--conduit-glow);
+        }
+
+        /* Utility specific styles */
+        .l5 { --level-color: var(--l5-color); }
+        .l4 { --level-color: var(--l4-color); }
+        .l3 { --level-color: var(--l3-color); }
+        .l35 { --level-color: var(--l35-color); }
+        .l2 { --level-color: var(--l2-color); }
+        .l1 { --level-color: var(--l1-color); }
+
+        @media (max-width: 768px) {
+            .steps { flex-direction: column; align-items: stretch; }
+            .arrow { text-align: center; transform: rotate(90deg); margin: 4px 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>CyDes Lab Architecture Reference</h1>
+        <p>Strict Purdue Model Layout & Verified Networking Boundaries (IEC 62443 Standard)</p>
+    </header>
+
+    <div class="topology">
+        
+        <div class="level l5">
+            <div class="level-header">
+                <div class="level-title" style="color: var(--l5-color);">Level 5: Internet & External Threats</div>
+                <div class="subnet-badge">WAN: 145.220.74.142/25</div>
+            </div>
+            <div class="nodes-grid">
+                <div class="node">
+                    <div class="node-name">Fontys Router</div>
+                    <div class="node-ip">145.220.74.254</div>
+                    <div class="node-details">Main ISP Uplink infrastructure interface.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="vpn-scope-container">
+            <div class="vpn-scope-label">Enterprise VPN Tunnel Termination Domain</div>
+
+            <div class="boundary">
+                <div class="boundary-main">
+                    <div class="boundary-title">Boundary: RT-01 (Main Router / pfSense)</div>
+                    <div class="boundary-details">
+                        LAN: 192.168.172.1/24 (VLAN A) | OPT1: 10.10.10.1/24 (VLAN B)
+                    </div>
+                </div>
+                <div class="boundary-policies">
+                    <div class="policy-tag" style="border-color: var(--text-accent); color: var(--text-accent);">VPN Landing Target: Secure multi-factor authentication engine lands requests here</div>
+                    <div class="policy-tag">Static Route: 10.20.20.0/24 via Industrial Firewall (10.10.10.254)</div>
+                </div>
+            </div>
+
+            <div class="level l4">
+                <div class="level-header">
+                    <div class="level-title" style="color: var(--l4-color);">Level 4: Enterprise IT & SOC</div>
+                    <div class="subnet-badge">Tristan SIEM Stack</div>
+                </div>
+                <div class="nodes-grid">
+                    <div class="node">
+                        <div class="node-name">SRV-UBT-WAZUH</div>
+                        <div class="node-ip">Intrusion Detection System</div>
+                        <div class="node-details">Security analytics, file integrity tracking, and active system threat monitoring environment.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="level l3">
+                <div class="level-header">
+                    <div class="level-title" style="color: var(--l3-color);">Level 3: Operations Systems</div>
+                    <div class="subnet-badge">PVlanA - 192.168.172.0/24</div>
+                </div>
+                <div class="nodes-grid">
+                    <div class="node highlight" style="border-color: var(--text-accent); box-shadow: 0 0 15px rgba(56, 189, 248, 0.15);">
+                        <div class="node-name" style="color: var(--text-accent);">WS-UBT-VLAN-A (VPN Tunnel Destination)</div>
+                        <div class="node-ip">192.168.172.11</div>
+                        <div class="node-details">Secure Engineering Workstation running newly deployed OpenPLC Editor v4 environment. Incoming edge VPN connection streams drop securely inside this endpoint host. Outbound connection origin interface forcing double-jump secure proxy pipelines.</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="level l35">
+            <div class="level-header">
+                <div class="level-title" style="color: var(--l35-color);">Level 3.5: IT/OT Security DMZ</div>
+                <div class="subnet-badge">PVlanE - 10.20.20.0/24</div>
+            </div>
+            <div class="nodes-grid">
+                <div class="node highlight">
+                    <div class="node-name">Host Jump Server</div>
+                    <div class="node-ip">10.20.20.10</div>
+                    <div class="node-details"><b>Ingress Buffer:</b> Stripped Ubuntu Server infrastructure build. Follows strict least functionality constraints by avoiding all desktop GUI configurations to minimize the available vulnerability attack surface. Demands explicit external access authorization, Multi-Factor Authentication validation, and thorough session keystroke logging. Gateway mapping targeting internal elements: 10.20.20.254.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="boundary industrial">
+            <div class="boundary-main">
+                <div class="boundary-title">Industrial Firewall (IEC 62443 Zone Enforcement / pfSense)</div>
+                <div class="boundary-details">
+                    WAN: 10.10.10.254/24 | DMZ_VLAN_E (OPT1): 10.20.20.254/24 | LAN: 172.16.0.1/24
+                </div>
+            </div>
+            <div class="boundary-policies">
+                <div class="policy-tag">Rule 1: Allow inbound RDP (3389) / SSH (22) from IT strictly to 10.20.20.10</div>
+                <div class="policy-tag">Rule 2: Allow originating Jump Server (10.20.20.10) to L3 Management PC (10.10.10.11)</div>
+                <div class="policy-tag">Rule 4: Implicit Deny Enforced (Broad cross-routing to 10.10.10.x / 172.16.0.x blocked)</div>
+            </div>
+        </div>
+
+        <div class="level l2">
+            <div class="level-header">
+                <div class="level-title" style="color: var(--l2-color);">Level 2: Supervisory Control</div>
+                <div class="subnet-badge">PVlanB - 10.10.10.0/24</div>
+            </div>
+            <div class="nodes-grid">
+                <div class="node highlight">
+                    <div class="node-name">Jump Server Remote</div>
+                    <div class="node-ip">10.10.10.20</div>
+                    <div class="node-details"><b>Conduit Termination Point:</b> Intermediate platform executing explicit pipeline jumps. Hardened Netplan configuration parameters block default routing lookups, forcing all target operations addressing the isolated PLC network segment to steer natively through the front door of the Industrial Firewall interface gateway at 10.10.10.254.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="level l1">
+            <div class="level-header">
+                <div class="level-title" style="color: var(--l1-color);">Level 1: Process Control</div>
+                <div class="subnet-badge">PVlanC - 172.16.0.0/24</div>
+            </div>
+            <div class="nodes-grid">
+                <div class="node highlight">
+                    <div class="node-name">OpenPLC Runtime v4</div>
+                    <div class="node-ip">172.16.0.11</div>
+                    <div class="node-details">Headless industrial core runtime implementation. Built with systemd defense parameters including restricted syscall execution architectures and strict system component access controls (NoNewPrivileges, ProtectSystem=strict). Verification loops confirmed via direct diagnostic trace ping transactions.</div>
+                    <div class="node-specs">
+                        HTTPS API: Port 8443 (4096-bit RSA TLS Cert Coverage)<br>
+                        OPC-UA: Port 4840 (Sign & Encrypt / Basic256Sha256 Authentication)
+                    </div>
+                </div>
+                <div class="node">
+                    <div class="node-name">WS-UBT-VLAN-C</div>
+                    <div class="node-ip">Isolated OT Node</div>
+                    <div class="node-details">Additional tracking node confined within the process control layer execution ring.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="conduit-flow">
+            <div class="flow-title">Active Connection Line: Multi-Hop SSH Conduit Trace</div>
+            <div class="steps">
+                <div class="step active-path" style="border-color: var(--text-accent);">
+                    <div class="step-title" style="color: var(--text-accent);">0. Ingress Access Target</div>
+                    VPN Tunnel Pool<br>→ RT-01 Interface
+                </div>
+                <div class="arrow">➔</div>
+                <div class="step active-path">
+                    <div class="step-title" style="color: var(--l3-color);">1. Origin Node</div>
+                    WS-UBT-Eng-Station
+                    <div class="step-meta">192.168.172.11</div>
+                </div>
+                <div class="arrow">➔</div>
+                <div class="step active-path">
+                    <div class="step-title" style="color: var(--l35-color);">2. 1st Hop (DMZ Buffer)</div>
+                    Host Jump Server    
+                    <div class="step-meta">10.20.20.10</div>
+                </div>
+                <div class="arrow">➔</div>
+                <div class="step active-path">
+                    <div class="step-title" style="color: var(--l2-color);">3. 2nd Hop (OT Conduit)</div>
+                    Jump Server Remote
+                    <div class="step-meta">10.10.10.20</div>
+                </div>
+                <div class="arrow">➔</div>
+                <div class="step active-path">
+                    <div class="step-title" style="color: var(--l1-color);">4. Target Interface</div>
+                    OpenPLC Core Engine
+                    <div class="step-meta">172.16.0.11:8443</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>
