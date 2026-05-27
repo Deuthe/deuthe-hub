@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Project SAN | Kevin Guzman</title>
+    <meta name="description" content="Building an Enterprise-Grade iSCSI SAN with Consumer Hardware.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+    <nav class="sidebar">
+        <div class="brand">
+            KEVIN_GUZMAN // SAN_PROJECT
+        </div>
+        
+        <div class="nav-group">
+            <div class="nav-header">Overview</div>
+            <ul class="nav-links">
+                <li><a href="#intro" class="active">01. Context & Problem</a></li>
+                <li><a href="#hardware">02. Hardware Components</a></li>
+            </ul>
+        </div>
+
+        <div class="nav-group">
+            <div class="nav-header">Implementation Logs</div>
+            <ul class="nav-links">
+                <li><a href="#setup">03. The Setup (Clean Start)</a></li>
+                <li><a href="#iscsi">04. iSCSI Implementation</a></li>
+                <li><a href="#chap">05. Chap Problems & Solutions</a></li>
+                <li><a href="#enterprise-comparison">06. From Homelab to Enterprise</a></li>
+            </ul>
+        </div>
+
+        <div class="nav-group">
+            <div class="nav-header">Validation</div>
+            <ul class="nav-links">
+                <li><a href="#vlan">07. VLAN Security</a></li>
+                <li><a href="#benchmarks">08. Benchmarks</a></li>
+                <li><a href="#future">09. For the Future</a></li>
+            </ul>
+        </div>
+
+        <div class="theme-toggle" id="themeToggle">
+            <span style="font-size: 1.2rem; margin-right: 8px;">◐</span> Toggle Theme
+        </div>
+    </nav>
+
+    <div class="content-wrapper">
+        <main>
+            <header style="margin-bottom: 4rem;">
+                <div style="margin-bottom: 1.5rem; font-family: var(--font-mono); font-size: 0.8rem;">
+                    <span class="status-badge status-success">Status: Completed</span>
+                    <span class="status-badge status-neutral">Budget: €30.00</span>
+                </div>
+                <h1 id="typewriter"></h1>
+                <p style="font-size: 1.2rem; opacity: 0.7; max-width: 600px;">
+                    Designing, implementing, and evaluating a functional Storage Area Network (SAN) using consumer-grade hardware and open-source tools.
+                </p>
+            </header>
+
+            <section id="intro">
+                <h2>01. Context & Problem Statement</h2>
+                <p>
+                    During my first personal project meeting, one of my mentors explicitly stated that a standard NAS (Network Attached Storage) project would not be sufficiently challenging for Semester 6. A NAS operates at the file level, introducing overhead that makes it not optimal for enterprise virtualization workloads.
+                </p>
+                <div class="personal-note">
+                    "A NAS is fine for previous semesters, but is a toy compared, let's say to a SAN, if you want to show something better, build a SAN." - First mentor feedback.
+                </div>
+                <p>
+                    <strong>The Challenge:</strong> How can I design, implement, and validate a functional SAN using only hardware I have at home, while proving its superiority over NAS in performance?
+                </p>
+            </section>
+
+            <section id="hardware">
+                <h2>02. Hardware Main Components</h2>
+                <p>The environment was built to simulate a realistic "free" enterprise scenario, reutilizing devices I already owned.</p>
+                
+                <figure>
+                    <img src="assets/img/setup.png" alt="The Physical Lab Setup: NUC, Switch, HDD">
+                    <figcaption>Figure 1: The Physical Build (NUC + Netgear Switch + Seagate HDD)</figcaption>
+                </figure>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Device</th>
+                            <th>Role</th>
+                            <th>Configuration</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Intel NUC</strong></td>
+                            <td>iSCSI Target</td>
+                            <td>i5, 8GB RAM, Ubuntu Server 24.04</td>
+                        </tr>
+                        <tr>
+                            <td><strong>1TB HDD</strong></td>
+                            <td>Physical Storage</td>
+                            <td>USB 3.0 Expansion Drive</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Netgear GS105E</strong></td>
+                            <td>Managed Switch</td>
+                            <td>VLAN 10 (Ports 2-4) / VLAN 1 (Ports 1,5)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Uni Laptop</strong></td>
+                            <td>Client (Initiator)</td>
+                            <td>Windows 11, Microsoft iSCSI Initiator</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <figure>
+                    <img src="assets/img/topology.png" alt="Network Topology Diagram">
+                    <figcaption>Figure 2: Network Topology with VLAN isolation.</figcaption>
+                </figure>
+            </section>
+
+            <section id="setup">
+                <h2>03. The Setup: Starting clean</h2>
+                <p>
+                    I started by restoring my Intel NUC to factory defaults. It had been used as a home lab before, but I needed to start from zero to document the process accurately.
+                </p>
+                <h3>Hardware Upgrade</h3>
+                <p>
+                    I swapped my old Linksys PoE+ switch for a <strong>Netgear GS105E</strong>. This was beneficial to me because it supports 802.1Q VLAN tagging, which allows me to segment the network properly later.
+                </p>
+                <h3>Fresh Install & Mounting</h3>
+                <p>
+                    I installed <strong>Ubuntu Server 24.04.3 LTS</strong> via a bootable USB created with Rufus. During installation, I set the static IP to <code>192.168.2.200</code>. After booting, I plugged in the 1TB drive.
+                </p>
+                <p>
+                    I ran <code>sudo fdisk -l /dev/sda</code> and saw it had an old NTFS partition. I decided to wipe it.
+                </p>
+                
+                <div class="step-image-container">
+                    <span class="step-comment"># Checking the current disk state</span>
+                    <img src="assets/img/fdisk.png" class="step-img" alt="fdisk output">
+                </div>
+
+                <div class="step-image-container">
+                    <span class="step-comment"># Wipe the old NTFS partition</span>
+                    <img src="assets/img/mkfs.png" class="step-img" alt="mkfs command">
+                </div>
+
+                <div class="step-image-container">
+                    <span class="step-comment"># Create mount point and mount</span>
+                    <img src="assets/img/mkdirmount.png" class="step-img" alt="mkdir and mount commands">
+                </div>
+            </section>
+
+            <section id="iscsi">
+                <h2>04. iSCSI Implementation</h2>
+                
+                <h3>Installing the iSCSI Target</h3>
+                <p>
+                    Now, I have to install the iSCSI Target into the NUC. <code>targetcli</code> normally saves its configurations in <code>/etc/target/saveconfig.json</code>.
+                </p>
+
+                <div class="command-text">sudo apt install targetcli-fb -y
+sudo systemctl enable --now target</div>
+
+                <p>
+                    With this, the service will be running and the configs will be saved.
+                </p>
+
+                <h3>Creating the 100 GB LUN</h3>
+                <p>
+                    After that, we have to create the 100 GB LUN, that’s where the virtual disk of the SAN will serve the other devices. A LUN is a Logical Unit Number, the block device the iSCSI presents.
+                </p>
+
+                <div class="step-image-container">
+                    <span class="step-comment"># Creating the 100GB file-backed LUN (Figure 6)</span>
+                    <img src="assets/img/lun-creation.png" class="step-img" alt="Creating 100GB LUN with dd">
+                </div>
+
+                <p>Here we verify that it is working:</p>
+
+                <div class="step-image-container">
+                    <span class="step-comment"># Verifying the LUN file (Figure 7)</span>
+                    <img src="assets/img/lun-verify.png" class="step-img" alt="Verifying LUN file">
+                </div>
+
+                <h3>Target Configuration</h3>
+                <p>
+                    I utilized the Linux-IO (LIO) stack via <code>targetcli-fb</code> to map this new file as a storage object.
+                </p>
+                
+                <div class="step-image-container">
+                    <span class="step-comment"># Creating the Backstore (The Virtual Disk)</span>
+                    <img src="assets/img/backstore.png" class="step-img" alt="Creating backstore in targetcli">
+                </div>
+
+                <div class="step-image-container">
+                    <span class="step-comment"># Creating the Target IQN (The Identity)</span>
+                    <img src="assets/img/target.png" class="step-img" alt="Creating IQN in targetcli">
+                </div>
+
+                <div class="step-image-container">
+                    <span class="step-comment"># Mapping the LUN to the Target</span>
+                    <img src="assets/img/maplun.png" class="step-img" alt="Mapping LUN in targetcli">
+                </div>
+
+                <div class="personal-note">
+                    <strong>Safety Tip:</strong> I created snapshots using `sudo dd if=/dev/zero of=/san/snap_clean.img bs=1G count=0 seek=100` before configuring the target. This allowed me to rollback instantly if I broke the configuration.
+                </div>
+            </section>
+
+            <section id="chap">
+                <h2>05. Chap Problems & Solutions</h2>
+                <p>
+                    This was the hardest part of the implementation. Enterprise storage requires authentication, so I attempted to enable <strong>Mutual CHAP</strong> (where both client and server verify each other).
+                </p>
+                <p>
+                    <strong>The Failure:</strong> My initial attempts failed. Windows 11 refused to connect. I discovered two issues:
+                </p>
+                <ol>
+                    <li>My password was 21 characters long (too long for some initiators).</li>
+                    <li>Windows 11 has a known bug with Mutual CHAP in the Microsoft Initiator.</li>
+                </ol>
+                <p></p>
+                <p>
+                    <strong>The Fix:</strong> I switched to <strong>Unidirectional CHAP</strong> and shortened the password to 12 characters.
+                </p>
+
+                <h3>Phase 1: Configuration on the NUC</h3>
+                <div class="personal-note">
+                    <strong>What is an ACL?</strong> An Access Control List (ACL) acts like a whitelist. Before authentication even begins, iSCSI checks if your laptop's specific IQN is allowed to see the target.
+                </div>
+
+                <div class="personal-note">
+                    <strong>Prerequisite:</strong> Before creating the ACL, we have to find the correct IQN for the Windows machine. Press <code>Win + R</code>, type <code>iscsicpl</code>, and check the <strong>Configuration</strong> tab to copy the exact Initiator Name.
+                </div>
+
+                <div class="step-image-container">
+                    <span class="step-comment"># Checking Windows Initiator Name (Configuration Tab)</span>
+                    <img src="assets/img/iscsiproperties.png" class="step-img" alt="Windows iSCSI Initiator Properties Configuration">
+                </div>
+                
+                <div class="command-text"># Create ACL for the laptop using the name found in iscsicpl
+/iscsi/.../tpg1/acls create iqn.1991-05.com.microsoft:kevin-s-lap</div>
+
+                <div class="step-image-container">
+                    <span class="step-comment"># Set Authentication (Unidirectional only)</span>
+                    <img src="assets/img/unidirectionchap.png" class="step-img" alt="Setting Unidirectional CHAP in targetcli">
+                </div>
+
+                <h3>Phase 2: Connect the Windows Client</h3>
+                <p>
+                    With the Target ready, I went back to the iSCSI Initiator (`iscsicpl`). I navigated to the <strong>Discovery</strong> tab, clicked <strong>Discover Portal</strong>, and added the IP address of the NUC (`192.168.2.200`) leaving the port as default.
+                </p>
+
+                <div class="step-image-container">
+                    <span class="step-comment"># Adding the Discovery Portal</span>
+                    <img src="assets/img/discover.png" class="step-img" alt="Adding IP to Discovery Portal">
+                </div>
+
+                <p>
+                    After discovery, I went to the <strong>Targets</strong> tab, selected my SAN, and clicked <strong>Connect</strong>. I opened the <strong>Advanced</strong> settings and checked <strong>Enable CHAP log on</strong> to input my credentials.
+                </p>
+
+                <div class="step-image-container">
+                    <span class="step-comment"># Enabling CHAP in Advanced Settings</span>
+                    <img src="assets/img/advanced.png" class="step-img" alt="Enabling CHAP in Connection Settings">
+                </div>
+
+                <h3>Phase 3: Initializing the Disk</h3>
+                <p>
+                    Once the connection was successful, I pressed <code>Win + R</code> and typed <code>diskmgmt.msc</code> to open Disk Management. The unformatted disk appeared immediately as "Disk 1".
+                </p>
+
+                <div class="step-image-container">
+                    <span class="step-comment"># Disk 1 appears as Unallocated</span>
+                    <img src="assets/img/unallocated.png" class="step-img" alt="Disk Management showing unallocated volume">
+                </div>
+
+                <p>
+                    I initialized it as GPT and formatted it as NTFS (Volume Label: <code>SAN-100GB</code>).
+                </p>
+                
+                <div class="step-image-container">
+                    <span class="step-comment"># Disk 1 initialized and formatted (NTFS)</span>
+                    <img src="assets/img/afterformat.png" class="step-img" alt="Disk Management after formatting">
+                </div>
+
+                <div class="step-image-container">
+                    <span class="step-comment"># Successfully mounted as S: Drive in Explorer</span>
+                    <img src="assets/img/explorer.png" class="step-img" alt="Windows Explorer showing S drive">
+                </div>
+            </section>
+
+            <section id="enterprise-comparison">
+                <h2>06. From Homelab to Enterprise</h2>
+                <p>
+                    While this project successfully creates a functional SAN with consumer hardware, it's important to understand how it differs from a true enterprise-grade solution. This section analyzes the gap between our homelab setup and a production data center environment.
+                </p>
+
+                <h3>Business Goals of a SAN</h3>
+                <p>An enterprise SAN aims to achieve several key business objectives, which this project simulates:</p>
+                <ul>
+                    <li><strong>High Availability:</strong> Ensuring data is always accessible with minimal downtime. Our block-level access helps, but the single hardware node is a bottleneck.</li>
+                    <li><strong>Disaster Recovery:</strong> Protecting against data loss. We've used software-level snapshots and backups.</li>
+                    <li><strong>High-Performance Storage:</strong> Delivering fast, low-latency access for demanding applications like virtual machines and databases.</li>
+                    <li><strong>Secure Traffic:</strong> Isolating storage data from the general network to maintain integrity, which we achieved with VLANs.</li>
+                </ul>
+
+                <h3>Gap Analysis: Homelab vs. Enterprise</h3>
+                <p>
+                    Here’s a comparison of our project's components against enterprise standards, highlighting the key differences and how to close them.
+                </p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Component</th>
+                            <th>Our Homelab Setup (Baseline)</th>
+                            <th>Enterprise Standard (Target)</th>
+                            <th>The Gap & How to Bridge It</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Storage Media</strong></td>
+                            <td>External USB 3.0 Hard Drive</td>
+                            <td>Internal SAS or NVMe SSD Array</td>
+                            <td><strong>Gap:</strong> Our USB drive has a significant write bottleneck (around 9 MB/s).<br><strong>Solution:</strong> Use internal SSDs for much faster performance.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Compute/Target</strong></td>
+                            <td>Single Intel NUC (i5, 8GB RAM)</td>
+                            <td>High-Availability (HA) Cluster</td>
+                            <td><strong>Gap:</strong> Our single NUC is a single point of failure.<br><strong>Solution:</strong> Use a dual-controller setup where a second machine can take over instantly if the first one fails.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Network Fabric</strong></td>
+                            <td>1 Gigabit Ethernet</td>
+                            <td>10/25 Gigabit Ethernet or Fibre Channel</td>
+                            <td><strong>Gap:</strong> Our network maxes out at around 117 MB/s.<br><strong>Solution:</strong> Upgrade to a 10GbE network for significantly higher throughput.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Security</strong></td>
+                            <td>Unidirectional CHAP</td>
+                            <td>Mutual CHAP + IPsec Encryption</td>
+                            <td><strong>Gap:</strong> Windows 11's iSCSI tool has limitations. <br><strong>Solution:</strong> Use Linux clients, which fully support Mutual CHAP for better security.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Redundancy</strong></td>
+                            <td>Single Disk (No hardware redundancy)</td>
+                            <td>Hardware RAID 10</td>
+                            <td><strong>Gap:</strong> If our single disk fails, all data is lost.<br><strong>Solution:</strong> Use a RAID 10 array, which mirrors and stripes data across multiple disks for both speed and protection against disk failure.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>User Capacity</strong></td>
+                            <td>Designed for a single user or a very small number of simultaneous connections.</td>
+                            <td>Can support hundreds or even thousands of simultaneous users.</td>
+                            <td><strong>Gap:</strong> Our setup lacks the I/O operations per second (IOPS) and network bandwidth to handle multiple users.<br><strong>Solution:</strong> Enterprise SANs use powerful controllers, more RAM, and faster networking to manage a high number of concurrent I/O requests.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Why These Enterprise Standards Matter</h3>
+                <ul>
+                    <li><strong>Dual-Port SSDs & Active-Active Controllers:</strong> Enterprise systems use special SAS drives that can be accessed by two controllers at the same time. This, combined with an "Active-Active" controller setup, eliminates any single point of failure, ensuring the storage is always online.</li>
+                    <li><strong>10GbE+ Networking:</strong> As our benchmarks showed, a 1GbE link is easily saturated. High-performance storage requires a faster network to prevent bottlenecks.</li>
+                    <li><strong>Mutual CHAP:</strong> This two-way authentication is critical in enterprise environments to prevent unauthorized devices from pretending to be a legitimate storage target.</li>
+                    <li><strong>Hardware RAID 10:</strong> For applications that need high I/O performance and strong data protection (like databases or email servers), RAID 10 is a popular choice. It provides excellent speed and can withstand disk failures without data loss.</li>
+                </ul>
+            </section>
+
+            <section id="vlan">
+                <h2>07. VLAN Security</h2>
+                <p>
+                    Authentication was not enough for me. I wanted to add a network isolation. I accessed the Netgear switch interface (found at <code>192.168.2.4</code>) and configured <strong>802.1Q Advanced VLANs</strong>.
+                </p>
+                <ul>
+                    <li><strong>VLAN 1 (Home):</strong> Ports 1 & 5 (Router Uplink).</li>
+                    <li><strong>VLAN 10 (SAN):</strong> Ports 2, 3, 4 (NUC & Laptops).</li>
+                </ul>
+
+                <div class="step-image-container">
+                    <span class="step-comment"># Step 1: Defining VLAN Membership (Tagging)</span>
+                    <img src="assets/img/vlan-config.png" class="step-img" alt="Netgear VLAN Membership Configuration">
+                </div>
+
+                <p>
+                    However, setting membership isn't enough. I also had to configure the <strong>PVID (Port VLAN ID)</strong>. This ensures that any traffic coming <em>from</em> my laptop (which doesn't send VLAN tags) is automatically tagged as VLAN 10 by the switch.
+                </p>
+
+                <div class="step-image-container">
+                    <span class="step-comment"># Step 2: Setting PVID to force ports into VLAN 10</span>
+                    <img src="assets/img/pvid.png" class="step-img" alt="Netgear PVID Configuration">
+                </div>
+
+                <p>
+                    <strong>Result:</strong> When my laptop is on Wi-Fi, the SAN IP <code>192.168.2.200</code> is unreachable. It only becomes visible when physically plugged into ports 2-4. This effectively "air-gaps" the storage traffic from the home network.
+                </p>
+            </section>
+
+            <section id="benchmarks">
+                <h2>08. Benchmarks</h2>
+                <p>
+                    I ran <strong>CrystalDiskMark 9.0.1</strong> (4GiB test file, 5 runs) to compare the iSCSI SAN against a traditional NAS setup running on a <strong>separate NUC</strong> with an <strong>internal SATA HDD</strong>.
+                </p>
+                
+                <div class="benchmark-grid">
+                    <figure>
+                        <img src="assets/img/resultsan.png" alt="iSCSI SAN Benchmark Result">
+                        <figcaption>SAN Results (iSCSI - USB Backend)</figcaption>
+                    </figure>
+                    <figure>
+                        <img src="assets/img/resultnas.png" alt="SMB NAS Benchmark Result">
+                        <figcaption>NAS Results (SMB - SATA Backend)</figcaption>
+                    </figure>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>iSCSI SAN (Block)</th>
+                            <th>NAS (File)</th>
+                            <th>Analysis</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Seq. Read (Q8T1)</td>
+                            <td>117.41 MB/s</td>
+                            <td>117.52 MB/s</td>
+                            <td><strong>Tie:</strong> Both saturated the Gigabit Ethernet link.</td>
+                        </tr>
+                        <tr>
+                            <td>Random Read (4K)</td>
+                            <td><strong>101.51 MB/s</strong></td>
+                            <td>11.25 MB/s</td>
+                            <td><strong>SAN Wins (~9x):</strong> Massive advantage for VM booting.</td>
+                        </tr>
+                        <tr>
+                            <td>Random Write</td>
+                            <td>0.16 MB/s</td>
+                            <td>9.05 MB/s</td>
+                            <td><strong>NAS Wins:</strong> Internal SATA vs USB Overhead.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Detailed Analysis</h3>
+                <p>
+                    The NAS looks better on the sequential write because it uses internal SATA. On the USB HDD (used for the SAN), there is a translation layer which makes the sequential write of the HDD slower.
+                </p>
+                <p>
+                    The good thing is, the <strong>random read is 9 times faster</strong> on the SAN. That’s the block-level advantage: Windows can optimize I/O way better with iSCSI than with SMB/NFS, making it far superior for latency sensitive workloads like virtualization in Proxmox, Hyper-v or VMware
+                </p>
+            </section>
+
+            <section id="future">
+                <h2>09. Future Roadmap</h2>
+                <p>
+                    The current implementation is functional and secure for Windows clients. But, to fully validate the SAN's versatility as an enterprise solution, the following steps are planned as a private continuation of this project:
+                </p>
+                
+                <div class="command-text"># Planned Improvements:
+
+1. Linux Client Verification:
+   - Configure 'open-iscsi' initiator on Ubuntu.
+   - Perform comparative benchmarks (EXT4/XFS over iSCSI).
+
+2. Internal SSD Performance Test:
+   - Allocate a 100GB LUN on the internal 256GB NVMe SSD.
+   - Compare IOPS/Throughput against the USB HDD to quantify the mechanical 
+     bottleneck.
+
+3. IoT Integration:
+   - Finalize the ESP32 MQTT data ingestion pipeline.
+   - Log sensor data directly to the SAN volume.
+
+4. Advanced Virtualization: For a medium/large home lab setup.
+   - Use the SAN as shared storage for a Proxmox Cluster.
+                </div>
+
+            </section>
+
+            <footer style="margin-top: 5rem; padding-top: 2rem; border-top: 1px solid var(--border); font-size: 0.9rem; opacity: 0.6;">
+                <p><strong>Kevin Guzman</strong> | Advanced Infrastructure Semester 6</p>
+                <p>Fontys University of Applied Sciences | November 2025</p>
+            </footer>
+        </main>
+    </div>
+
+    <script src="assets/js/script.js"></script>
+</body>
+</html>
