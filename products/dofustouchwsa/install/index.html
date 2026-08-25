@@ -51,13 +51,23 @@
             height: 64px;
         }
 
-        .logo { font-weight: 800; letter-spacing: -1px; font-size: 1.1rem; color: #fff; text-decoration: none; }
-        .nav-links { display: flex; gap: 24px; }
+        .logo { font-weight: 800; letter-spacing: -0.5px; font-size: 1.15rem; color: #fff; text-decoration: none; display: flex; align-items: center; gap: 10px; }
+        .logo img { width: 32px; height: 32px; border-radius: 8px; box-shadow: 0 0 15px rgba(0, 212, 170, 0.4); }
+        .nav-links { display: flex; gap: 24px; align-items: center; }
         .nav-links a { text-decoration: none; color: var(--text-muted); font-size: 0.9rem; font-weight: 500; transition: 0.2s; }
-        .nav-links a:hover { color: var(--primary); }
+        .nav-links a:hover { color: var(--green); }
 
         /* Hero */
         .hero { padding: 140px 0 80px; text-align: center; }
+        .hero-logo {
+            width: 100px;
+            height: 100px;
+            border-radius: 24px;
+            margin-bottom: 20px;
+            border: 3px solid var(--green);
+            box-shadow: 0 0 45px rgba(0, 212, 170, 0.35);
+            background: #0d0d1a;
+        }
 
         .hero-badge {
             display: inline-block;
@@ -264,10 +274,13 @@
 
     <nav>
         <div class="container">
-            <a href="/" class="logo">K. GUZMAN</a>
+            <a href="/" class="logo">
+                <img src="/assets/img/logo.png" alt="Deuthe Logo">
+                <span>DEUTHE</span>
+            </a>
             <div class="nav-links">
                 <a href="/">Portfolio</a>
-                <a href="/products/dofustouchwsa/install">Installer</a>
+                <a href="/products/dofustouchwsa/install" style="color: var(--green); font-weight: 700;">Installer &#x26A1;</a>
                 <a href="mailto:contact@deuthe.com">Contacto</a>
             </div>
         </div>
@@ -275,6 +288,8 @@
 
     <div class="hero">
         <div class="container">
+            <img src="/assets/img/logo.png" alt="Deuthe's Solution Logo" class="hero-logo">
+            <br>
             <div class="hero-badge">&#9889; Versión 1.0</div>
             <h1>Deuthe's <span class="gradient-text">Solution</span></h1>
             <p class="hero-description">
@@ -290,7 +305,7 @@
                 </svg>
                 Descargar DeutheSetup.exe
             </a>
-            <p class="download-meta">~700 MB &middot; Windows 11 &middot; Requiere contraseña de autorización</p>
+            <p class="download-meta">~700 MB &middot; Windows 11 &middot; Requiere clave de activación</p>
         </div>
     </div>
 

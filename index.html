@@ -9,7 +9,7 @@
             --primary: #3b82f6;
             --primary-dark: #2563eb;
             --secondary: #0f172a;
-            --accent: #06b6d4;
+            --accent: #00d4aa;
             --bg: #020617;
             --card-bg: #0f172a;
             --text: #f8fafc;
@@ -48,22 +48,24 @@
             height: 64px;
         }
 
-        .logo { font-weight: 800; letter-spacing: -1px; font-size: 1.1rem; color: #fff; text-decoration: none; }
-        .nav-links { display: flex; gap: 24px; }
+        .logo { font-weight: 800; letter-spacing: -0.5px; font-size: 1.15rem; color: #fff; text-decoration: none; display: flex; align-items: center; gap: 10px; }
+        .logo img { width: 32px; height: 32px; border-radius: 8px; box-shadow: 0 0 15px rgba(0, 212, 170, 0.4); }
+        .nav-links { display: flex; gap: 24px; align-items: center; }
         .nav-links a { text-decoration: none; color: var(--text-muted); font-size: 0.9rem; font-weight: 500; transition: 0.2s; }
-        .nav-links a:hover { color: var(--primary); }
+        .nav-links a:hover { color: var(--accent); }
 
         /* Hero */
         header { padding: 160px 0 100px; text-align: center; }
         .profile-pic {
-            width: 160px; height: 160px; border-radius: 50%;
+            width: 160px; height: 160px; border-radius: 36px;
             object-fit: cover; margin-bottom: 32px;
-            border: 4px solid var(--border);
-            box-shadow: 0 0 40px rgba(59, 130, 246, 0.2);
+            border: 3px solid var(--accent);
+            box-shadow: 0 0 50px rgba(0, 212, 170, 0.3);
+            background: #0d0d1a;
         }
 
         h1 { font-size: 3.5rem; font-weight: 800; letter-spacing: -2px; margin-bottom: 16px; line-height: 1; }
-        .gradient-text { background: linear-gradient(90deg, #3b82f6, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .gradient-text { background: linear-gradient(90deg, #00d4aa, #38bdf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .tagline { font-size: 1.2rem; color: var(--text-muted); max-width: 600px; margin: 0 auto 40px; }
 
         /* Skills */
@@ -135,9 +137,13 @@
 
     <nav>
         <div class="container">
-            <a href="#" class="logo">K. GUZMAN</a>
+            <a href="/" class="logo">
+                <img src="assets/img/logo.png" alt="Deuthe Logo">
+                <span>DEUTHE</span>
+            </a>
             <div class="nav-links">
                 <a href="#projects">Work</a>
+                <a href="/products/dofustouchwsa/install" style="color: var(--accent); font-weight: 700;">Products &#x26A1;</a>
                 <a href="#skills">Skills</a>
                 <a href="mailto:contact@deuthe.com">Contact</a>
             </div>
@@ -146,14 +152,14 @@
 
     <header>
         <div class="container">
-            <img src="assets/img/cv-pic.jpg" alt="Kevin Guzman" class="profile-pic">
+            <img src="assets/img/logo.png" alt="Kevin Guzman (Deuthe)" class="profile-pic">
             <h1>Kevin <span class="gradient-text">Guzman</span></h1>
-            <p class="tagline">Cybersecurity & Infrastructure Student focusing on AI, enterprise security architectures, secure operations, and OT environments.</p>
+            <p class="tagline">Cybersecurity & Infrastructure Student focusing on AI, enterprise security architectures, secure operations, and automation engineering.</p>
             
             <div id="skills" class="skills-grid">
                 <div class="skill-tag"><strong>Security Operations</strong>Wazuh SIEM, ELK Stack, Suricata IDS/IPS</div>
                 <div class="skill-tag"><strong>Infrastructure Architecture</strong>Enterprise SAN, Identity & Access Management (Keycloak/OPA)</div>
-                <div class="skill-tag"><strong>Network Engineering</strong>pfSense, Fortinet, IEC 62443 Segmentation</div>
+                <div class="skill-tag"><strong>Automation & Virtualization</strong>WSA Engine, Hyper-V, PowerShell Multithreading, ADB</div>
                 <div class="skill-tag"><strong>Offensive Security</strong>Penetration Testing, Vulnerability Assessment, Threat Modeling</div>
             </div>
         </div>
@@ -161,9 +167,30 @@
 
     <section id="projects">
         <div class="container">
-            <h2>Semester Portfolio</h2>
+            <h2>Projects & Engineering Portfolio</h2>
             
             <div class="timeline">
+
+                <!-- Featured Product: Deuthe's Solution -->
+                <div class="project-card" id="deuthe-solution" style="border-color: rgba(0, 212, 170, 0.4); background: linear-gradient(180deg, #111128, #0f172a);">
+                    <div class="project-header">
+                        <div>
+                            <span class="semester-label" style="color: var(--accent);">&#x26A1; Featured Solution &middot; Production</span>
+                            <h3 class="project-title">Deuthe's Solution: WSA Multi-Account Provisioning & Licensing Engine</h3>
+                        </div>
+                        <a href="/products/dofustouchwsa/install" style="background: var(--accent); color: #0d0d1a; padding: 8px 16px; border-radius: 8px; font-weight: 700; text-decoration: none; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px;">
+                            View Product &#x2192;
+                        </a>
+                    </div>
+                    <p class="project-summary">Enterprise automation suite for Windows 11 provisioning WSA, dynamic APK decompilation & multi-account cloning, and cloud licensing with hardware-locking (HWID).</p>
+                    
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px;">
+                        <span style="background: rgba(0, 212, 170, 0.1); color: var(--accent); padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 600;">Windows 11 WSA</span>
+                        <span style="background: rgba(0, 212, 170, 0.1); color: var(--accent); padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 600;">PowerShell Engine</span>
+                        <span style="background: rgba(0, 212, 170, 0.1); color: var(--accent); padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 600;">Cloudflare Tunnel</span>
+                        <span style="background: rgba(0, 212, 170, 0.1); color: var(--accent); padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 600;">HWID Protection</span>
+                    </div>
+                </div>
 
                 <!-- Semester 7 -->
                 <div class="project-card" id="s7">
