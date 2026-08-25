@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deuthe's Solution | Descargar Instalador</title>
+    <meta name="description" content="Descarga Deuthe's Solution - Instalador automático de WSA + Dofus Touch Multi-Account para Windows 11.">
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --secondary: #0f172a;
+            --accent: #06b6d4;
+            --bg: #020617;
+            --card-bg: #0f172a;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #1e293b;
+            --glass: rgba(15, 23, 42, 0.8);
+            --green: #00d4aa;
+            --green-dark: #00b894;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container { max-width: 1000px; margin: 0 auto; padding: 0 24px; }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0; width: 100%;
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+        }
+
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 64px;
+        }
+
+        .logo { font-weight: 800; letter-spacing: -1px; font-size: 1.1rem; color: #fff; text-decoration: none; }
+        .nav-links { display: flex; gap: 24px; }
+        .nav-links a { text-decoration: none; color: var(--text-muted); font-size: 0.9rem; font-weight: 500; transition: 0.2s; }
+        .nav-links a:hover { color: var(--primary); }
+
+        /* Hero */
+        .hero { padding: 140px 0 80px; text-align: center; }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(0, 212, 170, 0.1);
+            border: 1px solid rgba(0, 212, 170, 0.3);
+            color: var(--green);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+        }
+
+        h1 { font-size: 3.2rem; font-weight: 800; letter-spacing: -2px; margin-bottom: 16px; line-height: 1.1; }
+        .gradient-text { background: linear-gradient(90deg, #00d4aa, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        .hero-description {
+            font-size: 1.15rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 40px;
+        }
+
+        /* Download Button */
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: linear-gradient(135deg, #00d4aa, #00b894);
+            color: #0d0d1a;
+            padding: 16px 40px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 0 30px rgba(0, 212, 170, 0.2);
+        }
+
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 40px rgba(0, 212, 170, 0.35);
+        }
+
+        .download-btn svg { width: 22px; height: 22px; }
+
+        .download-meta {
+            margin-top: 16px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* Sections */
+        section { padding: 80px 0; border-top: 1px solid var(--border); }
+        h2 { font-size: 2rem; font-weight: 800; margin-bottom: 48px; letter-spacing: -1px; }
+
+        /* Steps */
+        .steps-grid {
+            display: grid;
+            gap: 24px;
+        }
+
+        .step-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px 32px;
+            display: flex;
+            gap: 24px;
+            align-items: flex-start;
+            transition: 0.3s;
+        }
+
+        .step-card:hover { border-color: var(--green); transform: translateY(-2px); }
+
+        .step-number {
+            flex-shrink: 0;
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #00d4aa, #06b6d4);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: #0d0d1a;
+        }
+
+        .step-content h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .step-content p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .step-content code {
+            background: rgba(0, 212, 170, 0.1);
+            color: var(--green);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-family: 'Consolas', monospace;
+        }
+
+        /* Warning Box */
+        .warning-box {
+            background: rgba(251, 191, 36, 0.08);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-top: 12px;
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+
+        .warning-box span {
+            color: #fbbf24;
+            font-size: 0.9rem;
+        }
+
+        /* Requirements */
+        .req-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+        }
+
+        .req-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .req-card .req-icon { font-size: 1.8rem; margin-bottom: 10px; }
+        .req-card h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; }
+        .req-card p { color: var(--text-muted); font-size: 0.85rem; }
+
+        /* FAQ */
+        .faq-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+
+        .faq-item:hover { border-color: rgba(0, 212, 170, 0.3); }
+
+        .faq-question {
+            padding: 20px 24px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .faq-question .arrow {
+            color: var(--text-muted);
+            transition: 0.3s;
+            font-size: 1.2rem;
+        }
+
+        .faq-item.open .faq-question .arrow { transform: rotate(180deg); }
+
+        .faq-answer {
+            display: none;
+            padding: 0 24px 20px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        .faq-item.open .faq-answer { display: block; }
+
+        /* Footer */
+        footer { padding: 60px 0; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted); }
+        .footer-links { display: flex; justify-content: center; gap: 32px; margin-bottom: 24px; }
+        .footer-links a { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; }
+        .footer-links a:hover { color: var(--text); }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2.2rem; }
+            .step-card { flex-direction: column; gap: 12px; }
+            .download-btn { padding: 14px 28px; font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="container">
+            <a href="/" class="logo">K. GUZMAN</a>
+            <div class="nav-links">
+                <a href="/">Portfolio</a>
+                <a href="/products/dofustouchwsa/install">Installer</a>
+                <a href="mailto:contact@deuthe.com">Contacto</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="hero">
+        <div class="container">
+            <div class="hero-badge">&#9889; Versión 1.0</div>
+            <h1>Deuthe's <span class="gradient-text">Solution</span></h1>
+            <p class="hero-description">
+                Instalador automático de WSA + Dofus Touch Multi-Account para Windows 11.
+                Todo en un solo ejecutable. Sin configuración manual.
+            </p>
+
+            <!-- UPDATE THIS LINK: Replace with your actual GitHub Release URL after uploading -->
+            <a href="https://github.com/Deuthe/san-whitepaper/releases/download/v1.0/DeutheSetup.exe"
+               class="download-btn" id="downloadBtn">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 16l-6-6h4V4h4v6h4l-6 6zm-8 4h16v-2H4v2z"/>
+                </svg>
+                Descargar DeutheSetup.exe
+            </a>
+            <p class="download-meta">~700 MB &middot; Windows 11 &middot; Requiere contraseña de autorización</p>
+        </div>
+    </div>
+
+    <section id="steps">
+        <div class="container">
+            <h2>Cómo Instalar</h2>
+            <div class="steps-grid">
+
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Descargar el Instalador</h3>
+                        <p>Haz clic en el botón de arriba para descargar <code>DeutheSetup.exe</code>. La descarga puede tardar unos minutos dependiendo de tu conexión.</p>
+                    </div>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Crear una Carpeta Dedicada</h3>
+                        <p>Crea una carpeta en tu PC, por ejemplo <code>C:\DeutheSetup</code> o en el Escritorio. Mueve el archivo <code>DeutheSetup.exe</code> dentro de esa carpeta.</p>
+                        <div class="warning-box">
+                            <span>&#9888;&#65039;</span>
+                            <span><strong>Importante:</strong> No ejecutes el .exe directamente desde la carpeta de Descargas. Siempre ponlo en su propia carpeta primero.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Ejecutar como Administrador</h3>
+                        <p>Haz clic derecho en <code>DeutheSetup.exe</code> &rarr; <strong>Ejecutar como administrador</strong>. Ingresa la contraseña de autorización proporcionada.</p>
+                    </div>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3>Seleccionar Cuentas y Esperar</h3>
+                        <p>Elige el número de cuentas que deseas (1-8) y pulsa <strong>START INSTALLATION</strong>. El instalador se encarga del resto automáticamente. Si pide reiniciar, reinicia y vuelve a ejecutar.</p>
+                    </div>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">5</div>
+                    <div class="step-content">
+                        <h3>¡Listo! Abre tus Cuentas</h3>
+                        <p>Busca <strong>DOFUS Touch</strong>, <strong>DOFUS Touch W</strong>, <strong>DOFUS Touch Y</strong>, etc. en el menú Inicio de Windows. Cada icono es una cuenta independiente.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="requirements">
+        <div class="container">
+            <h2>Requisitos del Sistema</h2>
+            <div class="req-grid">
+                <div class="req-card">
+                    <div class="req-icon">&#128187;</div>
+                    <h4>Windows 11</h4>
+                    <p>Home, Pro o Enterprise</p>
+                </div>
+                <div class="req-card">
+                    <div class="req-icon">&#129504;</div>
+                    <h4>8 GB RAM</h4>
+                    <p>Mínimo (16 GB recomendado)</p>
+                </div>
+                <div class="req-card">
+                    <div class="req-icon">&#128190;</div>
+                    <h4>15 GB Libres</h4>
+                    <p>Espacio en disco C:</p>
+                </div>
+                <div class="req-card">
+                    <div class="req-icon">&#9881;&#65039;</div>
+                    <h4>Virtualización</h4>
+                    <p>Habilitada en BIOS/UEFI</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="faq">
+        <div class="container">
+            <h2>Preguntas Frecuentes</h2>
+
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="faq-question">
+                    ¿Cuántas cuentas puedo tener abiertas al mismo tiempo?
+                    <span class="arrow">&#9660;</span>
+                </div>
+                <div class="faq-answer">
+                    Hasta 4 cuentas simultáneas con la misma conexión de internet. Para PvM es más que suficiente para jugar cómodamente.
+                </div>
+            </div>
+
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="faq-question">
+                    ¿Es seguro? ¿Qué hace el instalador?
+                    <span class="arrow">&#9660;</span>
+                </div>
+                <div class="faq-answer">
+                    El instalador configura WSA (Windows Subsystem for Android), instala el juego original y crea copias con nombres de paquete diferentes para que puedan coexistir. No modifica archivos del sistema ni envía datos a ningún servidor externo. Al cerrar, se eliminan todos los archivos temporales automáticamente.
+                </div>
+            </div>
+
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="faq-question">
+                    ¿Necesito reiniciar el PC?
+                    <span class="arrow">&#9660;</span>
+                </div>
+                <div class="faq-answer">
+                    Solo si es la primera vez que instalas WSA. El instalador activará la "Virtual Machine Platform" de Windows y pedirá un reinicio. Después del reinicio, ejecuta el instalador de nuevo y continuará desde donde se quedó.
+                </div>
+            </div>
+
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="faq-question">
+                    Me da error de autorización al abrir la segunda cuenta
+                    <span class="arrow">&#9660;</span>
+                </div>
+                <div class="faq-answer">
+                    Asegúrate de tener <strong>Google Chrome</strong> instalado dentro de WSA. Sin Chrome, los clones comparten el mismo token de autenticación y se cierran entre sí. Instala Chrome desde el Play Store de WSA o contacta para asistencia.
+                </div>
+            </div>
+
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="faq-question">
+                    ¿Dónde debo poner el archivo .exe?
+                    <span class="arrow">&#9660;</span>
+                </div>
+                <div class="faq-answer">
+                    Crea una carpeta específica (ej: <strong>C:\DeutheSetup</strong> o una carpeta en el Escritorio) y coloca el .exe ahí. No lo ejecutes directamente desde la carpeta de Descargas, ya que necesita espacio para extraer archivos temporales durante la instalación.
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <a href="/">Portfolio</a>
+                <a href="/products/dofustouchwsa/install">Installer</a>
+                <a href="https://github.com/Deuthe" target="_blank">GitHub</a>
+                <a href="mailto:contact@deuthe.com">Contacto</a>
+            </div>
+            <p>&copy; 2026 Kevin Guzman Perez &mdash; Deuthe's Solution</p>
+        </div>
+    </footer>
+
+    <script>
+        function toggleFaq(item) {
+            item.classList.toggle('open');
+        }
+    </script>
+</body>
+</html>
