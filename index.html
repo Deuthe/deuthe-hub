@@ -1,372 +1,899 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kevin Guzman | Cybersecurity & Infrastructure Architect</title>
-    <meta name="description" content="Portfolio of Kevin Guzman (Deuthe) — Cybersecurity, Systems Architecture, Android Virtualization, Enterprise Networks, and Cloud Infrastructure.">
-    <link rel="canonical" href="https://deuthe.com/">
-    <link rel="icon" type="image/png" href="assets/img/logo.png">
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Kevin Guzman | Infrastructure, Advanced Cybersecurity & Cloud</title>
+ <meta name="description" content="Portfolio of Kevin Guzman Infrastructure student specializing in Advanced Cybersecurity, Cloud, Innovation, OS Virtualization, Automation, and LLMs.">
+ <link rel="canonical" href="https://deuthe.com/">
+ <link rel="icon" type="image/png" href="assets/img/logo.png">
 
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://deuthe.com/">
-    <meta property="og:title" content="Kevin Guzman | Cybersecurity & Infrastructure Architect">
-    <meta property="og:description" content="Portfolio of Kevin Guzman — Cybersecurity, Systems Architecture, Android Virtualization & Enterprise Infrastructure.">
-    <meta property="og:image" content="https://deuthe.com/assets/img/logo.png">
+ <!-- Open Graph -->
+ <meta property="og:type" content="website">
+ <meta property="og:url" content="https://deuthe.com/">
+ <meta property="og:title" content="Kevin Guzman | Infrastructure, Advanced Cybersecurity & Cloud">
+ <meta property="og:description" content="Portfolio of Kevin Guzman Infrastructure student specializing in Advanced Cybersecurity, Cloud, Innovation, OS Virtualization, Automation, and LLMs.">
+ <meta property="og:image" content="https://deuthe.com/assets/img/logo.png">
 
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary">
-    <meta property="twitter:url" content="https://deuthe.com/">
-    <meta property="twitter:title" content="Kevin Guzman | Cybersecurity & Infrastructure Architect">
-    <meta property="twitter:description" content="Portfolio of Kevin Guzman — Cybersecurity, Systems Architecture, Android Virtualization & Enterprise Infrastructure.">
-    <meta property="twitter:image" content="https://deuthe.com/assets/img/logo.png">
+ <!-- Twitter -->
+ <meta property="twitter:card" content="summary_large_image">
+ <meta property="twitter:url" content="https://deuthe.com/">
+ <meta property="twitter:title" content="Kevin Guzman | Infrastructure, Advanced Cybersecurity & Cloud">
+ <meta property="twitter:description" content="Portfolio of Kevin Guzman Infrastructure student specializing in Advanced Cybersecurity, Cloud, Innovation, OS Virtualization, Automation, and LLMs.">
+ <meta property="twitter:image" content="https://deuthe.com/assets/img/logo.png">
 
-    <!-- Structured Data (JSON-LD) -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "ProfilePage",
-      "mainEntity": {
-        "@type": "Person",
-        "name": "Kevin Guzman",
-        "alternateName": "Deuthe",
-        "url": "https://deuthe.com/",
-        "image": "https://deuthe.com/assets/img/cv-pic.jpg",
-        "jobTitle": "Cybersecurity & Systems Infrastructure Engineer",
-        "sameAs": [
-          "https://github.com/Deuthe"
-        ]
-      }
-    }
-    </script>
-    <style>
-        :root {
-            --primary: #3b82f6;
-            --primary-dark: #2563eb;
-            --secondary: #0f172a;
-            --accent: #00d4aa;
-            --bg: #020617;
-            --card-bg: #0f172a;
-            --text: #f8fafc;
-            --text-muted: #94a3b8;
-            --border: #1e293b;
-            --glass: rgba(15, 23, 42, 0.8);
-        }
+ <!-- Google Fonts (Cruip Open Typography) -->
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        html { scroll-behavior: smooth; }
+ <style>
+ /* Cruip Open Color Palette & Design Tokens */
+ :root {
+ --bg: #151719;
+ --bg-elevated: #1d2026;
+ --bg-card: #20242c;
+ --bg-card-hover: #262c37;
+ --primary: #6366f1;
+ --primary-hover: #4f46e5;
+ --primary-glow: rgba(99, 102, 241, 0.35);
+ --accent: #00d4aa;
+ --accent-glow: rgba(0, 212, 170, 0.3);
+ --border: #2d333f;
+ --border-hover: #3e4758;
+ --text-heading: #ffffff;
+ --text-body: #9ca3af;
+ --text-muted: #6b7280;
+ --radius-lg: 16px;
+ --radius-md: 10px;
+ --radius-sm: 6px;
+ }
 
-        body {
-            font-family: 'Inter', -apple-system, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
+ * { box-sizing: border-box; margin: 0; padding: 0; }
+ html { scroll-behavior: smooth; }
 
-        .container { max-width: 1000px; margin: 0 auto; padding: 0 24px; }
+ body {
+ font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+ background-color: var(--bg);
+ color: var(--text-body);
+ line-height: 1.65;
+ overflow-x: hidden;
+ -webkit-font-smoothing: antialiased;
+ background-image: 
+ radial-gradient(circle at 50% -5%, rgba(99, 102, 241, 0.22) 0%, transparent 55%),
+ radial-gradient(circle at 85% 15%, rgba(0, 212, 170, 0.08) 0%, transparent 45%);
+ background-repeat: no-repeat;
+ }
 
-        /* Navigation */
-        nav {
-            position: fixed;
-            top: 0; width: 100%;
-            background: var(--glass);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--border);
-            z-index: 1000;
-        }
+ .container { max-width: 1060px; margin: 0 auto; padding: 0 24px; }
 
-        nav .container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 64px;
-        }
+ /* Navbar (Cruip Open Style) */
+ nav {
+ position: fixed;
+ top: 0; width: 100%;
+ background: rgba(21, 23, 25, 0.85);
+ backdrop-filter: blur(16px);
+ -webkit-backdrop-filter: blur(16px);
+ border-bottom: 1px solid var(--border);
+ z-index: 1000;
+ }
 
-        .logo { font-weight: 800; letter-spacing: -0.5px; font-size: 1.15rem; color: #fff; text-decoration: none; display: flex; align-items: center; gap: 10px; }
-        .logo img { width: 32px; height: 32px; border-radius: 8px; box-shadow: 0 0 15px rgba(0, 212, 170, 0.4); }
-        .nav-links { display: flex; gap: 24px; align-items: center; }
-        .nav-links a { text-decoration: none; color: var(--text-muted); font-size: 0.9rem; font-weight: 500; transition: 0.2s; }
-        .nav-links a:hover { color: var(--accent); }
+ nav .container {
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ height: 70px;
+ }
 
-        /* Hero */
-        header { padding: 160px 0 100px; text-align: center; }
-        .profile-pic {
-            width: 160px; height: 160px; border-radius: 36px;
-            object-fit: cover; margin-bottom: 32px;
-            border: 3px solid var(--accent);
-            box-shadow: 0 0 50px rgba(0, 212, 170, 0.3);
-            background: #0d0d1a;
-        }
+ .brand {
+ display: flex;
+ align-items: center;
+ gap: 12px;
+ text-decoration: none;
+ color: var(--text-heading);
+ font-weight: 800;
+ font-size: 1.1rem;
+ letter-spacing: -0.3px;
+ }
 
-        h1 { font-size: 3.5rem; font-weight: 800; letter-spacing: -2px; margin-bottom: 16px; line-height: 1; }
-        .gradient-text { background: linear-gradient(90deg, #00d4aa, #38bdf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .tagline { font-size: 1.2rem; color: var(--text-muted); max-width: 600px; margin: 0 auto 40px; }
+ .brand-logo {
+ width: 34px;
+ height: 34px;
+ border-radius: var(--radius-sm);
+ box-shadow: 0 0 16px var(--primary-glow);
+ }
 
-        /* Skills */
-        .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-top: 40px; }
-        .skill-tag { background: var(--card-bg); border: 1px solid var(--border); padding: 12px; border-radius: 8px; font-size: 0.85rem; text-align: center; }
-        .skill-tag strong { display: block; color: var(--accent); margin-bottom: 4px; font-size: 0.75rem; text-transform: uppercase; }
+ .nav-right {
+ display: flex;
+ align-items: center;
+ gap: 24px;
+ }
 
-        /* Projects */
-        section { padding: 100px 0; border-top: 1px solid var(--border); }
-        h2 { font-size: 2rem; font-weight: 800; margin-bottom: 48px; letter-spacing: -1px; }
+ .nav-links {
+ display: flex;
+ gap: 22px;
+ align-items: center;
+ }
 
-        .timeline { position: relative; }
-        .project-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 32px;
-            margin-bottom: 32px;
-            transition: 0.3s;
-            position: relative;
-            overflow: hidden;
-        }
+ .nav-links a {
+ text-decoration: none;
+ color: var(--text-body);
+ font-size: 0.9rem;
+ font-weight: 500;
+ transition: color 0.2s;
+ }
 
-        .project-card:hover { border-color: var(--primary); transform: translateY(-4px); }
-        .project-card::before {
-            content: ""; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--primary);
-        }
+ .nav-links a:hover { color: var(--text-heading); }
 
-        .project-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
-        .semester-label { font-size: 0.75rem; font-weight: 700; color: var(--primary); text-transform: uppercase; }
-        .project-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 8px; }
-        
-        .project-summary { font-size: 1rem; color: var(--text-muted); margin-bottom: 24px; }
-        
-        /* Expandable Content */
-        .details-content { 
-            display: none; 
-            padding-top: 24px; 
-            border-top: 1px solid var(--border);
-            font-size: 0.95rem;
-        }
-        .project-card.expanded .details-content { display: block; }
+ /* Language Switcher */
+ .lang-toggle {
+ display: flex;
+ align-items: center;
+ background: var(--bg-elevated);
+ border: 1px solid var(--border);
+ border-radius: var(--radius-sm);
+ overflow: hidden;
+ }
 
-        .detail-section { margin-bottom: 20px; }
-        .detail-section h4 { font-size: 0.85rem; color: var(--accent); text-transform: uppercase; margin-bottom: 8px; }
-        .detail-section ul { padding-left: 20px; color: var(--text-muted); }
-        .detail-section li { margin-bottom: 6px; }
+ .lang-btn {
+ background: none;
+ border: none;
+ color: var(--text-muted);
+ padding: 5px 10px;
+ font-size: 0.78rem;
+ font-weight: 700;
+ cursor: pointer;
+ transition: all 0.2s;
+ font-family: inherit;
+ }
 
-        .toggle-btn {
-            background: none; border: 1px solid var(--border); color: var(--text);
-            padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.85rem;
-            font-weight: 600; transition: 0.2s;
-        }
-        .toggle-btn:hover { background: var(--border); }
+ .lang-btn.active {
+ background: var(--primary);
+ color: #ffffff;
+ }
 
-        /* Footer */
-        footer { padding: 80px 0; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted); }
-        .footer-links { display: flex; justify-content: center; gap: 32px; margin-bottom: 24px; }
-        .footer-links a { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; }
-        .footer-links a:hover { color: var(--text); }
+ .btn-nav-telegram {
+ background: var(--primary);
+ color: #ffffff !important;
+ padding: 8px 16px;
+ border-radius: var(--radius-sm);
+ font-size: 0.85rem !important;
+ font-weight: 600 !important;
+ text-decoration: none;
+ transition: all 0.2s;
+ box-shadow: 0 0 20px var(--primary-glow);
+ }
 
-        @media (max-width: 768px) {
-            h1 { font-size: 2.5rem; }
-            .project-header { flex-direction: column; gap: 8px; }
-        }
-    </style>
+ .btn-nav-telegram:hover {
+ background: var(--primary-hover);
+ transform: translateY(-1px);
+ }
+
+ /* Hero (Cruip Open Header) */
+ header.hero {
+ padding: 160px 0 90px;
+ text-align: center;
+ }
+
+ .hero-badge {
+ display: inline-flex;
+ align-items: center;
+ gap: 8px;
+ background: rgba(99, 102, 241, 0.12);
+ border: 1px solid rgba(99, 102, 241, 0.3);
+ color: #a5b4fc;
+ padding: 6px 16px;
+ border-radius: 20px;
+ font-size: 0.82rem;
+ font-weight: 600;
+ margin-bottom: 24px;
+ }
+
+ .hero-badge .dot {
+ width: 6px;
+ height: 6px;
+ border-radius: 50%;
+ background: var(--accent);
+ box-shadow: 0 0 8px var(--accent);
+ }
+
+ /* Crisp High-Contrast White Name */
+ .hero-title {
+ font-size: 3.6rem;
+ font-weight: 900;
+ letter-spacing: -1.5px;
+ line-height: 1.1;
+ margin-bottom: 12px;
+ color: #ffffff !important;
+ text-shadow: 0 2px 20px rgba(0, 0, 0, 0.6);
+ }
+
+ .hero-subtitle {
+ font-size: 1.35rem;
+ font-weight: 700;
+ color: #818cf8;
+ letter-spacing: -0.3px;
+ margin-bottom: 20px;
+ }
+
+ .hero-bio {
+ max-width: 680px;
+ margin: 0 auto 36px;
+ color: var(--text-body);
+ font-size: 1.05rem;
+ line-height: 1.7;
+ }
+
+ .hero-buttons {
+ display: flex;
+ gap: 16px;
+ justify-content: center;
+ flex-wrap: wrap;
+ }
+
+ .btn-cta-main {
+ display: inline-flex;
+ align-items: center;
+ gap: 8px;
+ background: linear-gradient(135deg, #6366f1, #4f46e5);
+ color: #ffffff;
+ padding: 14px 28px;
+ border-radius: var(--radius-sm);
+ font-weight: 600;
+ font-size: 0.95rem;
+ text-decoration: none;
+ transition: all 0.2s;
+ box-shadow: 0 4px 25px var(--primary-glow);
+ }
+
+ .btn-cta-main:hover {
+ transform: translateY(-2px);
+ box-shadow: 0 8px 30px var(--primary-glow);
+ color: #ffffff;
+ }
+
+ .btn-cta-secondary {
+ display: inline-flex;
+ align-items: center;
+ gap: 8px;
+ background: var(--bg-card);
+ color: var(--text-heading);
+ border: 1px solid var(--border);
+ padding: 14px 28px;
+ border-radius: var(--radius-sm);
+ font-weight: 600;
+ font-size: 0.95rem;
+ text-decoration: none;
+ transition: all 0.2s;
+ }
+
+ .btn-cta-secondary:hover {
+ background: var(--bg-card-hover);
+ border-color: var(--border-hover);
+ transform: translateY(-2px);
+ color: #ffffff;
+ }
+
+ /* Section Global (Cruip Open Style) */
+ section {
+ padding: 90px 0;
+ border-bottom: 1px solid var(--border);
+ }
+
+ .section-header {
+ text-align: center;
+ max-width: 640px;
+ margin: 0 auto 50px;
+ }
+
+ .section-tag {
+ font-size: 0.78rem;
+ font-weight: 800;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #818cf8;
+ margin-bottom: 8px;
+ display: block;
+ }
+
+ .section-title {
+ font-size: 2.2rem;
+ font-weight: 800;
+ letter-spacing: -0.8px;
+ color: #ffffff;
+ margin-bottom: 10px;
+ }
+
+ .section-desc {
+ color: var(--text-body);
+ font-size: 1rem;
+ }
+
+ /* Services Grid (Cruip Feature 3x2 Grid) */
+ .services-grid {
+ display: grid;
+ grid-template-columns: repeat(3, 1fr);
+ gap: 24px;
+ }
+
+ .service-card {
+ background: var(--bg-card);
+ border: 1px solid var(--border);
+ border-radius: var(--radius-lg);
+ padding: 32px 24px;
+ text-align: center;
+ display: flex;
+ flex-direction: column;
+ justify-content: space-between;
+ transition: all 0.25s;
+ }
+
+ .service-card:hover {
+ border-color: rgba(99, 102, 241, 0.5);
+ background: var(--bg-card-hover);
+ transform: translateY(-3px);
+ box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+ }
+
+ .service-icon-circle {
+ width: 54px;
+ height: 54px;
+ border-radius: 50%;
+ background: rgba(99, 102, 241, 0.15);
+ border: 1px solid rgba(99, 102, 241, 0.35);
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 1.5rem;
+ margin: 0 auto 20px;
+ color: #a5b4fc;
+ }
+
+ .service-title {
+ font-size: 1.15rem;
+ font-weight: 700;
+ color: #ffffff;
+ margin-bottom: 10px;
+ }
+
+ .service-desc {
+ color: var(--text-body);
+ font-size: 0.9rem;
+ line-height: 1.6;
+ margin-bottom: 18px;
+ flex-grow: 1;
+ }
+
+ .service-link {
+ color: #818cf8;
+ text-decoration: none;
+ font-size: 0.85rem;
+ font-weight: 600;
+ transition: color 0.2s;
+ }
+
+ .service-link:hover { color: #a5b4fc; text-decoration: underline; }
+
+ /* Featured Product (Cruip Open Zig-Zag Spotlight) */
+ .product-card {
+ background: var(--bg-card);
+ border: 1px solid var(--border);
+ border-radius: var(--radius-lg);
+ padding: 40px;
+ display: grid;
+ grid-template-columns: 1.2fr 0.8fr;
+ gap: 36px;
+ align-items: center;
+ }
+
+ .product-badge {
+ display: inline-block;
+ background: rgba(0, 212, 170, 0.12);
+ color: var(--accent);
+ border: 1px solid rgba(0, 212, 170, 0.3);
+ font-size: 0.75rem;
+ font-weight: 700;
+ padding: 4px 12px;
+ border-radius: 20px;
+ text-transform: uppercase;
+ letter-spacing: 0.5px;
+ margin-bottom: 12px;
+ }
+
+ .product-title {
+ font-size: 1.7rem;
+ font-weight: 800;
+ color: #ffffff;
+ margin-bottom: 10px;
+ }
+
+ .product-desc {
+ color: var(--text-body);
+ font-size: 0.95rem;
+ line-height: 1.65;
+ margin-bottom: 20px;
+ }
+
+ .product-specs {
+ background: var(--bg);
+ border: 1px solid var(--border);
+ border-radius: var(--radius-md);
+ padding: 24px;
+ }
+
+ .spec-item {
+ display: flex;
+ justify-content: space-between;
+ font-size: 0.82rem;
+ margin-bottom: 10px;
+ border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+ padding-bottom: 8px;
+ }
+
+ .spec-item:last-child { margin-bottom: 0; border-bottom: none; padding-bottom: 0; }
+ .spec-label { color: var(--text-muted); }
+ .spec-val { color: var(--accent); font-family: 'JetBrains Mono', monospace; font-weight: 600; }
+
+ /* Projects Grid (Cruip Open Showcase) */
+ .projects-grid {
+ display: grid;
+ grid-template-columns: repeat(2, 1fr);
+ gap: 24px;
+ }
+
+ .project-card {
+ background: var(--bg-card);
+ border: 1px solid var(--border);
+ border-radius: var(--radius-lg);
+ padding: 30px;
+ display: flex;
+ flex-direction: column;
+ justify-content: space-between;
+ transition: all 0.25s;
+ }
+
+ .project-card:hover {
+ border-color: var(--border-hover);
+ background: var(--bg-card-hover);
+ }
+
+ .project-meta {
+ font-size: 0.75rem;
+ font-weight: 700;
+ color: #818cf8;
+ text-transform: uppercase;
+ letter-spacing: 0.8px;
+ margin-bottom: 8px;
+ }
+
+ .project-name {
+ font-size: 1.25rem;
+ font-weight: 700;
+ color: #ffffff;
+ margin-bottom: 10px;
+ line-height: 1.3;
+ }
+
+ .project-desc {
+ color: var(--text-body);
+ font-size: 0.9rem;
+ line-height: 1.6;
+ margin-bottom: 16px;
+ }
+
+ .project-link {
+ color: var(--accent);
+ text-decoration: none;
+ font-size: 0.88rem;
+ font-weight: 700;
+ transition: gap 0.2s;
+ }
+
+ .project-link:hover { text-decoration: underline; }
+
+ /* Footer (Cruip Open Footer) */
+ footer {
+ padding: 60px 0 40px;
+ background: #0f1114;
+ border-top: 1px solid var(--border);
+ text-align: center;
+ }
+
+ .footer-links {
+ display: flex;
+ justify-content: center;
+ gap: 28px;
+ margin-bottom: 20px;
+ flex-wrap: wrap;
+ }
+
+ .footer-links a {
+ color: var(--text-body);
+ text-decoration: none;
+ font-size: 0.9rem;
+ font-weight: 500;
+ transition: color 0.2s;
+ }
+
+ .footer-links a:hover { color: #ffffff; }
+
+ .footer-copy {
+ color: var(--text-muted);
+ font-size: 0.85rem;
+ }
+
+ @media (max-width: 860px) {
+ .services-grid { grid-template-columns: 1fr; }
+ .projects-grid { grid-template-columns: 1fr; }
+ .product-card { grid-template-columns: 1fr; }
+ .hero-title { font-size: 2.6rem; }
+ .nav-links { display: none; }
+ }
+ </style>
 </head>
 <body>
 
-    <nav>
-        <div class="container">
-            <a href="/" class="logo">
-                <img src="assets/img/logo.png" alt="Deuthe Logo">
-                <span>DEUTHE</span>
-            </a>
-            <div class="nav-links">
-                <a href="#projects">Projects</a>
-                <a href="/products/dofustouchwsa/install/" style="color: var(--accent); font-weight: 700;">Deuthe's Solution &#x26A1;</a>
-                <a href="https://github.com/Deuthe" target="_blank">GitHub</a>
-                <a href="#skills">Skills</a>
-                <a href="mailto:contact@deuthe.com">Contact</a>
-            </div>
-        </div>
-    </nav>
+ <!-- NAVBAR -->
+ <nav>
+ <div class="container">
+ <a href="/" class="brand">
+ <img src="assets/img/logo.png" alt="Deuthe Logo" class="brand-logo">
+ <span>KEVIN GUZMAN</span>
+ </a>
+ <div class="nav-right">
+ <div class="nav-links">
+ <a href="#services" data-i18n="nav_services">Services</a>
+ <a href="#product" data-i18n="nav_product">Product</a>
+ <a href="#projects" data-i18n="nav_projects">Projects</a>
+ <a href="https://github.com/Deuthe" target="_blank">GitHub</a>
+ </div>
+ <div class="lang-toggle">
+ <button class="lang-btn active" onclick="setLang('en')" id="langEn">EN</button>
+ <button class="lang-btn" onclick="setLang('es')" id="langEs">ES</button>
+ </div>
+ <a href="https://t.me/deuthe" target="_blank" class="btn-nav-telegram">Telegram</a>
+ </div>
+ </div>
+ </nav>
 
-    <header>
-        <div class="container">
-            <img src="assets/img/logo.png" alt="Kevin Guzman (Deuthe)" class="profile-pic">
-            <h1>Kevin <span class="gradient-text">Guzman</span></h1>
-            <p class="tagline">Cybersecurity & Infrastructure Student focusing on AI, enterprise security architectures, secure operations, and automation engineering.</p>
-            
-            <div id="skills" class="skills-grid">
-                <div class="skill-tag"><strong>Security Operations</strong>Wazuh SIEM, ELK Stack, Suricata IDS/IPS</div>
-                <div class="skill-tag"><strong>Infrastructure Architecture</strong>Enterprise SAN, Identity & Access Management (Keycloak/OPA)</div>
-                <div class="skill-tag"><strong>Automation & Virtualization</strong>WSA Engine, Hyper-V, PowerShell Multithreading, ADB</div>
-                <div class="skill-tag"><strong>Offensive Security</strong>Penetration Testing, Vulnerability Assessment, Threat Modeling</div>
-            </div>
-        </div>
-    </header>
+ <!-- HERO (Cruip Open Style) -->
+ <header class="hero">
+ <div class="container">
+ <div class="hero-badge">
+ <span class="dot"></span>
+ <span data-i18n="hero_badge">Infrastructure / Advanced Cybersecurity / Cloud</span>
+ </div>
+ <h1 class="hero-title">Kevin Guzman</h1>
+ <div class="hero-subtitle" data-i18n="hero_sub">Infrastructure, Advanced Cybersecurity & Cloud Innovation</div>
+ <p class="hero-bio" data-i18n="hero_bio">
+ Infrastructure student specializing in advanced cybersecurity and cloud & innovation. In my spare time, I build and experiment with OS virtualization, automation tools, and LLMs.
+ </p>
+ <div class="hero-buttons">
+ <a href="#services" class="btn-cta-main" data-i18n="btn_explore_services">Explore Services &rarr;</a>
+ <a href="#projects" class="btn-cta-secondary" data-i18n="btn_view_projects">View Projects</a>
+ </div>
+ </div>
+ </header>
 
-    <section id="projects">
-        <div class="container">
-            <h2>Projects & Engineering Portfolio</h2>
-            
-            <div class="timeline">
+ <!-- SERVICES (Cruip 3x2 Grid) -->
+ <section id="services">
+ <div class="container">
+ <div class="section-header">
+ <span class="section-tag" data-i18n="tag_capabilities">Capabilities</span>
+ <h2 class="section-title" data-i18n="title_services">Services & Technical Focus</h2>
+ <p class="section-desc" data-i18n="desc_services">Core technical competencies across infrastructure, security operations, and systems automation.</p>
+ </div>
 
-                <!-- Featured Product: Deuthe's Solution -->
-                <div class="project-card" id="deuthe-solution" style="border-color: rgba(0, 212, 170, 0.4); background: linear-gradient(180deg, #111128, #0f172a);">
-                    <div class="project-header">
-                        <div>
-                            <span class="semester-label" style="color: var(--accent);">&#x26A1; Featured Solution &middot; Production</span>
-                            <h3 class="project-title">Deuthe's Solution: WSA Multi-Account Provisioning & Licensing Engine</h3>
-                        </div>
-                        <a href="/products/dofustouchwsa/install" style="background: var(--accent); color: #0d0d1a; padding: 8px 16px; border-radius: 8px; font-weight: 700; text-decoration: none; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px;">
-                            View Product &#x2192;
-                        </a>
-                    </div>
-                    <p class="project-summary">Enterprise automation suite for Windows 11 provisioning WSA, dynamic APK decompilation & multi-account cloning, and cloud licensing with hardware-locking (HWID).</p>
-                    
-                    <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px;">
-                        <span style="background: rgba(0, 212, 170, 0.1); color: var(--accent); padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 600;">Windows 11 WSA</span>
-                        <span style="background: rgba(0, 212, 170, 0.1); color: var(--accent); padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 600;">PowerShell Engine</span>
-                        <span style="background: rgba(0, 212, 170, 0.1); color: var(--accent); padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 600;">Cloudflare Tunnel</span>
-                        <span style="background: rgba(0, 212, 170, 0.1); color: var(--accent); padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 600;">HWID Protection</span>
-                    </div>
-                </div>
+ <div class="services-grid">
 
-                <!-- Semester 7 -->
-                <div class="project-card" id="s7">
-                    <div class="project-header">
-                        <div>
-                            <span class="semester-label">Semester 7 | Current</span>
-                            <h3 class="project-title">Automated Threat Defense & CyDes Lab</h3>
-                        </div>
-                        <button class="toggle-btn" onclick="toggleDetails('s7')">View Summary</button>
-                    </div>
-                    <p class="project-summary">Leading the "Power2Power CyDES" initiative while researching AI-driven defensive automation for Purple Team environments.</p>
-                    
-                    <div class="details-content">
-                        <div class="detail-section">
-                            <h4>Group Leadership: Power2Power</h4>
-                            <ul>
-                                <li>Acting as Group Leader for a collaboration with Power To Power on distributed energy system security.</li>
-                                <li>Designing CRA-compliant network architectures for cyber-physical systems involving PLCs and Digital Twins.</li>
-                                <li>Implementing IEC 62443 standard zones and conduits in complex Netlab environments.</li>
-                            </ul>
-                        </div>
-                        <div class="detail-section">
-                            <h4>Personal Research: AI-Driven Defense</h4>
-                            <ul>
-                                <li>Developed an automated defense script utilizing Gemma 4B and Gemini-CLI for real-time SSH log analysis.</li>
-                                <li>Integrating active deception (Canary Tokens) with endpoint forensics (Velociraptor/Sysmon).</li>
-                                <li>Built a 64GB RAM virtualized homelab for high-fidelity security validation and incident response testing.</li>
-                            </ul>
-                        </div>
-                        <a href="cydes.html" style="color: var(--accent); text-decoration: none; font-size: 0.9rem; font-weight: 700;">Explore Lab Architecture Page →</a>
-                    </div>
-                </div>
+ <!-- 1. SAN Storage -->
+ <div class="service-card">
+ 
+ <div class="service-icon-circle"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#a5b4fc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg></div>
+ <h3 class="service-title" data-i18n="srv1_title">Storage Systems (SAN)</h3>
+ <p class="service-desc" data-i18n="srv1_desc">iSCSI target/initiator architecture, dedicated storage VLANs, CHAP authentication, and latency/IOPS benchmarking.</p>
+ <a href="whitepaper.html" class="service-link" data-i18n="srv1_link">View SAN Case Study &rarr;</a>
+ </div>
 
-                <!-- Semester 6 -->
-                <div class="project-card" id="s6">
-                    <div class="project-header">
-                        <div>
-                            <span class="semester-label">Semester 6</span>
-                            <h3 class="project-title">IAM Dataspaces & SAN Architecture</h3>
-                        </div>
-                        <button class="toggle-btn" onclick="toggleDetails('s6')">View Summary</button>
-                    </div>
-                    <p class="project-summary">Implementing ODRL-based authorization visualizers and transitioning from local storage to enterprise SAN architectures.</p>
-                    
-                    <div class="details-content">
-                        <div class="detail-section">
-                            <h4>IAM building Blocks (Smart City)</h4>
-                            <ul>
-                                <li>Integrated IAM components into a dataspace for the "Eindhoven Verlicht" initiative.</li>
-                                <li>Developed the ODRL Authorization Visualizer using a microservice stack: APISIX, OPA (Rego), and Keycloak.</li>
-                                <li>Successfully orchestrated end-to-end JWT token validation and dynamic policy enforcement.</li>
-                            </ul>
-                        </div>
-                        <div class="detail-section">
-                            <h4>SAN Evolution</h4>
-                            <ul>
-                                <li>Built a Storage Area Network (SAN) prototype using consumer-grade hardware and iSCSI protocols.</li>
-                                <li>Conducted performance gap analysis between NAS and SAN, focusing on latency and virtualization workloads.</li>
-                                <li>Applied TOGAF Phase A and ArchiMate modeling to align technical setup with business continuity requirements.</li>
-                            </ul>
-                        </div>
-                        <a href="whitepaper.html" style="color: var(--accent); text-decoration: none; font-size: 0.9rem; font-weight: 700;">View SAN Whitepaper →</a>
-                    </div>
-                </div>
+ <!-- 2. OT/ICS Security -->
+ <div class="service-card">
+ 
+ <div class="service-icon-circle"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#a5b4fc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></div>
+ <h3 class="service-title" data-i18n="srv2_title">OT/ICS Network Security</h3>
+ <p class="service-desc" data-i18n="srv2_desc">Industrial control systems network segmentation, Purdue Model Level 0-5 architecture, and IEC 62443 zone/conduit design.</p>
+ <a href="cydes.html" class="service-link" data-i18n="srv2_link">View Lab Topology &rarr;</a>
+ </div>
 
-                <!-- Semester 5 -->
-                <div class="project-card" id="s5">
-                    <div class="project-header">
-                        <div>
-                            <span class="semester-label">Semester 5 | Internship</span>
-                            <h3 class="project-title">Enterprise Infrastructure Modernization</h3>
-                        </div>
-                        <button class="toggle-btn" onclick="toggleDetails('s5')">View Summary</button>
-                    </div>
-                    <p class="project-summary">Internship at Bufab Flos: Redesigning corporate networks for automation and ISO 27001 compliance.</p>
-                    
-                    <div class="details-content">
-                        <div class="detail-section">
-                            <h4>Bufab Flos Modernization</h4>
-                            <ul>
-                                <li>Responsible for redesigning and implementing network segments to support a new Warehouse Management System.</li>
-                                <li>Prepared infrastructure for ISO 27001 compliance through strict VLAN segmentation and firewall hardening.</li>
-                                <li>Executed Fortinet Firewall configurations, server consolidation, and Wi-Fi frequency analysis.</li>
-                                <li>Coordinated technical requirements with stakeholders to ensure zero-downtime during the migration.</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+ <!-- 3. OS Virtualization -->
+ <div class="service-card">
+ 
+ <div class="service-icon-circle"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#a5b4fc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg></div>
+ <h3 class="service-title" data-i18n="srv3_title">OS Virtualization & Tools</h3>
+ <p class="service-desc" data-i18n="srv3_desc">Windows Subsystem for Android deployment, multithreaded PowerShell automation, and in-memory payload execution.</p>
+ <a href="#product" class="service-link" data-i18n="srv3_link">View WSA Product &rarr;</a>
+ </div>
 
-                <!-- Semester 4 -->
-                <div class="project-card" id="s4">
-                    <div class="project-header">
-                        <div>
-                            <span class="semester-label">Semester 4</span>
-                            <h3 class="project-title">Professional Pentesting & IDS</h3>
-                        </div>
-                        <button class="toggle-btn" onclick="toggleDetails('s4')">View Summary</button>
-                    </div>
-                    <p class="project-summary">Conducting penetration tests for Germany-based clusters and implementing Suricata for network-wide detection.</p>
-                    
-                    <div class="details-content">
-                        <div class="detail-section">
-                            <h4>Pentest: EHV-A Project</h4>
-                            <ul>
-                                <li>Conducted intelligence gathering (OSINT) and reconnaissance for a virtualized environment hosted on Azure/Kubernetes.</li>
-                                <li>Identified outdated webserver versions and misconfigured certificates as primary entry vectors.</li>
-                                <li>Navigated complex legal and scoping constraints within a professional pentesting contract.</li>
-                            </ul>
-                        </div>
-                        <div class="detail-section">
-                            <h4>Network Defense</h4>
-                            <ul>
-                                <li>Implemented Suricata IDS for network-based intrusion detection.</li>
-                                <li>Developed "Body of Knowledge" documentation on Wi-Fi cracking vectors and defensive countermeasures.</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+ <!-- 4. Network Hardening -->
+ <div class="service-card">
+ 
+ <div class="service-icon-circle"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#a5b4fc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></div>
+ <h3 class="service-title" data-i18n="srv4_title">Network Hardening</h3>
+ <p class="service-desc" data-i18n="srv4_desc">Corporate network segmentation, VLAN isolation, Fortinet firewall access control lists, and ISO 27001 readiness.</p>
+ <a href="#projects" class="service-link" data-i18n="srv4_link">View Project Details &rarr;</a>
+ </div>
 
-            </div>
-        </div>
-    </section>
+ <!-- 5. Security Monitoring -->
+ <div class="service-card">
+ 
+ <div class="service-icon-circle"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#a5b4fc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg></div>
+ <h3 class="service-title" data-i18n="srv5_title">Security Operations</h3>
+ <p class="service-desc" data-i18n="srv5_desc">Wazuh SIEM monitoring, Suricata IDS threat detection rules, and active deception using canary tokens.</p>
+ <a href="#projects" class="service-link" data-i18n="srv5_link">View Project Details &rarr;</a>
+ </div>
 
-    <footer>
-        <div class="container">
-            <div class="footer-links">
-                <a href="https://github.com/Deuthe" target="_blank">GitHub</a>
-            </div>
-            <p>&copy; 2026 Kevin Guzman Perez.</p>
-        </div>
-    </footer>
+ <!-- 6. Cloud & Pentesting -->
+ <div class="service-card">
+ 
+ <div class="service-icon-circle"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#a5b4fc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></svg></div>
+ <h3 class="service-title" data-i18n="srv6_title">Cloud & Pentesting</h3>
+ <p class="service-desc" data-i18n="srv6_desc">Reconnaissance (OSINT), vulnerability assessment on Azure/Kubernetes clusters, and Cloudflare Zero Trust tunnels.</p>
+ <a href="#projects" class="service-link" data-i18n="srv6_link">View Project Details &rarr;</a>
+ </div>
 
-    <script>
-        function toggleDetails(id) {
-            const card = document.getElementById(id);
-            const btn = card.querySelector('.toggle-btn');
-            card.classList.toggle('expanded');
-            btn.textContent = card.classList.contains('expanded') ? 'Hide Summary' : 'View Summary';
-        }
-    </script>
+ </div>
+ </div>
+ </section>
+
+ <!-- FEATURED PRODUCT (Spotlight Section) -->
+ <section id="product">
+ <div class="container">
+ <div class="section-header">
+ <span class="section-tag" data-i18n="tag_software">Software Product</span>
+ <h2 class="section-title" data-i18n="title_product">Featured Tool</h2>
+ <p class="section-desc" data-i18n="desc_product">Native virtualization tooling and automated multi-session sandboxing.</p>
+ </div>
+
+ <div class="product-card">
+ <div>
+ <span class="product-badge" data-i18n="badge_active_tool"> Active Production Tool</span>
+ <h3 class="product-title">WSA Multi-Instance Tool</h3>
+ <p class="product-desc" data-i18n="product_desc">
+ Automated Windows Subsystem for Android deployment engine for Windows 10 and 11. Handles APK decompilation, package isolation for simultaneous multi-accounting, and cloud licensing with hardware ID binding.
+ </p>
+ <a href="/products/dofustouchwsa/install/" class="btn-cta-main" data-i18n="btn_installer_page">Visit Installer Page &rarr;</a>
+ </div>
+
+ <div class="product-specs">
+ <div class="spec-item">
+ <span class="spec-label" data-i18n="spec_os">Supported OS</span>
+ <span class="spec-val">Win 10 (2004+) / 11</span>
+ </div>
+ <div class="spec-item">
+ <span class="spec-label" data-i18n="spec_mode">Execution</span>
+ <span class="spec-val">RAM Decrypted SFX</span>
+ </div>
+ <div class="spec-item">
+ <span class="spec-label" data-i18n="spec_hwid">HWID Lock</span>
+ <span class="spec-val">BIOS UUID / TLS 1.3</span>
+ </div>
+ <div class="spec-item">
+ <span class="spec-label" data-i18n="spec_clones">Multi-Instances</span>
+ <span class="spec-val">Up to 8 Accounts</span>
+ </div>
+ </div>
+ </div>
+ </div>
+ </section>
+
+ <!-- PROJECTS -->
+ <section id="projects">
+ <div class="container">
+ <div class="section-header">
+ <span class="section-tag" data-i18n="tag_academic">Academic & Industry</span>
+ <h2 class="section-title" data-i18n="title_projects">Projects & Lab Research</h2>
+ <p class="section-desc" data-i18n="desc_projects">Engineering deliverables, lab testbeds, and security architecture whitepapers.</p>
+ </div>
+
+ <div class="projects-grid">
+
+ <!-- Semester 7 -->
+ <div class="project-card">
+ <div>
+ <div class="project-meta">Semester 7 / Lab Architecture</div>
+ <h3 class="project-name" data-i18n="prj1_title">CyDes Lab & Purdue Model OT/ICS Security</h3>
+ <p class="project-desc" data-i18n="prj1_desc">Industrial network security testbed implementing IEC 62443 zones and conduits for cyber-physical energy systems.</p>
+ </div>
+ <a href="cydes.html" class="project-link" data-i18n="prj1_link">Explore Interactive Lab Topology &rarr;</a>
+ </div>
+
+ <!-- Semester 6 -->
+ <div class="project-card">
+ <div>
+ <div class="project-meta">Semester 6 / Storage Systems</div>
+ <h3 class="project-name" data-i18n="prj2_title">Enterprise iSCSI SAN Architecture</h3>
+ <p class="project-desc" data-i18n="prj2_desc">Storage Area Network implementation with IOPS and latency gap analysis against NAS file storage under virtualization.</p>
+ </div>
+ <a href="whitepaper.html" class="project-link" data-i18n="prj2_link">Read SAN Whitepaper &rarr;</a>
+ </div>
+
+ <!-- Semester 5 -->
+ <div class="project-card">
+ <div>
+ <div class="project-meta">Semester 5 / Corporate Internship</div>
+ <h3 class="project-name" data-i18n="prj3_title">Corporate Network Modernization (Bufab Flos)</h3>
+ <p class="project-desc" data-i18n="prj3_desc">Corporate network segment redesign for warehouse management system migration and ISO 27001 readiness.</p>
+ </div>
+ <span style="color: var(--text-muted); font-size: 0.85rem;" data-i18n="prj3_note">Zero-downtime migration / Fortinet Firewalls / VLANs</span>
+ </div>
+
+ <!-- Semester 4 -->
+ <div class="project-card">
+ <div>
+ <div class="project-meta">Semester 4 / Security Operations</div>
+ <h3 class="project-name" data-i18n="prj4_title">Cloud Pentesting & Suricata IDS</h3>
+ <p class="project-desc" data-i18n="prj4_desc">Penetration testing on Azure/Kubernetes clusters and deployment of Suricata IDS for network traffic monitoring.</p>
+ </div>
+ <span style="color: var(--text-muted); font-size: 0.85rem;" data-i18n="prj4_note">OSINT / Vulnerability Scans / IDS Rules</span>
+ </div>
+
+ </div>
+ </div>
+ </section>
+
+ <!-- FOOTER -->
+ <footer>
+ <div class="container">
+ <div class="footer-links">
+ <a href="#services" data-i18n="nav_services">Services</a>
+ <a href="#product" data-i18n="nav_product">Product</a>
+ <a href="#projects" data-i18n="nav_projects">Projects</a>
+ <a href="https://github.com/Deuthe" target="_blank">GitHub</a>
+ <a href="https://t.me/deuthe" target="_blank" style="color: #818cf8; font-weight: 600;">Telegram (@deuthe)</a>
+ </div>
+ <p class="footer-copy">&copy; 2026 Kevin Guzman / deuthe.com</p>
+ </div>
+ </footer>
+
+ <!-- Full Bilingual i18n Logic -->
+ <script>
+ const translations = {
+ en: {
+ nav_services: "Services",
+ nav_product: "Product",
+ nav_projects: "Projects",
+ hero_badge: "Infrastructure / Advanced Cybersecurity / Cloud",
+ hero_sub: "Infrastructure, Advanced Cybersecurity & Cloud Innovation",
+ hero_bio: "Infrastructure student specializing in advanced cybersecurity and cloud & innovation. In my spare time, I build and experiment with OS virtualization, automation tools, and LLMs.",
+ btn_explore_services: "Explore Services →",
+ btn_view_projects: "View Projects",
+ tag_capabilities: "Capabilities",
+ title_services: "Services & Technical Focus",
+ desc_services: "Core technical competencies across infrastructure, security operations, and systems automation.",
+ srv1_title: "Storage Systems (SAN)",
+ srv1_desc: "iSCSI target/initiator architecture, dedicated storage VLANs, CHAP authentication, and latency/IOPS benchmarking.",
+ srv1_link: "View SAN Case Study →",
+ srv2_title: "OT/ICS Network Security",
+ srv2_desc: "Industrial control systems network segmentation, Purdue Model Level 0-5 architecture, and IEC 62443 zone/conduit design.",
+ srv2_link: "View Lab Topology →",
+ srv3_title: "OS Virtualization & Tools",
+ srv3_desc: "Windows Subsystem for Android deployment, multithreaded PowerShell automation, and in-memory payload execution.",
+ srv3_link: "View WSA Product →",
+ srv4_title: "Network Hardening",
+ srv4_desc: "Corporate network segmentation, VLAN isolation, Fortinet firewall access control lists, and ISO 27001 readiness.",
+ srv4_link: "View Project Details →",
+ srv5_title: "Security Operations",
+ srv5_desc: "Wazuh SIEM monitoring, Suricata IDS threat detection rules, and active deception using canary tokens.",
+ srv5_link: "View Project Details →",
+ srv6_title: "Cloud & Pentesting",
+ srv6_desc: "Reconnaissance (OSINT), vulnerability assessment on Azure/Kubernetes clusters, and Cloudflare Zero Trust tunnels.",
+ srv6_link: "View Project Details →",
+ tag_software: "Software Product",
+ title_product: "Featured Tool",
+ desc_product: "Native virtualization tooling and automated multi-session sandboxing.",
+ badge_active_tool: " Active Production Tool",
+ product_desc: "Automated Windows Subsystem for Android deployment engine for Windows 10 and 11. Handles APK decompilation, package isolation for simultaneous multi-accounting, and cloud licensing with hardware ID binding.",
+ btn_installer_page: "Visit Installer Page →",
+ spec_os: "Supported OS",
+ spec_mode: "Execution",
+ spec_hwid: "HWID Lock",
+ spec_clones: "Multi-Instances",
+ tag_academic: "Academic & Industry",
+ title_projects: "Projects & Lab Research",
+ desc_projects: "Engineering deliverables, lab testbeds, and security architecture whitepapers.",
+ prj1_title: "CyDes Lab & Purdue Model OT/ICS Security",
+ prj1_desc: "Industrial network security testbed implementing IEC 62443 zones and conduits for cyber-physical energy systems.",
+ prj1_link: "Explore Interactive Lab Topology →",
+ prj2_title: "Enterprise iSCSI SAN Architecture",
+ prj2_desc: "Storage Area Network implementation with IOPS and latency gap analysis against NAS file storage under virtualization.",
+ prj2_link: "Read SAN Whitepaper →",
+ prj3_title: "Corporate Network Modernization (Bufab Flos)",
+ prj3_desc: "Corporate network segment redesign for warehouse management system migration and ISO 27001 readiness.",
+ prj3_note: "Zero-downtime migration / Fortinet Firewalls / VLANs",
+ prj4_title: "Cloud Pentesting & Suricata IDS",
+ prj4_desc: "Penetration testing on Azure/Kubernetes clusters and deployment of Suricata IDS for network traffic monitoring.",
+ prj4_note: "OSINT / Vulnerability Scans / IDS Rules"
+ },
+ es: {
+ nav_services: "Servicios",
+ nav_product: "Producto",
+ nav_projects: "Proyectos",
+ hero_badge: "Infraestructura / Ciberseguridad Avanzada / Cloud",
+ hero_sub: "Infraestructura, Ciberseguridad Avanzada e Innovación Cloud",
+ hero_bio: "Estudiante de infraestructura especializado en ciberseguridad avanzada y cloud & innovación. En mi tiempo libre, construyo y experimento con virtualización de SO, herramientas de automatización y LLMs.",
+ btn_explore_services: "Explorar Servicios →",
+ btn_view_projects: "Ver Proyectos",
+ tag_capabilities: "Capacidades",
+ title_services: "Servicios y Enfoque Técnico",
+ desc_services: "Competencias técnicas centrales en infraestructura, operaciones de seguridad y automatización.",
+ srv1_title: "Sistemas de Almacenamiento (SAN)",
+ srv1_desc: "Arquitectura iSCSI target/initiator, VLANs de almacenamiento dedicadas, autenticación CHAP y benchmarking de latencia/IOPS.",
+ srv1_link: "Ver Caso de Estudio SAN →",
+ srv2_title: "Seguridad de Redes OT/ICS",
+ srv2_desc: "Segmentación de sistemas de control industrial, arquitectura Modelo Purdue Niveles 0-5 y diseño de zonas/conductos IEC 62443.",
+ srv2_link: "Ver Topología del Lab →",
+ srv3_title: "Virtualización de SO y Herramientas",
+ srv3_desc: "Despliegue de Windows Subsystem for Android, automatización PowerShell multihilo y ejecución en memoria.",
+ srv3_link: "Ver Producto WSA →",
+ srv4_title: "Fortalecimiento de Redes",
+ srv4_desc: "Segmentación de redes corporativas, aislamiento de VLANs, listas de control de acceso Fortinet y preparación ISO 27001.",
+ srv4_link: "Ver Detalles del Proyecto →",
+ srv5_title: "Operaciones de Seguridad",
+ srv5_desc: "Monitorización Wazuh SIEM, reglas de detección de amenazas Suricata IDS y engaño activo mediante tokens canario.",
+ srv5_link: "Ver Detalles del Proyecto →",
+ srv6_title: "Cloud y Pentesting",
+ srv6_desc: "Reconocimiento (OSINT), evaluación de vulnerabilidades en clústeres Azure/Kubernetes y túneles Cloudflare Zero Trust.",
+ srv6_link: "Ver Detalles del Proyecto →",
+ tag_software: "Producto de Software",
+ title_product: "Herramienta Destacada",
+ desc_product: "Herramientas de virtualización nativa y sandboxing multisessión automatizado.",
+ badge_active_tool: " Herramienta en Producción",
+ product_desc: "Motor de despliegue automatizado de Windows Subsystem for Android para Windows 10 y 11. Gestiona descompilación de APKs, aislamiento de paquetes para multicuenta simultánea y licencias cloud vinculadas a HWID.",
+ btn_installer_page: "Visitar Página del Instalador →",
+ spec_os: "SO Compatible",
+ spec_mode: "Ejecución",
+ spec_hwid: "Bloqueo HWID",
+ spec_clones: "Multicuentas",
+ tag_academic: "Académico e Industria",
+ title_projects: "Proyectos e Investigación de Laboratorio",
+ desc_projects: "Entregables de ingeniería, bancos de prueba de laboratorio y whitepapers de arquitectura.",
+ prj1_title: "CyDes Lab y Seguridad OT/ICS Modelo Purdue",
+ prj1_desc: "Banco de pruebas de seguridad industrial implementando zonas y conductos IEC 62443 para sistemas energéticos ciberfísicos.",
+ prj1_link: "Explorar Topología Interactiva →",
+ prj2_title: "Arquitectura Enterprise iSCSI SAN",
+ prj2_desc: "Implementación de Storage Area Network con análisis comparativo de IOPS y latencia frente a almacenamiento NAS.",
+ prj2_link: "Leer Whitepaper SAN →",
+ prj3_title: "Modernización de Red Corporativa (Bufab Flos)",
+ prj3_desc: "Rediseño de segmentos de red para migración de sistema de gestión de almacén y preparación ISO 27001.",
+ prj3_note: "Migración sin tiempo de inactividad / Firewalls Fortinet / VLANs",
+ prj4_title: "Pentesting Cloud e IDS Suricata",
+ prj4_desc: "Pruebas de penetración en clústeres Azure/Kubernetes y despliegue de Suricata IDS para monitorización de tráfico.",
+ prj4_note: "OSINT / Escaneos de Vulnerabilidades / Reglas IDS"
+ }
+ };
+
+ let currentLang = localStorage.getItem('deuthe_portfolio_lang') || 'en';
+
+ function setLang(lang) {
+ currentLang = lang;
+ localStorage.setItem('deuthe_portfolio_lang', lang);
+ document.documentElement.lang = lang;
+
+ const btnEn = document.getElementById('langEn');
+ const btnEs = document.getElementById('langEs');
+ if (btnEn) btnEn.classList.toggle('active', lang === 'en');
+ if (btnEs) btnEs.classList.toggle('active', lang === 'es');
+
+ const t = translations[lang];
+ document.querySelectorAll('[data-i18n]').forEach(el => {
+ const key = el.getAttribute('data-i18n');
+ if (t && t[key]) {
+ el.innerHTML = t[key];
+ }
+ });
+ }
+
+ // Initialize language
+ setLang(currentLang);
+ </script>
 </body>
 </html>
