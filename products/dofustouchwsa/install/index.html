@@ -287,11 +287,11 @@
             gap: 6px;
             background: rgba(30, 41, 59, 0.6);
             border: 1px solid var(--border);
-            padding: 6px 14px;
+            padding: 8px 18px;
             border-radius: 20px;
             color: var(--text-muted);
             text-decoration: none;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             transition: 0.2s;
         }
 
@@ -314,7 +314,7 @@
         }
 
         .integrity-header {
-            padding: 12px 18px;
+            padding: 14px 18px;
             cursor: pointer;
             display: flex;
             justify-content: space-between;
@@ -323,6 +323,7 @@
             font-weight: 600;
             color: var(--text-muted);
             transition: 0.2s;
+            user-select: none;
         }
 
         .integrity-header:hover { color: var(--green); }
@@ -466,6 +467,7 @@
             align-items: center;
             font-weight: 600;
             font-size: 0.95rem;
+            user-select: none;
         }
 
         .faq-question .arrow { color: var(--text-muted); transition: 0.3s; font-size: 1.2rem; }
@@ -507,7 +509,6 @@
                 <a href="/" data-i18n="nav_portfolio">Portfolio</a>
                 <a href="/products/dofustouchwsa/install/" style="color: var(--green); font-weight: 700;">Installer &#x26A1;</a>
                 <a href="https://t.me/deuthe" target="_blank" data-i18n="nav_telegram">Telegram</a>
-                <a href="mailto:contact@deuthe.com" data-i18n="nav_contact">Contacto</a>
                 <div class="lang-toggle">
                     <button class="lang-btn active" onclick="setLang('es')" id="langEs">ES</button>
                     <button class="lang-btn" onclick="setLang('en')" id="langEn">EN</button>
@@ -561,9 +562,6 @@
                 <div class="support-badges">
                     <a href="https://t.me/deuthe" target="_blank" class="support-pill">
                         <span>&#128172;</span> <span data-i18n="pill_telegram">Soporte Telegram: @deuthe</span>
-                    </a>
-                    <a href="mailto:contact@deuthe.com" class="support-pill">
-                        <span>&#9993;</span> contact@deuthe.com
                     </a>
                 </div>
 
@@ -750,7 +748,6 @@
                 <a href="/products/dofustouchwsa/install/">Installer</a>
                 <a href="https://t.me/deuthe" target="_blank" data-i18n="nav_telegram">Telegram</a>
                 <a href="https://github.com/Deuthe" target="_blank">GitHub</a>
-                <a href="mailto:contact@deuthe.com" data-i18n="nav_contact">Contacto</a>
             </div>
             <p>&copy; 2026 Kevin Guzman Perez &mdash; Deuthe's Solution</p>
         </div>
@@ -762,94 +759,92 @@
         // =====================================================================
         const translations = {
             es: {
-                nav_portfolio: 'Portfolio',
-                nav_telegram: 'Telegram',
-                nav_contact: 'Contacto',
-                hero_badge: 'Versión 1.0',
-                hero_desc: 'Instalador automático de WSA + Dofus Touch Multi-Account para Windows 10 y Windows 11. Todo en un solo ejecutable. Sin emuladores pesados ni configuración manual.',
-                download_btn: 'Descargar',
-                download_meta: '~675 MB · Windows x64 · Requiere clave de activación',
-                pill_telegram: 'Soporte Telegram: @deuthe',
-                checksum_title: '🔒 Verificar Checksums SHA-256 (Integridad del Instalador)',
-                steps_title: 'Cómo Instalar',
-                step1_title: 'Descargar el Instalador',
-                step1_desc: 'Haz clic en el botón de descarga correspondiente a tu versión de Windows. La descarga puede tardar unos minutos dependiendo de tu conexión.',
-                step2_title: 'Crear una Carpeta Dedicada',
-                step2_desc: 'Crea una carpeta en tu PC, por ejemplo <code>C:\DeutheSetup</code> o en el Escritorio. Mueve el archivo <code>.exe</code> dentro de esa carpeta.',
-                step2_warning: '<strong>Importante:</strong> No ejecutes el .exe directamente desde la carpeta de Descargas. Siempre ponlo en su propia carpeta primero.',
-                step3_title: 'Ejecutar como Administrador',
-                step3_desc: 'Haz clic derecho en el <code>.exe</code> &rarr; <strong>Ejecutar como administrador</strong>. Ingresa la clave de activación proporcionada.',
-                step4_title: 'Seleccionar Cuentas y Esperar',
-                step4_desc: 'Elige el número de cuentas que deseas (1-8) y pulsa <strong>START INSTALLATION</strong>. El instalador se encarga del resto automáticamente. Si pide reiniciar, reinicia y vuelve a ejecutar.',
-                step5_title: '¡Listo! Abre tus Cuentas',
-                step5_desc: 'Busca <strong>DOFUS Touch</strong>, <strong>DOFUS Touch W</strong>, <strong>DOFUS Touch Y</strong>, etc. en el menú Inicio de Windows. Cada icono es una cuenta independiente.',
-                req_title: 'Requisitos del Sistema',
-                req_os: 'Win10 (2004+, build 19041+) o Win11 — Home, Pro, Enterprise',
-                req_ram: 'Mínimo (16 GB recomendado para 4+ cuentas)',
-                req_disk_title: '15 GB Libres',
-                req_disk: 'Espacio en disco C:',
-                req_virt_title: 'Virtualización',
-                req_virt: 'Habilitada en BIOS/UEFI',
-                faq_title: 'Preguntas Frecuentes',
-                faq1_q: '¿Cuántas cuentas puedo tener abiertas al mismo tiempo?',
-                faq1_a: 'Hasta 4 cuentas simultáneas con la misma conexión de internet. Para PvM es más que suficiente para jugar cómodamente.',
-                faq2_q: '¿Es seguro? ¿Qué hace el instalador?',
-                faq2_a: 'El instalador configura WSA (Windows Subsystem for Android), instala el juego original y crea copias con nombres de paquete diferentes para que puedan coexistir. No modifica archivos del sistema ni envía datos personales. Al cerrar, se eliminan todos los archivos temporales automáticamente.',
-                faq3_q: '¿Funciona en Windows 10?',
-                faq3_a: 'Sí, funciona tanto en Windows 10 (versión 2004 o posterior, build 19041+) como en Windows 11. Asegúrate de descargar la versión correspondiente a tu sistema operativo.',
-                faq4_q: '¿Necesito reiniciar el PC?',
-                faq4_a: 'Solo si es la primera vez que instalas WSA. El instalador activará la "Virtual Machine Platform" de Windows y pedirá un reinicio. Después del reinicio, ejecuta el instalador de nuevo y continuará desde donde se quedó.',
-                faq5_q: 'Me da error de autorización al abrir la segunda cuenta',
-                faq5_a: 'Asegúrate de tener <strong>Google Chrome</strong> instalado dentro de WSA. Sin Chrome, los clones comparten el mismo token de autenticación y se desconectan entre sí. Chrome crea contextos de autenticación aislados para cada clon.',
-                faq6_q: '¿Dónde debo poner el archivo .exe?',
-                faq6_a: 'Crea una carpeta específica (ej: <strong>C:\DeutheSetup</strong> o una carpeta en el Escritorio) y coloca el .exe ahí. No lo ejecutes directamente desde la carpeta de Descargas, ya que necesita espacio para extraer archivos temporales durante la instalación.',
-                os_detected_win11: 'Detectado: Windows 11 — Te recomendamos la versión de Windows 11',
-                os_detected_win10: 'Detectado: Windows 10 — Te recomendamos la versión de Windows 10',
+                nav_portfolio: "Portfolio",
+                nav_telegram: "Telegram",
+                hero_badge: "Versión 1.0",
+                hero_desc: "Instalador automático de WSA + Dofus Touch Multi-Account para Windows 10 y Windows 11. Todo en un solo ejecutable. Sin emuladores pesados ni configuración manual.",
+                download_btn: "Descargar",
+                download_meta: "~675 MB · Windows x64 · Requiere clave de activación",
+                pill_telegram: "Soporte Telegram: @deuthe",
+                checksum_title: "🔒 Verificar Checksums SHA-256 (Integridad del Instalador)",
+                steps_title: "Cómo Instalar",
+                step1_title: "Descargar el Instalador",
+                step1_desc: "Haz clic en el botón de descarga correspondiente a tu versión de Windows. La descarga puede tardar unos minutos dependiendo de tu conexión.",
+                step2_title: "Crear una Carpeta Dedicada",
+                step2_desc: "Crea una carpeta en tu PC, por ejemplo <code>C:\DeutheSetup</code> o en el Escritorio. Mueve el archivo <code>.exe</code> dentro de esa carpeta.",
+                step2_warning: "<strong>Importante:</strong> No ejecutes el .exe directamente desde la carpeta de Descargas. Siempre ponlo en su propia carpeta primero.",
+                step3_title: "Ejecutar como Administrador",
+                step3_desc: "Haz clic derecho en el <code>.exe</code> &rarr; <strong>Ejecutar como administrador</strong>. Ingresa la clave de activación proporcionada.",
+                step4_title: "Seleccionar Cuentas y Esperar",
+                step4_desc: "Elige el número de cuentas que deseas (1-8) y pulsa <strong>START INSTALLATION</strong>. El instalador se encarga del resto automáticamente. Si pide reiniciar, reinicia y vuelve a ejecutar.",
+                step5_title: "¡Listo! Abre tus Cuentas",
+                step5_desc: "Busca <strong>DOFUS Touch</strong>, <strong>DOFUS Touch W</strong>, <strong>DOFUS Touch Y</strong>, etc. en el menú Inicio de Windows. Cada icono es una cuenta independiente.",
+                req_title: "Requisitos del Sistema",
+                req_os: "Win10 (2004+, build 19041+) o Win11 — Home, Pro, Enterprise",
+                req_ram: "Mínimo (16 GB recomendado para 4+ cuentas)",
+                req_disk_title: "15 GB Libres",
+                req_disk: "Espacio en disco C:",
+                req_virt_title: "Virtualización",
+                req_virt: "Habilitada en BIOS/UEFI",
+                faq_title: "Preguntas Frecuentes",
+                faq1_q: "¿Cuántas cuentas puedo tener abiertas al mismo tiempo?",
+                faq1_a: "Hasta 4 cuentas simultáneas con la misma conexión de internet. Para PvM es más que suficiente para jugar cómodamente.",
+                faq2_q: "¿Es seguro? ¿Qué hace el instalador?",
+                faq2_a: "El instalador configura WSA (Windows Subsystem for Android), instala el juego original y crea copias con nombres de paquete diferentes para que puedan coexistir. No modifica archivos del sistema ni envía datos personales. Al cerrar, se eliminan todos los archivos temporales automáticamente.",
+                faq3_q: "¿Funciona en Windows 10?",
+                faq3_a: "Sí, funciona tanto en Windows 10 (versión 2004 o posterior, build 19041+) como en Windows 11. Asegúrate de descargar la versión correspondiente a tu sistema operativo.",
+                faq4_q: "¿Necesito reiniciar el PC?",
+                faq4_a: "Solo si es la primera vez que instalas WSA. El instalador activara la plataforma de maquina virtual (Virtual Machine Platform) de Windows y pedira un reinicio. Despues del reinicio, ejecuta el instalador de nuevo y continuara desde donde se quedo.",
+                faq5_q: "Me da error de autorizacion al abrir la segunda cuenta",
+                faq5_a: "Asegurate de tener <strong>Google Chrome</strong> instalado dentro de WSA. Sin Chrome, los clones comparten el mismo token de autenticacion y se desconectan entre si. Chrome crea contextos de autenticacion aislados para cada clon.",
+                faq6_q: "¿Donde debo poner el archivo .exe?",
+                faq6_a: "Crea una carpeta especifica (ej: <strong>C:\\\\DeutheSetup</strong> o una carpeta en el Escritorio) y coloca el .exe ahi. No lo ejecutes directamente desde la carpeta de Descargas, ya que necesita espacio para extraer archivos temporales durante la instalacion.",
+                os_detected_win11: "Detectado: Windows 11 — Te recomendamos la version de Windows 11",
+                os_detected_win10: "Detectado: Windows 10 — Te recomendamos la version de Windows 10"
             },
             en: {
-                nav_portfolio: 'Portfolio',
-                nav_telegram: 'Telegram',
-                nav_contact: 'Contact',
-                hero_badge: 'Version 1.0',
-                hero_desc: 'Automated WSA + Dofus Touch Multi-Account Installer for Windows 10 and Windows 11. All in one executable. No heavy emulators or manual configuration.',
-                download_btn: 'Download',
-                download_meta: '~675 MB · Windows x64 · Activation key required',
-                pill_telegram: 'Telegram Support: @deuthe',
-                checksum_title: '🔒 Verify SHA-256 Checksums (Installer Integrity)',
-                steps_title: 'How to Install',
-                step1_title: 'Download the Installer',
-                step1_desc: 'Click the download button for your Windows version. The download may take a few minutes depending on your connection.',
-                step2_title: 'Create a Dedicated Folder',
-                step2_desc: 'Create a folder on your PC, for example <code>C:\DeutheSetup</code> or on your Desktop. Move the <code>.exe</code> file into that folder.',
-                step2_warning: '<strong>Important:</strong> Do not run the .exe directly from the Downloads folder. Always put it in its own folder first.',
-                step3_title: 'Run as Administrator',
-                step3_desc: 'Right-click the <code>.exe</code> &rarr; <strong>Run as administrator</strong>. Enter the activation key provided.',
-                step4_title: 'Select Accounts and Wait',
-                step4_desc: 'Choose the number of accounts you want (1-8) and click <strong>START INSTALLATION</strong>. The installer handles everything automatically. If it asks to reboot, restart and run again.',
-                step5_title: 'Done! Open Your Accounts',
-                step5_desc: 'Search for <strong>DOFUS Touch</strong>, <strong>DOFUS Touch W</strong>, <strong>DOFUS Touch Y</strong>, etc. in the Windows Start Menu. Each icon is an independent account.',
-                req_title: 'System Requirements',
-                req_os: 'Win10 (2004+, build 19041+) or Win11 — Home, Pro, Enterprise',
-                req_ram: 'Minimum (16 GB recommended for 4+ accounts)',
-                req_disk_title: '15 GB Free',
-                req_disk: 'Free space on drive C:',
-                req_virt_title: 'Virtualization',
-                req_virt: 'Enabled in BIOS/UEFI',
-                faq_title: 'Frequently Asked Questions',
-                faq1_q: 'How many accounts can I have open at the same time?',
-                faq1_a: 'Up to 4 simultaneous accounts with the same internet connection. For PvM this is more than enough to play comfortably.',
-                faq2_q: 'Is it safe? What does the installer do?',
-                faq2_a: 'The installer sets up WSA (Windows Subsystem for Android), installs the original game and creates copies with different package names so they can coexist. It does not modify system files or send personal data. On exit, all temporary files are automatically deleted.',
-                faq3_q: 'Does it work on Windows 10?',
-                faq3_a: 'Yes, it works on both Windows 10 (version 2004 or later, build 19041+) and Windows 11. Make sure to download the correct version for your operating system.',
-                faq4_q: 'Do I need to restart the PC?',
-                faq4_a: 'Only if it's the first time you install WSA. The installer will enable the "Virtual Machine Platform" and ask for a reboot. After restarting, run the installer again and it will continue from where it left off.',
-                faq5_q: 'I get an authorization error when opening the second account',
-                faq5_a: 'Make sure you have <strong>Google Chrome</strong> installed inside WSA. Without Chrome, clones share the same authentication token and log each other out. Chrome creates isolated sandboxed contexts for each clone.',
-                faq6_q: 'Where should I put the .exe file?',
-                faq6_a: 'Create a specific folder (e.g., <strong>C:\DeutheSetup</strong> or a folder on the Desktop) and place the .exe there. Do not run it directly from the Downloads folder, as it needs space to extract temporary files during installation.',
-                os_detected_win11: 'Detected: Windows 11 — We recommend the Windows 11 version',
-                os_detected_win10: 'Detected: Windows 10 — We recommend the Windows 10 version',
+                nav_portfolio: "Portfolio",
+                nav_telegram: "Telegram",
+                hero_badge: "Version 1.0",
+                hero_desc: "Automated WSA + Dofus Touch Multi-Account Installer for Windows 10 and Windows 11. All in one executable. No heavy emulators or manual configuration.",
+                download_btn: "Download",
+                download_meta: "~675 MB · Windows x64 · Activation key required",
+                pill_telegram: "Telegram Support: @deuthe",
+                checksum_title: "🔒 Verify SHA-256 Checksums (Installer Integrity)",
+                steps_title: "How to Install",
+                step1_title: "Download the Installer",
+                step1_desc: "Click the download button for your Windows version. The download may take a few minutes depending on your connection.",
+                step2_title: "Create a Dedicated Folder",
+                step2_desc: "Create a folder on your PC, for example <code>C:\\\\DeutheSetup</code> or on your Desktop. Move the <code>.exe</code> file into that folder.",
+                step2_warning: "<strong>Important:</strong> Do not run the .exe directly from the Downloads folder. Always put it in its own folder first.",
+                step3_title: "Run as Administrator",
+                step3_desc: "Right-click the <code>.exe</code> &rarr; <strong>Run as administrator</strong>. Enter the activation key provided.",
+                step4_title: "Select Accounts and Wait",
+                step4_desc: "Choose the number of accounts you want (1-8) and click <strong>START INSTALLATION</strong>. The installer handles everything automatically. If it asks to reboot, restart and run again.",
+                step5_title: "Done! Open Your Accounts",
+                step5_desc: "Search for <strong>DOFUS Touch</strong>, <strong>DOFUS Touch W</strong>, <strong>DOFUS Touch Y</strong>, etc. in the Windows Start Menu. Each icon is an independent account.",
+                req_title: "System Requirements",
+                req_os: "Win10 (2004+, build 19041+) or Win11 — Home, Pro, Enterprise",
+                req_ram: "Minimum (16 GB recommended for 4+ accounts)",
+                req_disk_title: "15 GB Free",
+                req_disk: "Free space on drive C:",
+                req_virt_title: "Virtualization",
+                req_virt: "Enabled in BIOS/UEFI",
+                faq_title: "Frequently Asked Questions",
+                faq1_q: "How many accounts can I have open at the same time?",
+                faq1_a: "Up to 4 simultaneous accounts with the same internet connection. For PvM this is more than enough to play comfortably.",
+                faq2_q: "Is it safe? What does the installer do?",
+                faq2_a: "The installer sets up WSA (Windows Subsystem for Android), installs the original game and creates copies with different package names so they can coexist. It does not modify system files or send personal data. On exit, all temporary files are automatically deleted.",
+                faq3_q: "Does it work on Windows 10?",
+                faq3_a: "Yes, it works on both Windows 10 (version 2004 or later, build 19041+) and Windows 11. Make sure to download the correct version for your operating system.",
+                faq4_q: "Do I need to restart the PC?",
+                faq4_a: "Only if it is the first time you install WSA. The installer will enable the Virtual Machine Platform and ask for a reboot. After restarting, run the installer again and it will continue from where it left off.",
+                faq5_q: "I get an authorization error when opening the second account",
+                faq5_a: "Make sure you have <strong>Google Chrome</strong> installed inside WSA. Without Chrome, clones share the same authentication token and log each other out. Chrome creates isolated sandboxed contexts for each clone.",
+                faq6_q: "Where should I put the .exe file?",
+                faq6_a: "Create a specific folder (e.g., <strong>C:\\\\DeutheSetup</strong> or a folder on the Desktop) and place the .exe there. Do not run it directly from the Downloads folder, as it needs space to extract temporary files during installation.",
+                os_detected_win11: "Detected: Windows 11 — We recommend the Windows 11 version",
+                os_detected_win10: "Detected: Windows 10 — We recommend the Windows 10 version"
             }
         };
 
@@ -860,13 +855,15 @@
             localStorage.setItem('deuthe-lang', lang);
             document.documentElement.lang = lang;
 
-            document.getElementById('langEs').classList.toggle('active', lang === 'es');
-            document.getElementById('langEn').classList.toggle('active', lang === 'en');
+            const btnEs = document.getElementById('langEs');
+            const btnEn = document.getElementById('langEn');
+            if (btnEs) btnEs.classList.toggle('active', lang === 'es');
+            if (btnEn) btnEn.classList.toggle('active', lang === 'en');
 
             const t = translations[lang];
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
-                if (t[key]) {
+                if (t && t[key]) {
                     el.innerHTML = t[key];
                 }
             });
@@ -882,27 +879,33 @@
             const btnWin11 = document.getElementById('downloadWin11');
             const btnWin10 = document.getElementById('downloadWin10');
 
-            if (ua.indexOf('Windows NT 10.0') !== -1) {
-                if (navigator.userAgentData && navigator.userAgentData.getHighEntropyValues) {
-                    navigator.userAgentData.getHighEntropyValues(['platformVersion']).then(values => {
-                        const majorVer = parseInt(values.platformVersion.split('.')[0]);
-                        if (majorVer >= 13) {
+            if (ua.indexOf('Windows NT 10.0') !== -1 && navigator.userAgentData && navigator.userAgentData.getHighEntropyValues) {
+                navigator.userAgentData.getHighEntropyValues(['platformVersion']).then(values => {
+                    const majorVer = parseInt(values.platformVersion.split('.')[0]);
+                    if (majorVer >= 13) {
+                        if (osEl && osText) {
                             osEl.style.display = 'inline-flex';
                             osText.textContent = t.os_detected_win11;
+                        }
+                        if (btnWin11 && btnWin10) {
                             btnWin11.classList.add('recommended');
                             btnWin11.classList.remove('secondary');
                             btnWin10.classList.add('secondary');
                             btnWin10.classList.remove('recommended');
-                        } else {
+                        }
+                    } else {
+                        if (osEl && osText) {
                             osEl.style.display = 'inline-flex';
                             osText.textContent = t.os_detected_win10;
+                        }
+                        if (btnWin11 && btnWin10) {
                             btnWin10.classList.add('recommended');
                             btnWin10.classList.remove('secondary');
                             btnWin11.classList.add('secondary');
                             btnWin11.classList.remove('recommended');
                         }
-                    }).catch(() => {});
-                }
+                    }
+                }).catch(() => {});
             }
         }
 
@@ -911,19 +914,22 @@
         }
 
         function toggleIntegrity() {
-            document.getElementById('integrityBox').classList.toggle('open');
+            const box = document.getElementById('integrityBox');
+            if (box) box.classList.toggle('open');
         }
 
         function copyHash(hash, btn) {
-            navigator.clipboard.writeText(hash).then(() => {
-                const orig = btn.textContent;
-                btn.textContent = '✓';
-                btn.style.color = '#00d4aa';
-                setTimeout(() => { btn.textContent = orig; btn.style.color = ''; }, 1800);
-            });
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(hash).then(() => {
+                    const orig = btn.textContent;
+                    btn.textContent = '✓';
+                    btn.style.color = '#00d4aa';
+                    setTimeout(() => { btn.textContent = orig; btn.style.color = ''; }, 1800);
+                });
+            }
         }
 
-        // Initialize
+        // Initialize immediately
         setLang(currentLang);
     </script>
 </body>
