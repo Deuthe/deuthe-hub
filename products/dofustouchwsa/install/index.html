@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deuthe's Solution | Descargar Instalador</title>
-    <meta name="description" content="Descarga Deuthe's Solution - Instalador automático de WSA + Dofus Touch Multi-Account para Windows 11.">
+    <title>Deuthe's Solution | Download Installer</title>
+    <meta name="description" content="Download Deuthe's Solution - Automated WSA + Dofus Touch Multi-Account Installer for Windows 10 & 11.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #3b82f6;
@@ -57,6 +60,38 @@
         .nav-links a { text-decoration: none; color: var(--text-muted); font-size: 0.9rem; font-weight: 500; transition: 0.2s; }
         .nav-links a:hover { color: var(--green); }
 
+        /* Language Toggle */
+        .lang-toggle {
+            display: flex;
+            align-items: center;
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-left: 8px;
+        }
+
+        .lang-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .lang-btn.active {
+            background: var(--green);
+            color: #0d0d1a;
+        }
+
+        .lang-btn:hover:not(.active) {
+            color: var(--text);
+        }
+
         /* Hero */
         .hero { padding: 140px 0 80px; text-align: center; }
         .hero-logo {
@@ -93,22 +128,37 @@
             margin: 0 auto 40px;
         }
 
-        /* Download Button */
+        /* Download Buttons */
+        .download-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .download-row {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
         .download-btn {
             display: inline-flex;
             align-items: center;
             gap: 12px;
             background: linear-gradient(135deg, #00d4aa, #00b894);
             color: #0d0d1a;
-            padding: 16px 40px;
+            padding: 16px 32px;
             border-radius: 12px;
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             font-weight: 700;
             text-decoration: none;
             transition: all 0.3s;
-            border: none;
+            border: 2px solid transparent;
             cursor: pointer;
             box-shadow: 0 0 30px rgba(0, 212, 170, 0.2);
+            position: relative;
         }
 
         .download-btn:hover {
@@ -118,10 +168,73 @@
 
         .download-btn svg { width: 22px; height: 22px; }
 
+        .download-btn.secondary {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            color: var(--text);
+            border: 1px solid var(--border);
+            box-shadow: none;
+        }
+
+        .download-btn.secondary:hover {
+            border-color: var(--green);
+            box-shadow: 0 4px 20px rgba(0, 212, 170, 0.15);
+        }
+
+        .download-btn .os-badge {
+            font-size: 0.7rem;
+            font-weight: 600;
+            background: rgba(0, 0, 0, 0.15);
+            padding: 2px 8px;
+            border-radius: 6px;
+            letter-spacing: 0.5px;
+        }
+
+        .download-btn.secondary .os-badge {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .download-btn.recommended::after {
+            content: '';
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 16px;
+            height: 16px;
+            background: var(--green);
+            border-radius: 50%;
+            animation: pulse-dot 2s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(0, 212, 170, 0.4); }
+            50% { box-shadow: 0 0 0 8px rgba(0, 212, 170, 0); }
+        }
+
         .download-meta {
-            margin-top: 16px;
+            margin-top: 8px;
             color: var(--text-muted);
             font-size: 0.85rem;
+        }
+
+        .os-detected {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(0, 212, 170, 0.08);
+            border: 1px solid rgba(0, 212, 170, 0.2);
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            color: var(--green);
+            margin-bottom: 20px;
+        }
+
+        .os-detected .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--green);
+            animation: pulse-dot 2s infinite;
         }
 
         /* Sections */
@@ -129,10 +242,7 @@
         h2 { font-size: 2rem; font-weight: 800; margin-bottom: 48px; letter-spacing: -1px; }
 
         /* Steps */
-        .steps-grid {
-            display: grid;
-            gap: 24px;
-        }
+        .steps-grid { display: grid; gap: 24px; }
 
         .step-card {
             background: var(--card-bg);
@@ -161,16 +271,8 @@
             color: #0d0d1a;
         }
 
-        .step-content h3 {
-            font-size: 1.15rem;
-            font-weight: 700;
-            margin-bottom: 6px;
-        }
-
-        .step-content p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-        }
+        .step-content h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 6px; }
+        .step-content p { color: var(--text-muted); font-size: 0.95rem; }
 
         .step-content code {
             background: rgba(0, 212, 170, 0.1);
@@ -193,10 +295,7 @@
             align-items: flex-start;
         }
 
-        .warning-box span {
-            color: #fbbf24;
-            font-size: 0.9rem;
-        }
+        .warning-box span { color: #fbbf24; font-size: 0.9rem; }
 
         /* Requirements */
         .req-grid {
@@ -239,12 +338,7 @@
             font-size: 0.95rem;
         }
 
-        .faq-question .arrow {
-            color: var(--text-muted);
-            transition: 0.3s;
-            font-size: 1.2rem;
-        }
-
+        .faq-question .arrow { color: var(--text-muted); transition: 0.3s; font-size: 1.2rem; }
         .faq-item.open .faq-question .arrow { transform: rotate(180deg); }
 
         .faq-answer {
@@ -266,7 +360,8 @@
         @media (max-width: 768px) {
             h1 { font-size: 2.2rem; }
             .step-card { flex-direction: column; gap: 12px; }
-            .download-btn { padding: 14px 28px; font-size: 1rem; }
+            .download-btn { padding: 14px 24px; font-size: 0.95rem; }
+            .download-row { flex-direction: column; align-items: center; }
         }
     </style>
 </head>
@@ -281,7 +376,11 @@
             <div class="nav-links">
                 <a href="/">Portfolio</a>
                 <a href="/products/dofustouchwsa/install" style="color: var(--green); font-weight: 700;">Installer &#x26A1;</a>
-                <a href="mailto:contact@deuthe.com">Contacto</a>
+                <a href="mailto:contact@deuthe.com" data-i18n="nav_contact">Contacto</a>
+                <div class="lang-toggle">
+                    <button class="lang-btn active" onclick="setLang('es')" id="langEs">ES</button>
+                    <button class="lang-btn" onclick="setLang('en')" id="langEn">EN</button>
+                </div>
             </div>
         </div>
     </nav>
@@ -290,46 +389,68 @@
         <div class="container">
             <img src="logo.png" alt="Deuthe's Solution Logo" class="hero-logo">
             <br>
-            <div class="hero-badge">&#9889; Versión 1.0</div>
+            <div class="hero-badge">&#9889; <span data-i18n="hero_badge">Versión 1.0</span></div>
             <h1>Deuthe's <span class="gradient-text">Solution</span></h1>
-            <p class="hero-description">
-                Instalador automático de WSA + Dofus Touch Multi-Account para Windows 11.
+            <p class="hero-description" data-i18n="hero_desc">
+                Instalador automático de WSA + Dofus Touch Multi-Account para Windows 10 y Windows 11.
                 Todo en un solo ejecutable. Sin configuración manual.
             </p>
 
-            <!-- UPDATE THIS LINK: Replace with your actual GitHub Release URL after uploading -->
-            <a href="https://github.com/Deuthe/san-whitepaper/releases/download/v1.0/DeutheSetup.exe"
-               class="download-btn" id="downloadBtn">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 16l-6-6h4V4h4v6h4l-6 6zm-8 4h16v-2H4v2z"/>
-                </svg>
-                Descargar DeutheSetup.exe
-            </a>
-            <p class="download-meta">~700 MB &middot; Windows 11 &middot; Requiere clave de activación</p>
+            <div id="osDetected" class="os-detected" style="display: none;">
+                <span class="dot"></span>
+                <span id="osDetectedText"></span>
+            </div>
+
+            <div class="download-group">
+                <div class="download-row">
+                    <!-- Windows 11 Download -->
+                    <a href="https://github.com/Deuthe/san-whitepaper/releases/download/v1.0/DeutheSetup.exe"
+                       class="download-btn" id="downloadWin11">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 16l-6-6h4V4h4v6h4l-6 6zm-8 4h16v-2H4v2z"/>
+                        </svg>
+                        <span>
+                            <span data-i18n="download_btn">Descargar</span> <span class="os-badge">Windows 11</span>
+                        </span>
+                    </a>
+
+                    <!-- Windows 10 Download -->
+                    <a href="https://github.com/Deuthe/san-whitepaper/releases/download/v1.0/DeutheSetup_Win10.exe"
+                       class="download-btn secondary" id="downloadWin10">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 16l-6-6h4V4h4v6h4l-6 6zm-8 4h16v-2H4v2z"/>
+                        </svg>
+                        <span>
+                            <span data-i18n="download_btn">Descargar</span> <span class="os-badge">Windows 10</span>
+                        </span>
+                    </a>
+                </div>
+                <p class="download-meta" data-i18n="download_meta">~700 MB cada uno &middot; Requiere clave de activación</p>
+            </div>
         </div>
     </div>
 
     <section id="steps">
         <div class="container">
-            <h2>Cómo Instalar</h2>
+            <h2 data-i18n="steps_title">Cómo Instalar</h2>
             <div class="steps-grid">
 
                 <div class="step-card">
                     <div class="step-number">1</div>
                     <div class="step-content">
-                        <h3>Descargar el Instalador</h3>
-                        <p>Haz clic en el botón de arriba para descargar <code>DeutheSetup.exe</code>. La descarga puede tardar unos minutos dependiendo de tu conexión.</p>
+                        <h3 data-i18n="step1_title">Descargar el Instalador</h3>
+                        <p data-i18n="step1_desc">Haz clic en el botón de descarga correspondiente a tu versión de Windows. La descarga puede tardar unos minutos dependiendo de tu conexión.</p>
                     </div>
                 </div>
 
                 <div class="step-card">
                     <div class="step-number">2</div>
                     <div class="step-content">
-                        <h3>Crear una Carpeta Dedicada</h3>
-                        <p>Crea una carpeta en tu PC, por ejemplo <code>C:\DeutheSetup</code> o en el Escritorio. Mueve el archivo <code>DeutheSetup.exe</code> dentro de esa carpeta.</p>
+                        <h3 data-i18n="step2_title">Crear una Carpeta Dedicada</h3>
+                        <p data-i18n="step2_desc">Crea una carpeta en tu PC, por ejemplo <code>C:\DeutheSetup</code> o en el Escritorio. Mueve el archivo <code>.exe</code> dentro de esa carpeta.</p>
                         <div class="warning-box">
                             <span>&#9888;&#65039;</span>
-                            <span><strong>Importante:</strong> No ejecutes el .exe directamente desde la carpeta de Descargas. Siempre ponlo en su propia carpeta primero.</span>
+                            <span data-i18n="step2_warning"><strong>Importante:</strong> No ejecutes el .exe directamente desde la carpeta de Descargas. Siempre ponlo en su propia carpeta primero.</span>
                         </div>
                     </div>
                 </div>
@@ -337,24 +458,24 @@
                 <div class="step-card">
                     <div class="step-number">3</div>
                     <div class="step-content">
-                        <h3>Ejecutar como Administrador</h3>
-                        <p>Haz clic derecho en <code>DeutheSetup.exe</code> &rarr; <strong>Ejecutar como administrador</strong>. Ingresa la contraseña de autorización proporcionada.</p>
+                        <h3 data-i18n="step3_title">Ejecutar como Administrador</h3>
+                        <p data-i18n="step3_desc">Haz clic derecho en el <code>.exe</code> &rarr; <strong>Ejecutar como administrador</strong>. Ingresa la clave de activación proporcionada.</p>
                     </div>
                 </div>
 
                 <div class="step-card">
                     <div class="step-number">4</div>
                     <div class="step-content">
-                        <h3>Seleccionar Cuentas y Esperar</h3>
-                        <p>Elige el número de cuentas que deseas (1-8) y pulsa <strong>START INSTALLATION</strong>. El instalador se encarga del resto automáticamente. Si pide reiniciar, reinicia y vuelve a ejecutar.</p>
+                        <h3 data-i18n="step4_title">Seleccionar Cuentas y Esperar</h3>
+                        <p data-i18n="step4_desc">Elige el número de cuentas que deseas (1-8) y pulsa <strong>START INSTALLATION</strong>. El instalador se encarga del resto automáticamente. Si pide reiniciar, reinicia y vuelve a ejecutar.</p>
                     </div>
                 </div>
 
                 <div class="step-card">
                     <div class="step-number">5</div>
                     <div class="step-content">
-                        <h3>¡Listo! Abre tus Cuentas</h3>
-                        <p>Busca <strong>DOFUS Touch</strong>, <strong>DOFUS Touch W</strong>, <strong>DOFUS Touch Y</strong>, etc. en el menú Inicio de Windows. Cada icono es una cuenta independiente.</p>
+                        <h3 data-i18n="step5_title">¡Listo! Abre tus Cuentas</h3>
+                        <p data-i18n="step5_desc">Busca <strong>DOFUS Touch</strong>, <strong>DOFUS Touch W</strong>, <strong>DOFUS Touch Y</strong>, etc. en el menú Inicio de Windows. Cada icono es una cuenta independiente.</p>
                     </div>
                 </div>
 
@@ -364,27 +485,27 @@
 
     <section id="requirements">
         <div class="container">
-            <h2>Requisitos del Sistema</h2>
+            <h2 data-i18n="req_title">Requisitos del Sistema</h2>
             <div class="req-grid">
                 <div class="req-card">
                     <div class="req-icon">&#128187;</div>
-                    <h4>Windows 11</h4>
-                    <p>Home, Pro o Enterprise</p>
+                    <h4>Windows 10 / 11</h4>
+                    <p data-i18n="req_os">Win10 (2004+) o Win11 &mdash; Home, Pro, Enterprise</p>
                 </div>
                 <div class="req-card">
                     <div class="req-icon">&#129504;</div>
                     <h4>8 GB RAM</h4>
-                    <p>Mínimo (16 GB recomendado)</p>
+                    <p data-i18n="req_ram">Mínimo (16 GB recomendado)</p>
                 </div>
                 <div class="req-card">
                     <div class="req-icon">&#128190;</div>
-                    <h4>15 GB Libres</h4>
-                    <p>Espacio en disco C:</p>
+                    <h4 data-i18n="req_disk_title">15 GB Libres</h4>
+                    <p data-i18n="req_disk">Espacio en disco C:</p>
                 </div>
                 <div class="req-card">
                     <div class="req-icon">&#9881;&#65039;</div>
-                    <h4>Virtualización</h4>
-                    <p>Habilitada en BIOS/UEFI</p>
+                    <h4 data-i18n="req_virt_title">Virtualización</h4>
+                    <p data-i18n="req_virt">Habilitada en BIOS/UEFI</p>
                 </div>
             </div>
         </div>
@@ -392,54 +513,64 @@
 
     <section id="faq">
         <div class="container">
-            <h2>Preguntas Frecuentes</h2>
+            <h2 data-i18n="faq_title">Preguntas Frecuentes</h2>
 
             <div class="faq-item" onclick="toggleFaq(this)">
                 <div class="faq-question">
-                    ¿Cuántas cuentas puedo tener abiertas al mismo tiempo?
+                    <span data-i18n="faq1_q">¿Cuántas cuentas puedo tener abiertas al mismo tiempo?</span>
                     <span class="arrow">&#9660;</span>
                 </div>
-                <div class="faq-answer">
+                <div class="faq-answer" data-i18n="faq1_a">
                     Hasta 4 cuentas simultáneas con la misma conexión de internet. Para PvM es más que suficiente para jugar cómodamente.
                 </div>
             </div>
 
             <div class="faq-item" onclick="toggleFaq(this)">
                 <div class="faq-question">
-                    ¿Es seguro? ¿Qué hace el instalador?
+                    <span data-i18n="faq2_q">¿Es seguro? ¿Qué hace el instalador?</span>
                     <span class="arrow">&#9660;</span>
                 </div>
-                <div class="faq-answer">
+                <div class="faq-answer" data-i18n="faq2_a">
                     El instalador configura WSA (Windows Subsystem for Android), instala el juego original y crea copias con nombres de paquete diferentes para que puedan coexistir. No modifica archivos del sistema ni envía datos a ningún servidor externo. Al cerrar, se eliminan todos los archivos temporales automáticamente.
                 </div>
             </div>
 
             <div class="faq-item" onclick="toggleFaq(this)">
                 <div class="faq-question">
-                    ¿Necesito reiniciar el PC?
+                    <span data-i18n="faq3_q">¿Funciona en Windows 10?</span>
                     <span class="arrow">&#9660;</span>
                 </div>
-                <div class="faq-answer">
+                <div class="faq-answer" data-i18n="faq3_a">
+                    Sí, funciona tanto en Windows 10 (versión 2004 o posterior, build 19041+) como en Windows 11. Asegúrate de descargar la versión correcta para tu sistema operativo. El instalador detecta automáticamente tu versión de Windows.
+                </div>
+            </div>
+
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="faq-question">
+                    <span data-i18n="faq4_q">¿Necesito reiniciar el PC?</span>
+                    <span class="arrow">&#9660;</span>
+                </div>
+                <div class="faq-answer" data-i18n="faq4_a">
                     Solo si es la primera vez que instalas WSA. El instalador activará la "Virtual Machine Platform" de Windows y pedirá un reinicio. Después del reinicio, ejecuta el instalador de nuevo y continuará desde donde se quedó.
                 </div>
             </div>
 
             <div class="faq-item" onclick="toggleFaq(this)">
                 <div class="faq-question">
-                    Me da error de autorización al abrir la segunda cuenta
+                    <span data-i18n="faq5_q">Me da error de autorización al abrir la segunda cuenta</span>
                     <span class="arrow">&#9660;</span>
                 </div>
-                <div class="faq-answer">
+                <div class="faq-answer" data-i18n="faq5_a">
                     Asegúrate de tener <strong>Google Chrome</strong> instalado dentro de WSA. Sin Chrome, los clones comparten el mismo token de autenticación y se cierran entre sí. Instala Chrome desde el Play Store de WSA o contacta para asistencia.
                 </div>
             </div>
 
             <div class="faq-item" onclick="toggleFaq(this)">
                 <div class="faq-question">
-                    ¿Dónde debo poner el archivo .exe?
+                    <span data-i18n="faq6_q">¿Dónde debo poner el archivo .exe?</span>
                     <span class="arrow">&#9660;</span>
                 </div>
-                <div class="faq-answer">
+                <div class="faq-answer" data-i18n="faq6_a">
                     Crea una carpeta específica (ej: <strong>C:\DeutheSetup</strong> o una carpeta en el Escritorio) y coloca el .exe ahí. No lo ejecutes directamente desde la carpeta de Descargas, ya que necesita espacio para extraer archivos temporales durante la instalación.
                 </div>
             </div>
@@ -453,16 +584,164 @@
                 <a href="/">Portfolio</a>
                 <a href="/products/dofustouchwsa/install">Installer</a>
                 <a href="https://github.com/Deuthe" target="_blank">GitHub</a>
-                <a href="mailto:contact@deuthe.com">Contacto</a>
+                <a href="mailto:contact@deuthe.com" data-i18n="nav_contact">Contacto</a>
             </div>
             <p>&copy; 2026 Kevin Guzman Perez &mdash; Deuthe's Solution</p>
         </div>
     </footer>
 
     <script>
+        // =====================================================================
+        // Internationalization (i18n) - English / Spanish
+        // =====================================================================
+        const translations = {
+            es: {
+                nav_contact: 'Contacto',
+                hero_badge: 'Versión 1.0',
+                hero_desc: 'Instalador automático de WSA + Dofus Touch Multi-Account para Windows 10 y Windows 11. Todo en un solo ejecutable. Sin configuración manual.',
+                download_btn: 'Descargar',
+                download_meta: '~700 MB cada uno · Requiere clave de activación',
+                steps_title: 'Cómo Instalar',
+                step1_title: 'Descargar el Instalador',
+                step1_desc: 'Haz clic en el botón de descarga correspondiente a tu versión de Windows. La descarga puede tardar unos minutos dependiendo de tu conexión.',
+                step2_title: 'Crear una Carpeta Dedicada',
+                step2_desc: 'Crea una carpeta en tu PC, por ejemplo <code>C:\\DeutheSetup</code> o en el Escritorio. Mueve el archivo <code>.exe</code> dentro de esa carpeta.',
+                step2_warning: '<strong>Importante:</strong> No ejecutes el .exe directamente desde la carpeta de Descargas. Siempre ponlo en su propia carpeta primero.',
+                step3_title: 'Ejecutar como Administrador',
+                step3_desc: 'Haz clic derecho en el <code>.exe</code> &rarr; <strong>Ejecutar como administrador</strong>. Ingresa la clave de activación proporcionada.',
+                step4_title: 'Seleccionar Cuentas y Esperar',
+                step4_desc: 'Elige el número de cuentas que deseas (1-8) y pulsa <strong>START INSTALLATION</strong>. El instalador se encarga del resto automáticamente. Si pide reiniciar, reinicia y vuelve a ejecutar.',
+                step5_title: '¡Listo! Abre tus Cuentas',
+                step5_desc: 'Busca <strong>DOFUS Touch</strong>, <strong>DOFUS Touch W</strong>, <strong>DOFUS Touch Y</strong>, etc. en el menú Inicio de Windows. Cada icono es una cuenta independiente.',
+                req_title: 'Requisitos del Sistema',
+                req_os: 'Win10 (2004+) o Win11 — Home, Pro, Enterprise',
+                req_ram: 'Mínimo (16 GB recomendado)',
+                req_disk_title: '15 GB Libres',
+                req_disk: 'Espacio en disco C:',
+                req_virt_title: 'Virtualización',
+                req_virt: 'Habilitada en BIOS/UEFI',
+                faq_title: 'Preguntas Frecuentes',
+                faq1_q: '¿Cuántas cuentas puedo tener abiertas al mismo tiempo?',
+                faq1_a: 'Hasta 4 cuentas simultáneas con la misma conexión de internet. Para PvM es más que suficiente para jugar cómodamente.',
+                faq2_q: '¿Es seguro? ¿Qué hace el instalador?',
+                faq2_a: 'El instalador configura WSA (Windows Subsystem for Android), instala el juego original y crea copias con nombres de paquete diferentes para que puedan coexistir. No modifica archivos del sistema ni envía datos a ningún servidor externo. Al cerrar, se eliminan todos los archivos temporales automáticamente.',
+                faq3_q: '¿Funciona en Windows 10?',
+                faq3_a: 'Sí, funciona tanto en Windows 10 (versión 2004 o posterior, build 19041+) como en Windows 11. Asegúrate de descargar la versión correcta para tu sistema operativo. El instalador detecta automáticamente tu versión de Windows.',
+                faq4_q: '¿Necesito reiniciar el PC?',
+                faq4_a: 'Solo si es la primera vez que instalas WSA. El instalador activará la "Virtual Machine Platform" de Windows y pedirá un reinicio. Después del reinicio, ejecuta el instalador de nuevo y continuará desde donde se quedó.',
+                faq5_q: 'Me da error de autorización al abrir la segunda cuenta',
+                faq5_a: 'Asegúrate de tener <strong>Google Chrome</strong> instalado dentro de WSA. Sin Chrome, los clones comparten el mismo token de autenticación y se cierran entre sí. Instala Chrome desde el Play Store de WSA o contacta para asistencia.',
+                faq6_q: '¿Dónde debo poner el archivo .exe?',
+                faq6_a: 'Crea una carpeta específica (ej: <strong>C:\\DeutheSetup</strong> o una carpeta en el Escritorio) y coloca el .exe ahí. No lo ejecutes directamente desde la carpeta de Descargas, ya que necesita espacio para extraer archivos temporales durante la instalación.',
+                os_detected_win11: 'Detectado: Windows 11 — Te recomendamos la versión de Windows 11',
+                os_detected_win10: 'Detectado: Windows 10 — Te recomendamos la versión de Windows 10',
+            },
+            en: {
+                nav_contact: 'Contact',
+                hero_badge: 'Version 1.0',
+                hero_desc: 'Automated WSA + Dofus Touch Multi-Account Installer for Windows 10 and Windows 11. All in one executable. No manual setup.',
+                download_btn: 'Download',
+                download_meta: '~700 MB each · Activation key required',
+                steps_title: 'How to Install',
+                step1_title: 'Download the Installer',
+                step1_desc: 'Click the download button for your Windows version. The download may take a few minutes depending on your connection.',
+                step2_title: 'Create a Dedicated Folder',
+                step2_desc: 'Create a folder on your PC, for example <code>C:\\DeutheSetup</code> or on your Desktop. Move the <code>.exe</code> file into that folder.',
+                step2_warning: '<strong>Important:</strong> Do not run the .exe directly from the Downloads folder. Always put it in its own folder first.',
+                step3_title: 'Run as Administrator',
+                step3_desc: 'Right-click the <code>.exe</code> &rarr; <strong>Run as administrator</strong>. Enter the activation key provided.',
+                step4_title: 'Select Accounts and Wait',
+                step4_desc: 'Choose the number of accounts you want (1-8) and click <strong>START INSTALLATION</strong>. The installer handles everything automatically. If it asks to reboot, restart and run again.',
+                step5_title: 'Done! Open Your Accounts',
+                step5_desc: 'Search for <strong>DOFUS Touch</strong>, <strong>DOFUS Touch W</strong>, <strong>DOFUS Touch Y</strong>, etc. in the Windows Start Menu. Each icon is an independent account.',
+                req_title: 'System Requirements',
+                req_os: 'Win10 (2004+) or Win11 — Home, Pro, Enterprise',
+                req_ram: 'Minimum (16 GB recommended)',
+                req_disk_title: '15 GB Free',
+                req_disk: 'Free space on drive C:',
+                req_virt_title: 'Virtualization',
+                req_virt: 'Enabled in BIOS/UEFI',
+                faq_title: 'Frequently Asked Questions',
+                faq1_q: 'How many accounts can I have open at the same time?',
+                faq1_a: 'Up to 4 simultaneous accounts with the same internet connection. For PvM this is more than enough to play comfortably.',
+                faq2_q: 'Is it safe? What does the installer do?',
+                faq2_a: 'The installer sets up WSA (Windows Subsystem for Android), installs the original game and creates copies with different package names so they can coexist. It does not modify system files or send data to any external server. On exit, all temporary files are automatically deleted.',
+                faq3_q: 'Does it work on Windows 10?',
+                faq3_a: 'Yes, it works on both Windows 10 (version 2004 or later, build 19041+) and Windows 11. Make sure to download the correct version for your operating system. The installer automatically detects your Windows version.',
+                faq4_q: 'Do I need to restart the PC?',
+                faq4_a: 'Only if it\'s the first time you install WSA. The installer will enable the "Virtual Machine Platform" and ask for a reboot. After restarting, run the installer again and it will continue from where it left off.',
+                faq5_q: 'I get an authorization error when opening the second account',
+                faq5_a: 'Make sure you have <strong>Google Chrome</strong> installed inside WSA. Without Chrome, clones share the same authentication token and log each other out. Install Chrome from WSA\'s Play Store or contact support.',
+                faq6_q: 'Where should I put the .exe file?',
+                faq6_a: 'Create a specific folder (e.g., <strong>C:\\DeutheSetup</strong> or a folder on the Desktop) and place the .exe there. Do not run it directly from the Downloads folder, as it needs space to extract temporary files during installation.',
+                os_detected_win11: 'Detected: Windows 11 — We recommend the Windows 11 version',
+                os_detected_win10: 'Detected: Windows 10 — We recommend the Windows 10 version',
+            }
+        };
+
+        let currentLang = localStorage.getItem('deuthe-lang') || 'es';
+
+        function setLang(lang) {
+            currentLang = lang;
+            localStorage.setItem('deuthe-lang', lang);
+            document.documentElement.lang = lang;
+
+            document.getElementById('langEs').classList.toggle('active', lang === 'es');
+            document.getElementById('langEn').classList.toggle('active', lang === 'en');
+
+            const t = translations[lang];
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (t[key]) {
+                    el.innerHTML = t[key];
+                }
+            });
+
+            // Update OS detection text
+            detectOS();
+        }
+
+        function detectOS() {
+            const ua = navigator.userAgent;
+            const t = translations[currentLang];
+            const osEl = document.getElementById('osDetected');
+            const osText = document.getElementById('osDetectedText');
+            const btnWin11 = document.getElementById('downloadWin11');
+            const btnWin10 = document.getElementById('downloadWin10');
+
+            if (ua.indexOf('Windows NT 10.0') !== -1) {
+                // Could be Win10 or Win11 (both report NT 10.0)
+                if (navigator.userAgentData && navigator.userAgentData.getHighEntropyValues) {
+                    navigator.userAgentData.getHighEntropyValues(['platformVersion']).then(values => {
+                        const majorVer = parseInt(values.platformVersion.split('.')[0]);
+                        if (majorVer >= 13) {
+                            // Windows 11
+                            osEl.style.display = 'inline-flex';
+                            osText.textContent = t.os_detected_win11;
+                            btnWin11.classList.add('recommended');
+                            btnWin11.classList.remove('secondary');
+                            btnWin10.classList.add('secondary');
+                            btnWin10.classList.remove('recommended');
+                        } else {
+                            // Windows 10
+                            osEl.style.display = 'inline-flex';
+                            osText.textContent = t.os_detected_win10;
+                            btnWin10.classList.add('recommended');
+                            btnWin10.classList.remove('secondary');
+                            btnWin11.classList.add('secondary');
+                            btnWin11.classList.remove('recommended');
+                        }
+                    }).catch(() => {});
+                }
+            }
+        }
+
         function toggleFaq(item) {
             item.classList.toggle('open');
         }
+
+        // Initialize
+        setLang(currentLang);
     </script>
 </body>
 </html>
