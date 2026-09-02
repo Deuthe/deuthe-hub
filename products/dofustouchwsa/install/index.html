@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
  <meta charset="UTF-8">
@@ -243,15 +243,18 @@
 
  /* 5 MK Price Box */
  .price-callout {
- display: inline-flex;
- align-items: center;
- gap: 12px;
- background: rgba(0, 212, 170, 0.1);
- border: 1px solid rgba(0, 212, 170, 0.3);
- border-radius: 24px;
- padding: 8px 24px;
- margin-bottom: 32px;
- }
+		display: inline-flex;
+		align-items: center;
+		gap: 12px;
+		background: rgba(0, 212, 170, 0.08);
+		border: 1px solid rgba(0, 212, 170, 0.3);
+		border-radius: 24px;
+		padding: 10px 24px;
+		margin-bottom: 32px;
+		max-width: 860px;
+		flex-wrap: wrap;
+		justify-content: center;
+	}
 
  .price-badge {
  background: var(--accent);
@@ -337,13 +340,166 @@
  color: var(--text-muted);
  }
 
- /* Prominent Architecture Notice Card */
+ /* Very Big Ban Disclaimer & Ankama Policy Card */
+  .disclaimer-alert-card {
+    background: linear-gradient(145deg, rgba(239, 68, 68, 0.14), rgba(245, 158, 11, 0.1), rgba(21, 23, 25, 0.98));
+    border: 2px solid rgba(239, 68, 68, 0.55);
+    border-radius: var(--radius-lg);
+    padding: 30px 34px;
+    margin: 36px 0 30px;
+    text-align: left;
+    box-shadow: 0 12px 35px rgba(239, 68, 68, 0.22);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .disclaimer-alert-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 6px; height: 100%;
+    background: linear-gradient(to bottom, #ef4444, #f59e0b);
+  }
+
+  .disclaimer-alert-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  .disclaimer-icon {
+    font-size: 1.8rem;
+    line-height: 1;
+  }
+
+  .disclaimer-alert-header h3 {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #fca5a5;
+    letter-spacing: 0.5px;
+    margin: 0;
+    text-transform: uppercase;
+  }
+
+  .disclaimer-alert-body {
+    color: #cbd5e1;
+    font-size: 0.98rem;
+    line-height: 1.7;
+  }
+
+  .disclaimer-highlight {
+    font-size: 1.05rem;
+    color: #fee2e2;
+    background: rgba(239, 68, 68, 0.15);
+    border-left: 3px solid #ef4444;
+    padding: 12px 16px;
+    border-radius: 4px;
+    margin-bottom: 16px;
+  }
+
+  .disclaimer-highlight strong {
+    color: #ffffff;
+    text-decoration: underline;
+  }
+
+  .disclaimer-alert-body p {
+    margin-bottom: 14px;
+  }
+
+  .disclaimer-ankama-link {
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(239, 68, 68, 0.25);
+  }
+
+  .disclaimer-ankama-link a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #fbbf24;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: all 0.2s;
+    background: rgba(245, 158, 11, 0.12);
+    border: 1px solid rgba(245, 158, 11, 0.35);
+    padding: 10px 18px;
+    border-radius: var(--radius-sm);
+  }
+
+  .disclaimer-ankama-link a:hover {
+    color: #ffffff;
+    background: rgba(245, 158, 11, 0.25);
+    border-color: #fbbf24;
+    transform: translateY(-1px);
+  }
+
+  .disclaimer-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 16px 0;
+  }
+  @media (max-width: 768px) {
+    .disclaimer-columns {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .disclaimer-col-safe {
+    background: rgba(0, 212, 170, 0.08);
+    border: 1px solid rgba(0, 212, 170, 0.3);
+    border-radius: var(--radius-md);
+    padding: 18px;
+  }
+  .disclaimer-col-safe h4 {
+    color: #5eead4;
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .disclaimer-col-safe p {
+    font-size: 0.88rem;
+    color: #cbd5e1;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .disclaimer-col-risk {
+    background: rgba(239, 68, 68, 0.08);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: var(--radius-md);
+    padding: 18px;
+  }
+  .disclaimer-col-risk h4 {
+    color: #fca5a5;
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .disclaimer-col-risk p {
+    font-size: 0.88rem;
+    color: #cbd5e1;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+
+  /* Prominent Architecture Notice Card */
  .arch-notice-card {
  background: linear-gradient(145deg, #181d27, #131720);
  border: 1px solid rgba(99, 102, 241, 0.4);
  border-radius: var(--radius-lg);
  padding: 32px;
- margin: 40px 0 60px;
+ margin: 40px 0 20px;
  text-align: left;
  position: relative;
  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
@@ -389,7 +545,92 @@
  font-style: italic;
  }
 
- /* SHA-256 Checksums */
+ /* Open Source Credits Card */
+  .credits-notice-card {
+    background: linear-gradient(145deg, rgba(29, 32, 38, 0.95), rgba(21, 23, 25, 0.98));
+    border: 1px solid rgba(0, 212, 170, 0.3);
+    border-radius: var(--radius-lg);
+    padding: 24px 28px;
+    margin: 0 0 50px;
+    text-align: left;
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .credits-notice-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 4px; height: 100%;
+    background: linear-gradient(to bottom, var(--accent), var(--primary));
+  }
+
+  .credits-icon {
+    flex-shrink: 0;
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: rgba(0, 212, 170, 0.12);
+    border: 1px solid rgba(0, 212, 170, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+  }
+
+  .credits-content {
+    flex: 1;
+  }
+
+  .credits-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+
+  .credits-badge {
+    background: rgba(0, 212, 170, 0.15);
+    color: #5eead4;
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .credits-header h4 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0;
+  }
+
+  .credits-body {
+    color: #94a3b8;
+    font-size: 0.92rem;
+    line-height: 1.65;
+  }
+
+  .credits-body a {
+    color: #5eead4;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .credits-body a:hover {
+    color: #ffffff;
+    text-decoration: underline;
+  }
+
+  /* SHA-256 Checksums */
  .checksum-box {
  background: var(--bg-card);
  border: 1px solid var(--border);
@@ -704,7 +945,7 @@
  <!-- 5 MK Price Callout -->
  <div class="price-callout">
  <span class="price-badge" style="background: rgba(99, 102, 241, 0.2); border: 1px solid rgba(99, 102, 241, 0.4); color: #a5b4fc; padding: 4px 12px; font-weight: 700; border-radius: 12px;">5M Kamas</span>
- <span class="price-text" data-i18n="price_label">5M Kamas por clave de activación / Soporte Telegram (@deuthe)</span>
+ <span class="price-text" data-i18n="price_label">5M Kamas por clave: contribución por el tiempo invertido en el script (tomó varios días de trabajo) y la web. ¡Gracias por el apoyo! (Soporte Telegram @deuthe)</span>
  </div>
 
  <!-- Download Buttons with OS Detection -->
@@ -723,7 +964,36 @@
  <div class="download-meta" data-i18n="download_meta">~675 MB / Windows x64 / Clave requerida (5M Kamas)</div>
  </div>
 
- <!-- Prominent Architecture & Intel Bridge Notice Card -->
+ <!-- Very Big Ban Disclaimer & Ankama Policy Notice -->
+    <div class="disclaimer-alert-card">
+      <div class="disclaimer-alert-header">
+        <span class="disclaimer-icon">⚠️</span>
+        <h3 data-i18n="disclaimer_title">AVISO IMPORTANTE: SEGURIDAD, ROBO & POLÍTICA DE BANEOS</h3>
+      </div>
+      <div class="disclaimer-alert-body">
+        <div class="disclaimer-columns">
+          <div class="disclaimer-col-safe">
+            <h4 data-i18n="disclaimer_safe_title">🛡️ 100% Seguro: Jamás te van a robar</h4>
+            <p data-i18n="disclaimer_safe_desc">
+              El instalador y la herramienta son completamente limpios, transparentes y locales. No contienen keyloggers, accesos remotos ni código malicioso. <strong>Tus cuentas, contraseñas, objetos y kamas están totalmente a salvo</strong>; el juego original y los servicios de Google se ejecutan de forma íntegra en tu propio PC sin interceptar ningún dato.
+            </p>
+          </div>
+          <div class="disclaimer-col-risk">
+            <h4 data-i18n="disclaimer_risk_title">⚠️ Posible Riesgo de Baneo (Ankama)</h4>
+            <p data-i18n="disclaimer_risk_desc">
+              Queremos ser totalmente honestos y transparentes contigo: <strong>no me hago responsable en caso de baneo</strong>. Tanto yo como muchos otros jugadores llevamos <strong>más de 2 años utilizándolo a diario sin ningún baneo ni problema</strong>. Sin embargo, esto no garantiza al 100% que no puedas ser sancionado si Ankama decide aplicar restricciones en el futuro. Juega con sensatez y bajo tu propia decisión.
+            </p>
+          </div>
+        </div>
+        <div class="disclaimer-ankama-link">
+          <a href="https://support.ankama.com/hc/en-us/articles/26840828168209-What-devices-can-be-used-to-play-DOFUS-Touch" target="_blank" rel="noopener noreferrer" data-i18n="disclaimer_link">
+            📖 Consulta la postura oficial de Ankama sobre dispositivos compatibles &rarr;
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Prominent Architecture & Intel Bridge Notice Card -->
  <div class="arch-notice-card">
  <div class="arch-notice-header">
  <span class="arch-notice-badge" data-i18n="arch_badge"> Arquitectura Nativa</span>
@@ -742,19 +1012,37 @@
  </div>
  </div>
 
- <!-- SHA-256 Checksums -->
+ <!-- Open Source Recognition / MustardChef Credits -->
+    <div class="credits-notice-card">
+      <div class="credits-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+        </svg>
+      </div>
+      <div class="credits-content">
+        <div class="credits-header">
+          <span class="credits-badge" data-i18n="credits_badge">⚡ Reconocimiento Open Source</span>
+          <h4 data-i18n="credits_title">Créditos de WSA: Proyecto WSABuilds por MustardChef</h4>
+        </div>
+        <div class="credits-body" data-i18n="credits_desc">
+          Todo este proyecto y la ejecución de Android en Windows 10 y 11 es posible gracias al extraordinario trabajo de <a href="https://github.com/MustardChef" target="_blank" rel="noopener noreferrer">MustardChef</a>. Las compilaciones de Windows Subsystem for Android con KernelSU integradas en este instalador provienen directamente de su repositorio de código abierto <a href="https://github.com/MustardChef/WSABuilds" target="_blank" rel="noopener noreferrer">MustardChef/WSABuilds</a>. ¡Todo el crédito y gratitud para él por hacer esto posible!
+        </div>
+      </div>
+    </div>
+
+    <!-- SHA-256 Checksums -->
  <div class="checksum-box">
  <div class="checksum-title" data-i18n="checksum_title"> Verificar Checksums SHA-256 (Integridad de los Instaladores)</div>
  
  <div class="checksum-row">
  <span class="checksum-label">Windows 11:</span>
- <span class="checksum-hash" id="hashWin11">9D9B71264945BB12FDDAE84BBDE9611EF4280B9813AE501DCE729D4C4B9C61AF</span>
+ <span class="checksum-hash" id="hashWin11">E5AF8ABDE274B1A912818812333D49A2E85ED3D886A46F4554384F1BF7B59E04</span>
  <button class="btn-copy-hash" onclick="copyHash('hashWin11', this)">Copiar</button>
  </div>
 
  <div class="checksum-row">
  <span class="checksum-label">Windows 10:</span>
- <span class="checksum-hash" id="hashWin10">CBAD57AE53607FD51D4001367A5377A6BDC86EA8EE4700C8E33586B3CFFF327F</span>
+ <span class="checksum-hash" id="hashWin10">CDDBE8A48326496C2DD5A28A07239AC25712ADA09422274A0888BAFE3AB294E3</span>
  <button class="btn-copy-hash" onclick="copyHash('hashWin10', this)">Copiar</button>
  </div>
  </div>
@@ -910,7 +1198,18 @@
  <!-- FAQ 6: Chrome token -->
  
 
- <!-- FAQ 7: Exe location -->
+ <!-- FAQ: Why 5M Kamas -->
+				<div class="faq-item" onclick="toggleFaq(this)">
+					<div class="faq-question">
+						<span data-i18n="faq_price_q">¿Por qué el costo es de 5M Kamas?</span>
+						<span class="arrow">&#9660;</span>
+					</div>
+					<div class="faq-answer" data-i18n="faq_price_a">
+						Las 5M Kamas son una contribución por el tiempo invertido en desarrollar el script de automatización (me tomó varios días de desarrollo y pruebas) y diseñar la página web con toda la guía. No cobro por WSA (que es de código abierto de MustardChef), sino por la solución automatizada empaquetada y el soporte directo 1 a 1 por Telegram (@deuthe) para configurarte todo. ¡Muchas gracias por el apoyo!
+					</div>
+				</div>
+
+				<!-- FAQ 7: Exe location -->
  <div class="faq-item" onclick="toggleFaq(this)">
  <div class="faq-question">
  <span data-i18n="faq7_q">¿Dónde debo poner el archivo .exe?</span>
@@ -934,7 +1233,7 @@
  <a href="https://t.me/deuthe" target="_blank" data-i18n="nav_telegram">Telegram (@deuthe)</a>
  <a href="https://github.com/Deuthe" target="_blank">GitHub</a>
  </div>
- <p class="footer-copy">&copy; 2026 Kevin G. / WSA Multi-Instance Tool / deuthe.com</p>
+ <p class="footer-copy">&copy; 2026 Kevin G. / WSA Multi-Instance Tool / deuthe.com &bull; <span data-i18n="footer_credits">WSA builds cortesía de <a href="https://github.com/MustardChef/WSABuilds" target="_blank" rel="noopener noreferrer" style="color: #a5b4fc; text-decoration: underline;">MustardChef/WSABuilds</a></span></p>
  </div>
  </footer>
 
@@ -1001,7 +1300,7 @@
  hero_badge: "Versión 1.0 / Windows 10 & 11",
  hero_subtitle: "Automatización y Sandboxing Multisesión de Android para Windows 10 y 11",
  hero_desc: "Motor automatizado de despliegue y sandboxing multisesión de Android en WSA para Windows 10 y 11. Ejecución nativa sin emuladores pesados ni configuración manual.",
- price_label: "5M Kamas por clave de activación / Incluye soporte personalizado 1 a 1 por Telegram (@deuthe), explicación completa y resolución de dudas",
+ price_label: "5M Kamas por clave: contribución por el tiempo invertido en el script (tomó varios días de trabajo) y la web. ¡Gracias por el apoyo! (Soporte Telegram @deuthe)",
  btn_win11: "Descargar para Windows 11",
  btn_win10: "Descargar para Windows 10",
  download_meta: "~675 MB / Windows x64 / Clave requerida (5M Kamas)",
@@ -1040,14 +1339,26 @@
  faq2_q: "¿Cuántas cuentas puedo tener abiertas al mismo tiempo?",
  faq2_a: "Hasta 4 cuentas simultáneas con la misma conexión de internet. Para PvM es más que suficiente para jugar cómodamente.",
  faq3_q: "¿Es seguro? ¿Qué hace el instalador?",
- faq3_a: "El instalador configura WSA (Windows Subsystem for Android), instala el juego original y crea copias con nombres de paquete diferentes para que puedan coexistir. No modifica archivos del sistema ni envía datos personales. Al cerrar, se eliminan todos los archivos temporales automáticamente.",
+ disclaimer_title: "AVISO IMPORTANTE: SEGURIDAD, ROBO & POLÍTICA DE BANEOS",
+    disclaimer_safe_title: "🛡️ 100% Seguro: Jamás te van a robar",
+    disclaimer_safe_desc: "El instalador y la herramienta son completamente limpios, transparentes y locales. No contienen keyloggers, accesos remotos ni código malicioso. <strong>Tus cuentas, contraseñas, objetos y kamas están totalmente a salvo</strong>; el juego original y los servicios de Google se ejecutan de forma íntegra en tu propio PC sin interceptar ningún dato.",
+    disclaimer_risk_title: "⚠️ Posible Riesgo de Baneo (Ankama)",
+    disclaimer_risk_desc: "Queremos ser totalmente honestos y transparentes contigo: <strong>no me hago responsable en caso de baneo</strong>. Tanto yo como muchos otros jugadores llevamos <strong>más de 2 años utilizándolo a diario sin ningún baneo ni problema</strong>. Sin embargo, esto no garantiza al 100% que no puedas ser sancionado si Ankama decide aplicar restricciones en el futuro. Juega con sensatez y bajo tu propia decisión.",
+    disclaimer_link: "📖 Consulta la postura oficial de Ankama sobre dispositivos compatibles &rarr;",
+    credits_badge: "⚡ Reconocimiento Open Source",
+ credits_title: "Créditos de WSA: Proyecto WSABuilds por MustardChef",
+ credits_desc: "Todo este proyecto y la ejecución de Android en Windows 10 y 11 es posible gracias al extraordinario trabajo de <a href=\"https://github.com/MustardChef\" target=\"_blank\" rel=\"noopener noreferrer\">MustardChef</a>. Las compilaciones de Windows Subsystem for Android con KernelSU integradas en este instalador provienen directamente de su repositorio de código abierto <a href=\"https://github.com/MustardChef/WSABuilds\" target=\"_blank\" rel=\"noopener noreferrer\">MustardChef/WSABuilds</a>. ¡Todo el crédito y gratitud para él por hacer esto posible!",
+ footer_credits: "Compilaciones WSA cortesía de <a href=\"https://github.com/MustardChef/WSABuilds\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color: #a5b4fc; text-decoration: underline;\">MustardChef/WSABuilds</a>",
+ faq3_a: "El instalador configura WSA (Windows Subsystem for Android) integrando las compilaciones de código abierto de <a href=\"https://github.com/MustardChef/WSABuilds\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color:#5eead4;text-decoration:underline;\">MustardChef/WSABuilds</a>, instala el juego original y genera copias clonadas con identificadores aislados para permitir multicuenta simultáneo. No altera archivos críticos del sistema ni recopila datos personales. Al cerrar, todos los archivos temporales se limpian automáticamente.",
  faq4_q: "¿Funciona en Windows 10?",
  faq4_a: "Sí, funciona tanto en Windows 10 (versión 2004 o posterior, build 19041+) como en Windows 11. Asegúrate de descargar la versión correspondiente a tu sistema operativo.",
  faq5_q: "¿Necesito reiniciar el PC?",
  faq5_a: "Solo si es la primera vez que instalas WSA. El instalador activará la plataforma de máquina virtual (Virtual Machine Platform) de Windows y pedirá un reinicio. Después del reinicio, ejecuta el instalador de nuevo y continuará desde donde se quedó.",
  faq6_q: "Me da error de autorización al abrir la segunda cuenta",
  faq6_a: "Asegúrate de tener <strong>Google Chrome</strong> instalado dentro de WSA. Sin Chrome, los clones comparten el mismo token de autenticación y se desconectan entre sí. Chrome crea contextos de autenticación aislados para cada clon.",
- faq7_q: "¿Dónde debo poner el archivo .exe?",
+ faq_price_q: "¿Por qué el costo es de 5M Kamas?",
+    faq_price_a: "Las 5M Kamas son una pequeña contribución por el tiempo invertido en desarrollar el script de automatización (me tomó varios días de trabajo y pruebas) y diseñar la página web con toda la guía. No se cobra por WSA (que es de código abierto de MustardChef), sino por la herramienta automatizada y el soporte personalizado 1 a 1 por Telegram (@deuthe). ¡Muchas gracias por el apoyo y por valorar el trabajo!",
+    faq7_q: "¿Dónde debo poner el archivo .exe?",
  faq7_a: "Crea una carpeta específica (ej: <strong>C:\\DeutheSetup</strong> o una carpeta en el Escritorio) y coloca el .exe ahí. No lo ejecutes directamente desde la carpeta de Descargas, ya que necesita espacio para extraer archivos temporales durante la instalación.",
  os_detected_win11: "Detectado: Windows 11 Te recomendamos la versión de Windows 11",
  os_detected_win10: "Detectado: Windows 10 Te recomendamos la versión de Windows 10"
@@ -1061,7 +1372,7 @@
  hero_badge: "Version 1.0 / Windows 10 & 11",
  hero_subtitle: "Native Multi-Session Android Automation for Windows 10 & 11",
  hero_desc: "Automated deployment and multi-session Android sandboxing engine on WSA for Windows 10 and 11. Native execution with zero heavy emulators or manual setup.",
- price_label: "5M Kamas per activation key / Includes personalized 1-on-1 Telegram support (@deuthe), complete setup walkthrough, and full assistance",
+ price_label: "5M Kamas per key: a contribution for the time invested developing the script (took several days of work) and the website. Thank you for your support! (Telegram support @deuthe)",
  btn_win11: "Download for Windows 11",
  btn_win10: "Download for Windows 10",
  download_meta: "~675 MB / Windows x64 / Key required (5M Kamas)",
@@ -1100,14 +1411,26 @@
  faq2_q: "How many accounts can I have open at the same time?",
  faq2_a: "Up to 4 simultaneous accounts with the same internet connection. For PvM this is more than enough to play comfortably.",
  faq3_q: "Is it safe? What does the installer do?",
- faq3_a: "The installer sets up WSA (Windows Subsystem for Android), installs the original game and creates copies with different package names so they can coexist. It does not modify system files or send personal data. On exit, all temporary files are automatically deleted.",
+ disclaimer_title: "IMPORTANT NOTICE: SECURITY, SAFETY & BAN DISCLAIMER",
+    disclaimer_safe_title: "🛡️ 100% Secure: Zero Risk of Theft",
+    disclaimer_safe_desc: "The installer and software are entirely clean, transparent, and local. They contain zero keyloggers, backdoors, or malicious code. <strong>Your accounts, credentials, kamas, and items are completely safe</strong>; the original game and Google services run untouched on your PC without capturing or intercepting any data.",
+    disclaimer_risk_title: "⚠️ Potential Ban Notice (Ankama Policy)",
+    disclaimer_risk_desc: "We want to be completely honest, friendly, and transparent with you: <strong>I am not responsible for any potential account bans</strong>. Myself and many other players have been playing daily for <strong>over 2 years now with zero bans or issues</strong>. However, this does not mean you can never get banned, as Ankama's policy enforcement is entirely up to them. Play mindfully and at your own choice.",
+    disclaimer_link: "📖 Read Ankama's official support article on supported devices &rarr;",
+    credits_badge: "⚡ Open Source Recognition",
+ credits_title: "WSA Credits: WSABuilds Project by MustardChef",
+ credits_desc: "This entire project and native Android execution on Windows 10 & 11 is made possible thanks to the outstanding work of <a href=\"https://github.com/MustardChef\" target=\"_blank\" rel=\"noopener noreferrer\">MustardChef</a>. The Windows Subsystem for Android builds with KernelSU integrated into this installer are sourced directly from his open-source repository <a href=\"https://github.com/MustardChef/WSABuilds\" target=\"_blank\" rel=\"noopener noreferrer\">MustardChef/WSABuilds</a>. Full credit and gratitude to him for making this possible!",
+ footer_credits: "WSA builds courtesy of <a href=\"https://github.com/MustardChef/WSABuilds\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color: #a5b4fc; text-decoration: underline;\">MustardChef/WSABuilds</a>",
+ faq3_a: "The installer configures WSA (Windows Subsystem for Android) integrating the open-source builds from <a href=\"https://github.com/MustardChef/WSABuilds\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color:#5eead4;text-decoration:underline;\">MustardChef/WSABuilds</a>, installs the game and generates clones with isolated package identities for simultaneous multi-accounting. It does not modify critical system files or collect personal data. On exit, all temporary files are cleaned up automatically.",
  faq4_q: "Does it work on Windows 10?",
  faq4_a: "Yes, it works on both Windows 10 (version 2004 or later, build 19041+) and Windows 11. Make sure to download the correct version for your operating system.",
  faq5_q: "Do I need to restart the PC?",
  faq5_a: "Only if it is the first time you install WSA. The installer will enable the Virtual Machine Platform and ask for a reboot. After restarting, run the installer again and it will continue from where it left off.",
  faq6_q: "I get an authorization error when opening the second account",
  faq6_a: "Make sure you have <strong>Google Chrome</strong> installed inside WSA. Without Chrome, clones share the same authentication token and log each other out. Chrome creates isolated sandboxed contexts for each clone.",
- faq7_q: "Where should I put the .exe file?",
+ faq_price_q: "Why is the cost 5M Kamas?",
+    faq_price_a: "The 5M Kamas is a modest contribution for the time invested in creating and testing the automation script (which took several days of dedicated work) and building this website. You are not paying for WSA (which is open source by MustardChef), but for the automated multi-instance solution and 1-on-1 support on Telegram (@deuthe). Thank you so much for your support!",
+    faq7_q: "Where should I put the .exe file?",
  faq7_a: "Create a specific folder (e.g., <strong>C:\\DeutheSetup</strong> or a folder on the Desktop) and place the .exe there. Do not run it directly from the Downloads folder, as it needs space to extract temporary files during installation.",
  os_detected_win11: "Detected: Windows 11 We recommend the Windows 11 version",
  os_detected_win10: "Detected: Windows 10 We recommend the Windows 10 version"
