@@ -1,0 +1,311 @@
+/* Dark mode theme overlay for Dolphin Template */
+:root {
+    --bg-dark: #0b0f19;
+    --bg-card: #111827;
+    --bg-card-hover: #162033;
+    --accent: #00d4aa;
+    --accent-dim: rgba(0, 212, 170, 0.12);
+    --border: #1f293d;
+    --text-light: #f9fafb;
+    --text-muted: #9ca3af;
+}
+
+body {
+    background-color: var(--bg-dark) !important;
+    color: var(--text-light) !important;
+    padding: 0 !important;
+}
+
+p {
+    color: var(--text-muted) !important;
+}
+
+.navbar-default {
+    background-color: rgba(11, 15, 25, 0.95) !important;
+    border-color: var(--border) !important;
+    border-top: none !important;
+    left: 0 !important;
+    right: 0 !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.navbar-brand span.text--bold {
+    color: #fff !important;
+}
+
+.navbar-default .navbar-nav > li > a {
+    color: var(--text-muted) !important;
+    text-transform: uppercase;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > .active > a,
+.navbar-default .navbar-nav > .active > a:hover {
+    color: var(--accent) !important;
+    background: transparent !important;
+}
+
+.btn-telegram {
+    background-color: var(--accent) !important;
+    color: #0b0f19 !important;
+    border-radius: 20px !important;
+    padding: 6px 18px !important;
+    font-weight: 700 !important;
+    font-size: 13px !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 8px;
+    display: inline-block;
+    transition: opacity 0.2s;
+}
+
+.btn-telegram:hover {
+    opacity: 0.9;
+    color: #0b0f19 !important;
+}
+
+.jumbotron-section {
+    background-color: #070a12 !important;
+    border-bottom: 1px solid var(--border);
+    padding: 140px 0 100px !important;
+}
+
+.jumbotron h2 {
+    color: #fff !important;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.jumbotron p.lead {
+    color: var(--accent) !important;
+    font-size: 1.25rem !important;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.jumbotron p.bio-text {
+    color: var(--text-muted) !important;
+    font-size: 1rem !important;
+    max-width: 580px;
+    margin-bottom: 24px;
+}
+
+.btn-theme {
+    background-color: var(--accent) !important;
+    color: #0b0f19 !important;
+    border: none !important;
+    font-weight: 700 !important;
+    padding: 12px 28px !important;
+    border-radius: 24px !important;
+    transition: all 0.2s !important;
+}
+
+.btn-theme:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+.btn-theme-outline {
+    background-color: transparent !important;
+    color: var(--text-light) !important;
+    border: 1px solid var(--border) !important;
+    font-weight: 600 !important;
+    padding: 12px 28px !important;
+    border-radius: 24px !important;
+    margin-left: 10px;
+    transition: all 0.2s !important;
+}
+
+.btn-theme-outline:hover {
+    background-color: var(--bg-card) !important;
+    border-color: var(--accent) !important;
+    color: #fff !important;
+}
+
+/* Services 3x2 Grid (Reference Format) */
+.services-section {
+    padding: 90px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.section-heading {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.section-heading h4 {
+    color: var(--accent);
+    text-transform: uppercase;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    margin-bottom: 8px;
+}
+
+.section-heading h2 {
+    color: #fff;
+    font-size: 32px;
+    font-weight: 800;
+}
+
+.service-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 36px 24px;
+    text-align: center;
+    margin-bottom: 24px;
+    transition: all 0.25s;
+    min-height: 280px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.service-box:hover {
+    border-color: var(--accent);
+    background: var(--bg-card-hover);
+    transform: translateY(-3px);
+}
+
+.service-box .icon-wrap {
+    font-size: 36px;
+    color: var(--accent);
+    margin-bottom: 16px;
+}
+
+.service-box h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+.service-box p {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 16px;
+    flex-grow: 1;
+}
+
+.service-box a.service-link {
+    color: var(--accent);
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-decoration: none;
+}
+
+.service-box a.service-link:hover {
+    text-decoration: underline;
+}
+
+/* Featured Product */
+.product-section {
+    padding: 90px 0;
+    border-bottom: 1px solid var(--border);
+    background: #080c16;
+}
+
+.product-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 40px;
+}
+
+.product-tag {
+    background: var(--accent-dim);
+    color: var(--accent);
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    display: inline-block;
+    margin-bottom: 12px;
+}
+
+/* Projects */
+.projects-section {
+    padding: 90px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.project-card-dark {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    margin-bottom: 24px;
+    transition: all 0.2s;
+}
+
+.project-card-dark:hover {
+    border-color: var(--border-hover);
+}
+
+.project-semester-tag {
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+}
+
+.project-card-dark h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 8px;
+}
+
+.project-card-dark p {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 14px;
+}
+
+.project-card-dark a.project-btn {
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 13px;
+    text-decoration: none;
+}
+
+.project-card-dark a.project-btn:hover {
+    text-decoration: underline;
+}
+
+/* Footer */
+.footer-dark {
+    background-color: #060911;
+    padding: 50px 0 30px;
+    text-align: center;
+    border-top: 1px solid var(--border);
+}
+
+.footer-dark a {
+    color: var(--text-muted);
+    margin: 0 14px;
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.2s;
+}
+
+.footer-dark a:hover {
+    color: #fff;
+}
+
+.footer-dark p {
+    font-size: 13px;
+    color: #64748b;
+    margin-top: 20px;
+}
