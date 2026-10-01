@@ -30,8 +30,8 @@
             </div>
             <div class="search">
                 <i class="fas fa-user search-icon"></i>
-                <input type="text" id="usernameInput" value="deuthe" placeholder="Usuario..." autocomplete="off">
-                <button id="fetchGamesBtn">Buscar</button>
+                <input type="text" id="usernameInput" value="deuthe" placeholder="Usuario..." data-i18n-ph="search_ph" autocomplete="off">
+                <button id="fetchGamesBtn" data-i18n="search_btn">Buscar</button>
             </div>
             <select id="voiceSelect" class="select" title="Coach voice"></select>
             <select id="langSelect" class="select" title="Language">
@@ -39,10 +39,10 @@
                 <option value="es">ES</option>
             </select>
             <select id="depthSelect" class="select" title="Profundidad Stockfish">
-                <option value="8">Prof. 8 · rápido</option>
-                <option value="12" selected>Prof. 12</option>
-                <option value="14">Prof. 14</option>
-                <option value="16">Prof. 16 · lento</option>
+                <option value="8" data-i18n="depth_8">Prof. 8 · rápido</option>
+                <option value="12" selected data-i18n="depth_12">Prof. 12</option>
+                <option value="14" data-i18n="depth_14">Prof. 14</option>
+                <option value="16" data-i18n="depth_16">Prof. 16 · lento</option>
             </select>
             <button id="showAboutBtn" class="icon-btn" title="Why use ChessAI Coach">
                 <i class="fas fa-circle-info"></i>
@@ -62,7 +62,7 @@
         <!-- Sidebar: games -->
         <aside class="sidebar hidden flex-col" id="sidebarGames" style="display:none;">
             <div class="sidebar-head">
-                <span><i class="fas fa-list-ul"></i> Partidas recientes</span>
+                <span><i class="fas fa-list-ul"></i> <span data-i18n="recent_games">Partidas recientes</span></span>
                 <span id="gameCountLabel" class="count-pill"></span>
             </div>
             <div id="gamesList" class="games-list"></div>
@@ -81,7 +81,7 @@
                         <div id="board"></div>
                     </div>
                     <div id="moveList" class="moves-card">
-                        <span class="moves-empty">Las jugadas aparecerán aquí tras el análisis…</span>
+                        <span class="moves-empty" data-i18n="moves_empty">Las jugadas aparecerán aquí tras el análisis…</span>
                     </div>
                 </div>
             </div>
@@ -92,15 +92,15 @@
 
             <div id="loaderOverlay" class="loader-overlay hidden flex-col">
                 <div class="spinner"></div>
-                <h3 id="loaderText">Analizando la partida con Stockfish...</h3>
-                <p class="loader-sub">Esto puede tardar un par de minutos según la profundidad</p>
+                <h3 id="loaderText" data-i18n="loader_text">Analizando la partida con Stockfish...</h3>
+                <p class="loader-sub" data-i18n="loader_sub">Esto puede tardar un par de minutos según la profundidad</p>
             </div>
         </main>
 
         <!-- Coach panel -->
         <aside class="coach">
             <div class="match-card">
-                <h2 id="matchTitle">Selecciona una partida</h2>
+                <h2 id="matchTitle" data-i18n="match_select">Selecciona una partida</h2>
                 <div id="accuracyContainer" class="acc-row hidden flex">
                     <div class="acc">
                         <span class="acc-name" id="whiteNameLabel">Blancas</span>
@@ -125,7 +125,7 @@
                 <div id="coachMessageContainer" class="coach-msg hidden flex">
                     <div class="avatar"><i class="fas fa-robot"></i></div>
                     <div class="bubble">
-                        <p id="coachText">Analizando la posición...</p>
+                        <p id="coachText" data-i18n="coach_default">Analizando la posición...</p>
                         <div id="bestLineRow" class="best-line flex hidden">
                             <span class="best-line-tag" id="bestLineTag">Best</span>
                             <span id="bestLineMoves"></span>
@@ -134,10 +134,10 @@
                             <button id="playAudioBtn" class="play-btn">
                                 <i class="fas fa-play" id="playAudioIcon"></i>
                             </button>
-                            <span class="audio-hint">Escuchar comentario</span>
+                            <span class="audio-hint" data-i18n="audio_hint">Escuchar comentario</span>
                             <label class="auto-voice" title="Reproducir automáticamente">
                                 <input type="checkbox" id="autoPlayToggle" checked>
-                                <span>Auto-voz</span>
+                                <span data-i18n="auto_voice">Auto-voz</span>
                             </label>
                         </div>
                         <audio id="coachAudio" preload="none"></audio>
@@ -145,14 +145,14 @@
                 </div>
 
                 <button id="playSummaryBtn" class="btn-summary hidden">
-                    <i class="fas fa-podcast"></i> Escuchar resumen de la partida
+                    <i class="fas fa-podcast"></i> <span data-i18n="listen_summary">Escuchar resumen de la partida</span>
                 </button>
 
                 <div class="qa-card">
-                    <div class="qa-title"><i class="fas fa-comments"></i> Pregunta al entrenador</div>
+                    <div class="qa-title"><i class="fas fa-comments"></i> <span data-i18n="qa_title">Pregunta al entrenador</span></div>
                     <div id="qaAnswer" class="qa-answer hidden"></div>
                     <div class="qa-input-row">
-                        <input id="qaInput" type="text" placeholder="¿Por qué es mala esta jugada?" autocomplete="off">
+                        <input id="qaInput" type="text" placeholder="¿Por qué es mala esta jugada?" data-i18n-ph="qa_ph" autocomplete="off">
                         <button id="qaSendBtn" title="Preguntar"><i class="fas fa-paper-plane"></i></button>
                     </div>
                 </div>
@@ -173,11 +173,11 @@
     <!-- PGN modal -->
     <div id="pgnModal" class="modal flex hidden">
         <div class="modal-card">
-            <h3><i class="fas fa-file-import"></i> Analizar PGN manual</h3>
-            <textarea id="pgnInput" placeholder="Pega aquí el PGN de la partida..."></textarea>
+            <h3><i class="fas fa-file-import"></i> <span data-i18n="pgn_title">Analizar PGN manual</span></h3>
+            <textarea id="pgnInput" placeholder="Pega aquí el PGN de la partida..." data-i18n-ph="pgn_ph"></textarea>
             <div class="modal-actions">
-                <button id="cancelPgnBtn" class="btn-ghost">Cancelar</button>
-                <button id="analyzePgnBtn" class="btn-primary">Analizar partida</button>
+                <button id="cancelPgnBtn" class="btn-ghost" data-i18n="btn_cancel">Cancelar</button>
+                <button id="analyzePgnBtn" class="btn-primary" data-i18n="btn_analyze">Analizar partida</button>
             </div>
         </div>
     </div>
@@ -185,20 +185,20 @@
     <!-- About modal -->
     <div id="aboutModal" class="modal flex hidden">
         <div class="modal-card">
-            <h3><i class="fas fa-chess-knight"></i> Why ChessAI Coach</h3>
+            <h3><i class="fas fa-chess-knight"></i> <span data-i18n="about_title">Why ChessAI Coach</span></h3>
             <div class="about-body">
-                <p>Free game review for club players: no account, no subscription.</p>
+                <p data-i18n="about_p1">Free game review for club players: no account, no subscription.</p>
                 <ul>
-                    <li>Engine truth from <strong>Stockfish</strong>, the open source motor (GPLv3).</li>
-                    <li>Coach explains every move in <strong>English and Spanish</strong>, including why bad moves are bad.</li>
-                    <li>Spoken commentary with <strong>karaoke subtitles</strong> and selectable voices.</li>
-                    <li>Ask-the-coach Q&amp;A over your analyzed game, plus accuracy tracking.</li>
-                    <li>Adjustable engine depth, Chess.com and Lichess import, board preview arrows.</li>
+                    <li data-i18n-html="about_li1">Engine truth from <strong>Stockfish</strong>, the open source engine (GPLv3).</li>
+                    <li data-i18n-html="about_li2">Coach explains every move in <strong>English and Spanish</strong>, including why bad moves are bad.</li>
+                    <li data-i18n-html="about_li3">Spoken commentary with <strong>karaoke subtitles</strong> and selectable voices.</li>
+                    <li data-i18n="about_li4">Ask-the-coach Q&amp;A over your analyzed game, plus accuracy tracking.</li>
+                    <li data-i18n="about_li5">Adjustable engine depth, Chess.com and Lichess import, board preview arrows.</li>
                 </ul>
-                <p class="about-fine">Evaluations by Stockfish (GPLv3, official-stockfish/Stockfish on GitHub). Analysis engine <code>python-chess</code> (GPLv3). This app is free software, see LICENSE. Spoken audio uses the Microsoft Edge TTS service.</p>
+                <p class="about-fine" data-i18n-html="about_fine">Evaluations by Stockfish (GPLv3, official-stockfish/Stockfish on GitHub). Analysis engine <code>python-chess</code> (GPLv3). This app is free software, see LICENSE. Spoken audio uses the Microsoft Edge TTS service.</p>
             </div>
             <div class="modal-actions">
-                <button id="closeAboutBtn" class="btn-primary">Got it</button>
+                <button id="closeAboutBtn" class="btn-primary" data-i18n="about_close">Got it</button>
             </div>
         </div>
     </div>

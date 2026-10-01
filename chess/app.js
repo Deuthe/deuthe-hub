@@ -5,6 +5,8 @@ let currentPlyIndex = 0; // 0 = initial position
 let currentPlatform = "chesscom";
 let boardOrientation = "white"; // follows the user's color
 let lastArrow = null; // {from, to} for redraws (e.g. after flipping)
+let lastAnalyzedPgn = null; // to reload the same game when language changes
+let lastAnalyzedUser = "";
 
 const audioPlayer = document.getElementById("coachAudio");
 const playAudioBtn = document.getElementById("playAudioBtn");
@@ -62,6 +64,76 @@ function saveLocalSettings(obj) {
         const cur = loadLocalSettings();
         localStorage.setItem(LS_SETTINGS_KEY, JSON.stringify(Object.assign(cur, obj)));
     } catch (e) { /* ignore */ }
+}
+
+// Static UI strings (chrome only; coach content comes from the backend report).
+const I18N = {
+    en: {
+        search_ph: "Username...", search_btn: "Search",
+        recent_games: "Recent games",
+        moves_empty: "Moves will appear here after analysis...",
+        loader_text: "Analyzing the game with Stockfish...",
+        loader_sub: "This can take a couple of minutes depending on depth",
+        match_select: "Select a game",
+        coach_default: "Analyzing the position...",
+        audio_hint: "Listen to commentary", auto_voice: "Auto-voice",
+        listen_summary: "Listen to game recap",
+        qa_title: "Ask the coach", qa_ph: "Why is this move bad?",
+        pgn_title: "Analyze manual PGN", pgn_ph: "Paste the game PGN here...",
+        btn_cancel: "Cancel", btn_analyze: "Analyze game",
+        depth_8: "Depth 8 · fast", depth_12: "Depth 12",
+        depth_14: "Depth 14", depth_16: "Depth 16 · slow",
+        about_title: "Why ChessAI Coach",
+        about_p1: "Free game review for club players: no account, no subscription.",
+        about_li1: "Engine truth from <strong>Stockfish</strong>, the open source engine (GPLv3).",
+        about_li2: "Coach explains every move in <strong>English and Spanish</strong>, including why bad moves are bad.",
+        about_li3: "Spoken commentary with <strong>karaoke subtitles</strong> and selectable voices.",
+        about_li4: "Ask-the-coach Q&A over your analyzed game, plus accuracy tracking.",
+        about_li5: "Adjustable engine depth, Chess.com and Lichess import, board preview arrows.",
+        about_fine: "Evaluations by Stockfish (GPLv3, official-stockfish/Stockfish on GitHub). Analysis engine <code>python-chess</code> (GPLv3). This app is free software, see LICENSE. Spoken audio uses the Microsoft Edge TTS service.",
+        about_close: "Got it"
+    },
+    es: {
+        search_ph: "Usuario...", search_btn: "Buscar",
+        recent_games: "Partidas recientes",
+        moves_empty: "Las jugadas apareceran aqui tras el analisis...",
+        loader_text: "Analizando la partida con Stockfish...",
+        loader_sub: "Esto puede tardar un par de minutos segun la profundidad",
+        match_select: "Selecciona una partida",
+        coach_default: "Analizando la posicion...",
+        audio_hint: "Escuchar comentario", auto_voice: "Auto-voz",
+        listen_summary: "Escuchar resumen de la partida",
+        qa_title: "Pregunta al entrenador", qa_ph: "Por que es mala esta jugada?",
+        pgn_title: "Analizar PGN manual", pgn_ph: "Pega aqui el PGN de la partida...",
+        btn_cancel: "Cancelar", btn_analyze: "Analizar partida",
+        depth_8: "Prof. 8 · rapido", depth_12: "Prof. 12",
+        depth_14: "Prof. 14", depth_16: "Prof. 16 · lento",
+        about_title: "Por que ChessAI Coach",
+        about_p1: "Revision gratuita para jugadores de club: sin cuenta ni suscripcion.",
+        about_li1: "Verdad del motor <strong>Stockfish</strong>, de codigo abierto (GPLv3).",
+        about_li2: "El entrenador explica cada jugada en <strong>ingles y espanol</strong>, incluido por que una jugada es mala.",
+        about_li3: "Comentario hablado con <strong>subtitulos tipo karaoke</strong> y voces seleccionables.",
+        about_li4: "Preguntas al entrenador sobre tu partida analizada y seguimiento de precision.",
+        about_li5: "Profundidad ajustable, importacion de Chess.com y Lichess, flechas de vista previa.",
+        about_fine: "Evaluaciones por Stockfish (GPLv3, official-stockfish/Stockfish en GitHub). Motor de analisis <code>python-chess</code> (GPLv3). Este programa es software libre, ver LICENSE. El audio usa el servicio TTS de Microsoft Edge.",
+        about_close: "Entendido"
+    }
+};
+
+function applyI18n() {
+    const t = I18N[getLang()] || I18N.en;
+    $("[data-i18n]").each(function () {
+        const k = $(this).data("i18n");
+        if (t[k] != null) $(this).text(t[k]);
+    });
+    $("[data-i18n-html]").each(function () {
+        const k = $(this).data("i18n-html");
+        if (t[k] != null) $(this).html(t[k]);
+    });
+    $("[data-i18n-ph]").each(function () {
+        const k = $(this).data("i18n-ph");
+        if (t[k] != null) $(this).attr("placeholder", t[k]);
+    });
 }
 
 function clsFor(c) {
@@ -298,7 +370,7 @@ $(document).ready(function() {
     $("#showHistoryBtn").click(fetchHistory);
 
     $("#voiceSelect").change(saveSettingsFromUI);
-    $("#langSelect").change(() => {
+    $("#langSelect").change(async () => {
         // Switch default voice with language, then save.
         const lang = getLang();
         const v = $("#voiceSelect").val() || "";
@@ -307,6 +379,15 @@ $(document).ready(function() {
         if (lang === "es" && enVoices.includes(v)) $("#voiceSelect").val("alvaro");
         if (lang === "en" && esVoices.includes(v)) $("#voiceSelect").val("aria");
         saveSettingsFromUI();
+        applyI18n();
+        // Refresh labels/notation now, then reload the report in the new language.
+        if (currentReport) {
+            setupUIForReport(currentReport);
+            goToMove(currentPlyIndex);
+        }
+        if (lastAnalyzedPgn) {
+            await analyzeGame(lastAnalyzedPgn, lastAnalyzedUser, true);
+        }
     });
     $("#depthSelect").change(saveSettingsFromUI);
     autoPlayToggle.addEventListener("change", saveSettingsFromUI);
@@ -380,6 +461,7 @@ $(document).ready(function() {
     });
 
     // Load settings + voices, then initial fetch
+    applyI18n();
     initSettings().finally(fetchGames);
 });
 
@@ -394,6 +476,9 @@ function setPlatform(p) {
         $("#platformLichess").addClass(on.join(" ")).removeClass(off.join(" "));
         $("#platformChesscom").removeClass(on.join(" ")).addClass(off.join(" "));
     }
+    // Reload the game list right away when a username is already set.
+    const u = $("#usernameInput").val().trim();
+    if (u) fetchGames();
 }
 
 async function initSettings() {
@@ -432,6 +517,7 @@ async function initSettings() {
         if (local.lang) $("#langSelect").val(local.lang);
         if (typeof local.auto_play_audio === "boolean") autoPlayToggle.checked = local.auto_play_audio;
         if (!sel.val()) sel.val(getLang() === "es" ? "alvaro" : "aria");
+        applyI18n();
     } catch (e) {
         console.log("No se pudieron cargar los ajustes:", e);
     }
@@ -529,9 +615,14 @@ async function analyzeManualPgn() {
     await analyzeGame(pgn, $("#usernameInput").val().trim());
 }
 
-async function analyzeGame(pgnRaw, username) {
+async function analyzeGame(pgnRaw, username, keepPly = false) {
     const pgn = safeDecodePgn(pgnRaw);
     if(!pgn || !pgn.trim()) { alert("PGN vacío."); return; }
+
+    const prevPly = keepPly ? currentPlyIndex : 0;
+    // Remember the game so a language switch can reload it translated.
+    lastAnalyzedPgn = pgn;
+    lastAnalyzedUser = username || "";
 
     // Show Loader
     showLoader("Analizando la partida con Stockfish...");
@@ -563,7 +654,7 @@ async function analyzeGame(pgnRaw, username) {
 
         currentReport = report;
         setupUIForReport(report);
-        goToMove(0);
+        goToMove(Math.min(prevPly, report.moves.length));
 
     } catch(e) {
         alert("Error en análisis: " + e.message);
@@ -976,6 +1067,10 @@ async function loadFromHistory(gameId) {
 
         if (report.moves) report.moves.forEach(m => { if (m.audio_url) m.audio_url = normalizeAudioUrl(m.audio_url); });
         if (report.summary && report.summary.audio_url) report.summary.audio_url = normalizeAudioUrl(report.summary.audio_url);
+
+        // Keep the PGN (if stored) so a language switch can re-translate it.
+        lastAnalyzedPgn = (report.meta && report.meta.pgn) || null;
+        lastAnalyzedUser = (report.meta && report.meta.user_name) || "";
 
         currentReport = report;
         setupUIForReport(report);
