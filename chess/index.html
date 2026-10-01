@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChessAI Review Coach</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- ChessboardJS CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="app-shell">
+
+    <!-- Topbar -->
+    <header class="topbar">
+        <div class="brand">
+            <span class="logo-mark"><i class="fas fa-chess-knight"></i></span>
+            <h1 class="brand-name">ChessAI <span>Coach</span></h1>
+        </div>
+        <div class="topbar-controls">
+            <div class="seg" role="tablist" aria-label="Plataforma">
+                <button id="platformChesscom" class="seg-btn seg-on" title="Buscar en Chess.com">Chess.com</button>
+                <button id="platformLichess" class="seg-btn" title="Buscar en Lichess">Lichess</button>
+            </div>
+            <div class="search">
+                <i class="fas fa-user search-icon"></i>
+                <input type="text" id="usernameInput" value="deuthe" placeholder="Usuario..." autocomplete="off">
+                <button id="fetchGamesBtn">Buscar</button>
+            </div>
+            <select id="voiceSelect" class="select" title="Coach voice"></select>
+            <select id="langSelect" class="select" title="Language">
+                <option value="en" selected>EN</option>
+                <option value="es">ES</option>
+            </select>
+            <select id="depthSelect" class="select" title="Profundidad Stockfish">
+                <option value="8">Prof. 8 · rápido</option>
+                <option value="12" selected>Prof. 12</option>
+                <option value="14">Prof. 14</option>
+                <option value="16">Prof. 16 · lento</option>
+            </select>
+            <button id="showAboutBtn" class="icon-btn" title="Why use ChessAI Coach">
+                <i class="fas fa-circle-info"></i>
+            </button>
+            <button id="showHistoryBtn" class="icon-btn" title="Historial guardado">
+                <i class="fas fa-clock-rotate-left"></i>
+            </button>
+            <button id="importPgnBtn" class="icon-btn" title="Pegar PGN manual">
+                <i class="fas fa-file-import"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main -->
+    <div class="layout">
+
+        <!-- Sidebar: games -->
+        <aside class="sidebar hidden flex-col" id="sidebarGames" style="display:none;">
+            <div class="sidebar-head">
+                <span><i class="fas fa-list-ul"></i> Partidas recientes</span>
+                <span id="gameCountLabel" class="count-pill"></span>
+            </div>
+            <div id="gamesList" class="games-list"></div>
+        </aside>
+
+        <!-- Stage -->
+        <main class="stage">
+            <div class="board-row">
+                <div class="evalbar" id="evalBarContainer" title="Evaluación">
+                    <div id="evalBarFill"></div>
+                    <span id="evalText">0.0</span>
+                </div>
+                <div class="board-col">
+                    <div class="board-frame">
+                        <button id="flipBoardBtn" class="flip-btn" title="Girar tablero"><i class="fas fa-rotate"></i></button>
+                        <div id="board"></div>
+                    </div>
+                    <div id="moveList" class="moves-card">
+                        <span class="moves-empty">Las jugadas aparecerán aquí tras el análisis…</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="subtitleBar" class="subtitles hidden">
+                <p id="subtitleText"></p>
+            </div>
+
+            <div id="loaderOverlay" class="loader-overlay hidden flex-col">
+                <div class="spinner"></div>
+                <h3 id="loaderText">Analizando la partida con Stockfish...</h3>
+                <p class="loader-sub">Esto puede tardar un par de minutos según la profundidad</p>
+            </div>
+        </main>
+
+        <!-- Coach panel -->
+        <aside class="coach">
+            <div class="match-card">
+                <h2 id="matchTitle">Selecciona una partida</h2>
+                <div id="accuracyContainer" class="acc-row hidden flex">
+                    <div class="acc">
+                        <span class="acc-name" id="whiteNameLabel">Blancas</span>
+                        <span class="acc-ring light" id="whiteAccuracy">0%</span>
+                    </div>
+                    <div class="acc-vs">vs</div>
+                    <div class="acc">
+                        <span class="acc-name" id="blackNameLabel">Negras</span>
+                        <span class="acc-ring dark" id="blackAccuracy">0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="coach-scroll" id="coachPanel">
+                <div id="moveHeader" class="move-status hidden flex">
+                    <span id="moveClassificationLabel" class="badge bg-best">
+                        <i class="fas fa-check"></i> Mejor Jugada
+                    </span>
+                    <span id="moveSanDisplay" class="move-san"></span>
+                </div>
+
+                <div id="coachMessageContainer" class="coach-msg hidden flex">
+                    <div class="avatar"><i class="fas fa-robot"></i></div>
+                    <div class="bubble">
+                        <p id="coachText">Analizando la posición...</p>
+                        <div id="bestLineRow" class="best-line flex hidden">
+                            <span class="best-line-tag" id="bestLineTag">Best</span>
+                            <span id="bestLineMoves"></span>
+                        </div>
+                        <div class="audio-row">
+                            <button id="playAudioBtn" class="play-btn">
+                                <i class="fas fa-play" id="playAudioIcon"></i>
+                            </button>
+                            <span class="audio-hint">Escuchar comentario</span>
+                            <label class="auto-voice" title="Reproducir automáticamente">
+                                <input type="checkbox" id="autoPlayToggle" checked>
+                                <span>Auto-voz</span>
+                            </label>
+                        </div>
+                        <audio id="coachAudio" preload="none"></audio>
+                    </div>
+                </div>
+
+                <button id="playSummaryBtn" class="btn-summary hidden">
+                    <i class="fas fa-podcast"></i> Escuchar resumen de la partida
+                </button>
+
+                <div class="qa-card">
+                    <div class="qa-title"><i class="fas fa-comments"></i> Pregunta al entrenador</div>
+                    <div id="qaAnswer" class="qa-answer hidden"></div>
+                    <div class="qa-input-row">
+                        <input id="qaInput" type="text" placeholder="¿Por qué es mala esta jugada?" autocomplete="off">
+                        <button id="qaSendBtn" title="Preguntar"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navdock">
+                <div class="navdock-btns">
+                    <button id="btnStart" class="nav-btn" title="Inicio"><i class="fas fa-backward-fast"></i></button>
+                    <button id="btnPrev" class="nav-btn" title="Anterior"><i class="fas fa-step-backward"></i></button>
+                    <button id="btnNext" class="nav-btn" title="Siguiente"><i class="fas fa-step-forward"></i></button>
+                    <button id="btnEnd" class="nav-btn" title="Final"><i class="fas fa-forward-fast"></i></button>
+                </div>
+                <div class="move-counter" id="moveCounter">0 / 0</div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- PGN modal -->
+    <div id="pgnModal" class="modal flex hidden">
+        <div class="modal-card">
+            <h3><i class="fas fa-file-import"></i> Analizar PGN manual</h3>
+            <textarea id="pgnInput" placeholder="Pega aquí el PGN de la partida..."></textarea>
+            <div class="modal-actions">
+                <button id="cancelPgnBtn" class="btn-ghost">Cancelar</button>
+                <button id="analyzePgnBtn" class="btn-primary">Analizar partida</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- About modal -->
+    <div id="aboutModal" class="modal flex hidden">
+        <div class="modal-card">
+            <h3><i class="fas fa-chess-knight"></i> Why ChessAI Coach</h3>
+            <div class="about-body">
+                <p>Free game review for club players: no account, no subscription.</p>
+                <ul>
+                    <li>Engine truth from <strong>Stockfish</strong>, the open source motor (GPLv3).</li>
+                    <li>Coach explains every move in <strong>English and Spanish</strong>, including why bad moves are bad.</li>
+                    <li>Spoken commentary with <strong>karaoke subtitles</strong> and selectable voices.</li>
+                    <li>Ask-the-coach Q&amp;A over your analyzed game, plus accuracy tracking.</li>
+                    <li>Adjustable engine depth, Chess.com and Lichess import, board preview arrows.</li>
+                </ul>
+                <p class="about-fine">Evaluations by Stockfish (GPLv3, official-stockfish/Stockfish on GitHub). Analysis engine <code>python-chess</code> (GPLv3). This app is free software, see LICENSE. Spoken audio uses the Microsoft Edge TTS service.</p>
+            </div>
+            <div class="modal-actions">
+                <button id="closeAboutBtn" class="btn-primary">Got it</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
