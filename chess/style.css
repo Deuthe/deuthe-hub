@@ -708,4 +708,48 @@ body.app-shell {
     .sidebar { width: 100%; border-right: 0; border-bottom: 1px solid var(--line); }
     .coach { width: 100%; border-left: 0; border-top: 1px solid var(--line); }
     #board { min-width: 0; }
+    .topbar { padding: 10px 12px; gap: 10px; }
+    .brand-name { font-size: 17px; }
+    .logo-mark { width: 34px; height: 34px; font-size: 17px; }
+    .stage { padding: 14px 12px; }
+    .evalbar { margin-top: 0; min-height: 0; }
+    .move-san { font-size: 30px; }
 }
+
+/* Phones (iPhone and similar) */
+@media (max-width: 640px) {
+    body.app-shell { overflow-x: hidden; }
+
+    /* Topbar: brand on its own line, controls fill the next */
+    .topbar { flex-wrap: wrap; row-gap: 8px; padding: 10px 12px; }
+    .topbar-controls { width: 100%; justify-content: space-between; gap: 8px; }
+    .brand-name { font-size: 15px; }
+    .logo-mark { width: 32px; height: 32px; font-size: 16px; }
+
+    .search { flex: 1 1 160px; min-width: 0; }
+    .search input { width: 100%; min-width: 0; }
+    .search button { padding: 7px 12px; }
+    .seg-btn { padding: 6px 10px; font-size: 11px; }
+    .select { padding: 7px 9px; font-size: 11px; }
+    .icon-btn { width: 34px; height: 34px; }
+
+    /* Board takes the width, eval bar gets a slim strip */
+    .stage { padding: 12px 10px; }
+    .board-frame { padding: 8px; border-radius: 14px; }
+    #board { width: min(440px, 84vw) !important; }
+    .evalbar { width: 10px; }
+    #evalText { font-size: 10px; padding: 1px 6px; top: -26px; }
+
+    .moves-card { font-size: 12.5px; max-height: 110px; padding: 10px 12px; }
+    .move-san { font-size: 28px; }
+
+    .coach-scroll { padding: 12px; gap: 12px; }
+    .bubble { font-size: 13.5px; }
+    .match-card h2 { font-size: 14px; }
+    .qa-input-row input { font-size: 13px; }
+
+    .subtitles { max-width: 94%; padding: 8px 12px; bottom: 10px; }
+    .subtitles p { font-size: 14px; }
+    .nav-btn { width: 40px; height: 40px; }
+}
+
