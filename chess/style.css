@@ -705,6 +705,10 @@ body.app-shell {
 @media (max-width: 960px) {
     body.app-shell { overflow: auto; height: auto; }
     .layout { flex-direction: column; }
+    /* Board first, then games list, then coach panel */
+    .stage { order: 1; }
+    .sidebar { order: 2; }
+    .coach { order: 3; }
     .sidebar { width: 100%; border-right: 0; border-bottom: 1px solid var(--line); }
     .coach { width: 100%; border-left: 0; border-top: 1px solid var(--line); }
     #board { min-width: 0; }
@@ -718,7 +722,7 @@ body.app-shell {
 
 /* Phones (iPhone and similar) */
 @media (max-width: 640px) {
-    body.app-shell { overflow-x: hidden; }
+    body.app-shell { overflow-x: hidden; padding-bottom: 78px; }
 
     /* Topbar: brand on its own line, controls fill the next */
     .topbar { flex-wrap: wrap; row-gap: 8px; padding: 10px 12px; }
@@ -743,13 +747,47 @@ body.app-shell {
     .moves-card { font-size: 12.5px; max-height: 110px; padding: 10px 12px; }
     .move-san { font-size: 28px; }
 
+    /* Games list must not eat the screen: cap it and scroll inside */
+    .sidebar { max-height: 42vh; }
+    .games-list { max-height: 36vh; }
+
+    /* Nav controls fixed at the bottom so they are always reachable */
+    .navdock {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 40;
+        padding: 8px 12px;
+        background: rgba(10, 15, 32, 0.95);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-top: 1px solid var(--line);
+    }
+    .navdock-btns { margin-bottom: 4px; }
+
     .coach-scroll { padding: 12px; gap: 12px; }
     .bubble { font-size: 13.5px; }
     .match-card h2 { font-size: 14px; }
     .qa-input-row input { font-size: 13px; }
 
-    .subtitles { max-width: 94%; padding: 8px 12px; bottom: 10px; }
+    .subtitles { max-width: 94%; padding: 8px 12px; bottom: 84px; }
     .subtitles p { font-size: 14px; }
     .nav-btn { width: 40px; height: 40px; }
 }
+
+/* Board square coordinates (faint labels on every square) */
+#board .square-55d63 { position: relative; }
+#board .square-55d63::after {
+    content: attr(data-coord);
+    position: absolute;
+    right: 2px;
+    bottom: 0;
+    font: 700 9px "Manrope", sans-serif;
+    line-height: 1.2;
+    pointer-events: none;
+    opacity: 0.5;
+}
+#board .white-1e1d7::after { color: #31597d; }
+#board .black-3c85d::after { color: #d3e3f5; }
 

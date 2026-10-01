@@ -339,6 +339,18 @@ function initBoard() {
         showNotation: true,
         orientation: boardOrientation
     });
+    addSquareCoords();
+}
+
+// Faint square names (e4, d5, ...) on every square. chessboardjs recreates
+// squares on orientation changes, so this is re-run after those.
+function addSquareCoords() {
+    $("#board .square-55d63").each(function () {
+        const el = $(this);
+        const cls = el.attr("class") || "";
+        const m = cls.match(/\bsquare-([a-h][1-8])\b/);
+        if (m) el.attr("data-coord", m[1]);
+    });
 }
 
 $(document).ready(function() {
@@ -399,6 +411,7 @@ $(document).ready(function() {
         if (!board) return;
         boardOrientation = boardOrientation === "white" ? "black" : "white";
         board.orientation(boardOrientation);
+        addSquareCoords();
         if (lastArrow) drawBestArrow(lastArrow.from, lastArrow.to);
     });
 
@@ -676,6 +689,7 @@ function setupUIForReport(report) {
     // Orient the board to the user's color (Black players see Black at bottom).
     boardOrientation = meta.user_color === "black" ? "black" : "white";
     if (board) board.orientation(boardOrientation);
+    addSquareCoords();
 
     applyAccuracy(meta);
 
