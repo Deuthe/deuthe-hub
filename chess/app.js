@@ -78,7 +78,7 @@ const I18N = {
         coach_default: "Analyzing the position...",
         audio_hint: "Listen to commentary", auto_voice: "Auto-voice",
         listen_summary: "Listen to game recap",
-        qa_title: "Ask the coach", qa_ph: "Why is this move bad?",
+        qa_title: "Ask the coach", qa_ph: "Ask, or name a move like Nxe5...",
         pgn_title: "Analyze manual PGN", pgn_ph: "Paste the game PGN here...",
         btn_cancel: "Cancel", btn_analyze: "Analyze game",
         depth_8: "Depth 8 · fast", depth_12: "Depth 12",
@@ -107,7 +107,7 @@ const I18N = {
         coach_default: "Analizando la posicion...",
         audio_hint: "Escuchar comentario", auto_voice: "Auto-voz",
         listen_summary: "Escuchar resumen de la partida",
-        qa_title: "Pregunta al entrenador", qa_ph: "Por que es mala esta jugada?",
+        qa_title: "Pregunta al entrenador", qa_ph: "Pregunta, o nombra una jugada como Cxe5...",
         pgn_title: "Analizar PGN manual", pgn_ph: "Pega aqui el PGN de la partida...",
         btn_cancel: "Cancelar", btn_analyze: "Analizar partida",
         depth_8: "Prof. 8 · rapido", depth_12: "Prof. 12",
@@ -433,6 +433,7 @@ $(document).ready(function() {
         if (lang === "en" && esVoices.includes(v)) $("#voiceSelect").val("aria");
         saveSettingsFromUI();
         applyI18n();
+        renderQaSuggestions();
         // Refresh labels/notation now, then reload the report in the new language.
         if (currentReport) {
             setupUIForReport(currentReport);
@@ -878,6 +879,7 @@ function goToMove(plyIndex) {
 
     stopAudio();
     markMoveListActive();
+    renderQaSuggestions();
 
     // Initial board state
     if(plyIndex === 0) {
@@ -1035,6 +1037,38 @@ function speakText(text) {
         isAudioPlaying = false;
         playAudioIcon.className = "fas fa-play";
     }
+}
+
+// On-screen example questions so users discover what the coach can answer.
+function hasCapture(fen) {
+    try {
+        const g = new Chess(fen);
+        return g.moves({ verbose: true }).some(mv => mv.flags && (mv.flags.indexOf("c") !== -1 || mv.flags.indexOf("e") !== -1));
+    } catch (e) {
+        return false;
+    }
+}
+
+function renderQaSuggestions() {
+    const box = $("#qaSuggestions");
+    if (!box.length) return;
+    box.empty();
+    if (!currentReport || currentPlyIndex === 0) return;
+    const es = getLang() === "es";
+    const m = currentReport.moves[currentPlyIndex - 1];
+    const chips = [
+        es ? "¿Por qué es buena o mala esta jugada?" : "Why is this move good or bad?",
+        es ? "¿Cuál era la mejor jugada?" : "What was the best move?"
+    ];
+    if (m && m.fen_before && hasCapture(m.fen_before)) {
+        chips.push(es ? "¿Puedo capturar algo?" : "Can I capture something?");
+    }
+    chips.push(es ? "¿Cómo va la posición?" : "How does the position look?");
+    chips.forEach((txt) => {
+        $("<button>").addClass("qa-chip").text(txt)
+            .click(() => { $("#qaInput").val(txt); sendQuestion(); })
+            .appendTo(box);
+    });
 }
 
 async function sendQuestion() {
