@@ -45,6 +45,25 @@ function getLang() {
     return v.startsWith("es") ? "es" : "en";
 }
 
+// Per-browser settings. The server settings endpoint is read-only in prod,
+// so each visitor keeps their own preferences locally.
+const LS_SETTINGS_KEY = "deuthe_chessai_settings";
+
+function loadLocalSettings() {
+    try {
+        return JSON.parse(localStorage.getItem(LS_SETTINGS_KEY) || "{}") || {};
+    } catch (e) {
+        return {};
+    }
+}
+
+function saveLocalSettings(obj) {
+    try {
+        const cur = loadLocalSettings();
+        localStorage.setItem(LS_SETTINGS_KEY, JSON.stringify(Object.assign(cur, obj)));
+    } catch (e) { /* ignore */ }
+}
+
 function clsFor(c) {
     const table = getLang() === "es" ? clsMapES : clsMapEN;
     return table[c] || table["good"];
@@ -404,9 +423,15 @@ async function initSettings() {
             if (settings.depth) $("#depthSelect").val(String(settings.depth));
             if (settings.lang) $("#langSelect").val(settings.lang);
             if (typeof settings.auto_play_audio === "boolean") autoPlayToggle.checked = settings.auto_play_audio;
-            // Default voices per language when nothing saved yet.
-            if (!settings.voice) sel.val(getLang() === "es" ? "alvaro" : "aria");
         }
+        // Local (per-browser) settings win over server defaults.
+        const local = loadLocalSettings();
+        if (local.username) $("#usernameInput").val(local.username);
+        if (local.voice) sel.val(local.voice);
+        if (local.depth) $("#depthSelect").val(String(local.depth));
+        if (local.lang) $("#langSelect").val(local.lang);
+        if (typeof local.auto_play_audio === "boolean") autoPlayToggle.checked = local.auto_play_audio;
+        if (!sel.val()) sel.val(getLang() === "es" ? "alvaro" : "aria");
     } catch (e) {
         console.log("No se pudieron cargar los ajustes:", e);
     }
@@ -416,20 +441,24 @@ let settingsSaveTimer = null;
 function saveSettingsFromUI() {
     clearTimeout(settingsSaveTimer);
     settingsSaveTimer = setTimeout(async () => {
+        const payload = {
+            username: $("#usernameInput").val().trim(),
+            voice: $("#voiceSelect").val(),
+            depth: parseInt($("#depthSelect").val(), 10),
+            auto_play_audio: autoPlayToggle.checked,
+            lang: getLang()
+        };
+        // Always persist locally (works on the read-only public deployment).
+        saveLocalSettings(payload);
         try {
             await fetch(api("/api/settings"), {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    username: $("#usernameInput").val().trim(),
-                    voice: $("#voiceSelect").val(),
-                    depth: parseInt($("#depthSelect").val(), 10),
-                    auto_play_audio: autoPlayToggle.checked,
-                    lang: getLang()
-                })
+                body: JSON.stringify(payload)
             });
         } catch (e) {
-            console.log("No se pudo guardar ajustes:", e);
+            // Server settings are read-only in prod; local storage already saved.
+            console.log("Ajustes guardados localmente:", e);
         }
     }, 300);
 }
