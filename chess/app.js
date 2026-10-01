@@ -91,7 +91,11 @@ const I18N = {
         about_li4: "Ask-the-coach Q&A over your analyzed game, plus accuracy tracking.",
         about_li5: "Adjustable engine depth, Chess.com and Lichess import, board preview arrows.",
         about_fine: "Evaluations by Stockfish (GPLv3, official-stockfish/Stockfish on GitHub). Analysis engine <code>python-chess</code> (GPLv3). This app is free software, see LICENSE. Spoken audio uses the Microsoft Edge TTS service.",
-        about_close: "Got it"
+        about_close: "Got it",
+        settings_title: "Player and settings",
+        settings_voice: "Voice",
+        settings_lang: "Language",
+        settings_depth: "Depth"
     },
     es: {
         search_ph: "Usuario...", search_btn: "Buscar",
@@ -116,7 +120,11 @@ const I18N = {
         about_li4: "Preguntas al entrenador sobre tu partida analizada y seguimiento de precision.",
         about_li5: "Profundidad ajustable, importacion de Chess.com y Lichess, flechas de vista previa.",
         about_fine: "Evaluaciones por Stockfish (GPLv3, official-stockfish/Stockfish en GitHub). Motor de analisis <code>python-chess</code> (GPLv3). Este programa es software libre, ver LICENSE. El audio usa el servicio TTS de Microsoft Edge.",
-        about_close: "Entendido"
+        about_close: "Entendido",
+        settings_title: "Usuario y ajustes",
+        settings_voice: "Voz",
+        settings_lang: "Idioma",
+        settings_depth: "Profundidad"
     }
 };
 
@@ -380,6 +388,39 @@ $(document).ready(function() {
     $("#closeAboutBtn").click(() => $("#aboutModal").addClass("hidden"));
     $("#analyzePgnBtn").click(analyzeManualPgn);
     $("#showHistoryBtn").click(fetchHistory);
+
+    // Settings drawer (phones): gear toggles it, backdrop and swipe close it.
+    const openSettings = () => {
+        $("#settingsPanel").addClass("open");
+        $("#settingsBackdrop").removeClass("hidden");
+    };
+    const closeSettings = () => {
+        $("#settingsPanel").removeClass("open");
+        $("#settingsBackdrop").addClass("hidden");
+    };
+    $("#settingsToggleBtn").click(() => {
+        if ($("#settingsPanel").hasClass("open")) closeSettings(); else openSettings();
+    });
+    $("#settingsBackdrop").click(closeSettings);
+
+    // Swipe from the right edge to open, swipe right to close.
+    let swipeX = null, swipeY = null;
+    document.addEventListener("touchstart", (e) => {
+        if (!e.touches || !e.touches.length) return;
+        swipeX = e.touches[0].clientX;
+        swipeY = e.touches[0].clientY;
+    }, { passive: true });
+    document.addEventListener("touchend", (e) => {
+        if (swipeX === null || !e.changedTouches || !e.changedTouches.length) return;
+        const dx = e.changedTouches[0].clientX - swipeX;
+        const dy = e.changedTouches[0].clientY - swipeY;
+        const isOpen = $("#settingsPanel").hasClass("open");
+        if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy)) {
+            if (dx < 0 && !isOpen && swipeX > window.innerWidth - 60) openSettings();
+            else if (dx > 60 && isOpen) closeSettings();
+        }
+        swipeX = null; swipeY = null;
+    }, { passive: true });
 
     $("#voiceSelect").change(saveSettingsFromUI);
     $("#langSelect").change(async () => {

@@ -43,6 +43,7 @@ body.app-shell {
     align-items: center;
     justify-content: space-between;
     gap: 16px;
+    flex-wrap: wrap;
     padding: 12px 20px;
     background: rgba(10, 15, 32, 0.75);
     backdrop-filter: blur(14px);
@@ -74,6 +75,17 @@ body.app-shell {
 }
 
 .topbar-controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+/* Top nav (moved out of the coach panel) */
+.topbar-nav { display: flex; align-items: center; gap: 6px; }
+.topbar-nav .nav-btn { width: 38px; height: 38px; }
+.topbar-nav .move-counter { margin-left: 8px; }
+
+/* Settings panel: inline on desktop, slide-in drawer on phones */
+.settings-panel { display: flex; align-items: center; gap: 10px; }
+.settings-title, .settings-label { display: none; }
+#settingsToggleBtn { display: none; }
+.settings-backdrop { display: none; }
 
 .seg {
     display: flex;
@@ -705,10 +717,10 @@ body.app-shell {
 @media (max-width: 960px) {
     body.app-shell { overflow: auto; height: auto; }
     .layout { flex-direction: column; }
-    /* Board first, then games list, then coach panel */
+    /* Board first, then coach panel, then games list */
     .stage { order: 1; }
-    .sidebar { order: 2; }
-    .coach { order: 3; }
+    .coach { order: 2; }
+    .sidebar { order: 3; }
     .sidebar { width: 100%; border-right: 0; border-bottom: 1px solid var(--line); }
     .coach { width: 100%; border-left: 0; border-top: 1px solid var(--line); }
     #board { min-width: 0; }
@@ -722,20 +734,51 @@ body.app-shell {
 
 /* Phones (iPhone and similar) */
 @media (max-width: 640px) {
-    body.app-shell { overflow-x: hidden; padding-bottom: 78px; }
+    body.app-shell { overflow-x: hidden; }
 
-    /* Topbar: brand on its own line, controls fill the next */
-    .topbar { flex-wrap: wrap; row-gap: 8px; padding: 10px 12px; }
-    .topbar-controls { width: 100%; justify-content: space-between; gap: 8px; }
+    /* Sticky top bar: brand + action icons on row 1, nav on row 2 */
+    .topbar { position: sticky; top: 0; z-index: 30; flex-wrap: wrap; row-gap: 8px; padding: 10px 12px; }
+    .brand { order: 1; }
+    .topbar-controls { order: 2; margin-left: auto; gap: 6px; }
+    .topbar-nav { order: 3; width: 100%; justify-content: center; flex-wrap: wrap; }
+    .topbar-nav .nav-btn { width: 40px; height: 40px; }
+    .topbar-nav .move-counter { margin-left: 4px; }
+
     .brand-name { font-size: 15px; }
     .logo-mark { width: 32px; height: 32px; font-size: 16px; }
-
-    .search { flex: 1 1 160px; min-width: 0; }
-    .search input { width: 100%; min-width: 0; }
-    .search button { padding: 7px 12px; }
     .seg-btn { padding: 6px 10px; font-size: 11px; }
-    .select { padding: 7px 9px; font-size: 11px; }
     .icon-btn { width: 34px; height: 34px; }
+
+    #settingsToggleBtn { display: inline-flex; align-items: center; justify-content: center; }
+
+    /* Settings drawer */
+    .settings-panel {
+        position: fixed;
+        top: 0;
+        right: 0;
+        height: 100%;
+        width: min(86vw, 340px);
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        padding: 18px 16px;
+        background: var(--panel-solid);
+        border-left: 1px solid var(--line);
+        box-shadow: -20px 0 60px rgba(0, 0, 0, 0.5);
+        transform: translateX(105%);
+        transition: transform 0.25s ease;
+        z-index: 60;
+        overflow-y: auto;
+    }
+    .settings-panel.open { transform: translateX(0); }
+    .settings-panel .seg { justify-content: center; }
+    .settings-panel .search { width: 100%; }
+    .settings-panel .search input { width: 100%; }
+    .settings-panel .select { width: 100%; }
+    .settings-title { display: block; font: 800 13px "Manrope", sans-serif; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+    .settings-label { display: block; font: 700 11px "Manrope", sans-serif; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: -6px; }
+    .settings-backdrop { display: block; position: fixed; inset: 0; background: rgba(3, 5, 12, 0.6); z-index: 55; }
+    .settings-backdrop.hidden { display: none; }
 
     /* Board takes the width, eval bar gets a slim strip */
     .stage { padding: 12px 10px; }
@@ -751,29 +794,13 @@ body.app-shell {
     .sidebar { max-height: 42vh; }
     .games-list { max-height: 36vh; }
 
-    /* Nav controls fixed at the bottom so they are always reachable */
-    .navdock {
-        position: fixed;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        z-index: 40;
-        padding: 8px 12px;
-        background: rgba(10, 15, 32, 0.95);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border-top: 1px solid var(--line);
-    }
-    .navdock-btns { margin-bottom: 4px; }
-
     .coach-scroll { padding: 12px; gap: 12px; }
     .bubble { font-size: 13.5px; }
     .match-card h2 { font-size: 14px; }
     .qa-input-row input { font-size: 13px; }
 
-    .subtitles { max-width: 94%; padding: 8px 12px; bottom: 84px; }
+    .subtitles { max-width: 94%; padding: 8px 12px; bottom: 10px; }
     .subtitles p { font-size: 14px; }
-    .nav-btn { width: 40px; height: 40px; }
 }
 
 /* Board square coordinates (faint labels on every square) */

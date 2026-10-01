@@ -23,27 +23,19 @@
             <span class="logo-mark"><i class="fas fa-chess-knight"></i></span>
             <h1 class="brand-name">ChessAI <span>Coach</span></h1>
         </div>
+
+        <div class="topbar-nav">
+            <button id="btnStart" class="nav-btn" title="Inicio"><i class="fas fa-backward-fast"></i></button>
+            <button id="btnPrev" class="nav-btn" title="Anterior"><i class="fas fa-step-backward"></i></button>
+            <button id="btnNext" class="nav-btn" title="Siguiente"><i class="fas fa-step-forward"></i></button>
+            <button id="btnEnd" class="nav-btn" title="Final"><i class="fas fa-forward-fast"></i></button>
+            <span class="move-counter" id="moveCounter">0 / 0</span>
+        </div>
+
         <div class="topbar-controls">
-            <div class="seg" role="tablist" aria-label="Plataforma">
-                <button id="platformChesscom" class="seg-btn seg-on" title="Buscar en Chess.com">Chess.com</button>
-                <button id="platformLichess" class="seg-btn" title="Buscar en Lichess">Lichess</button>
-            </div>
-            <div class="search">
-                <i class="fas fa-user search-icon"></i>
-                <input type="text" id="usernameInput" value="deuthe" placeholder="Usuario..." data-i18n-ph="search_ph" autocomplete="off">
-                <button id="fetchGamesBtn" data-i18n="search_btn">Buscar</button>
-            </div>
-            <select id="voiceSelect" class="select" title="Coach voice"></select>
-            <select id="langSelect" class="select" title="Language">
-                <option value="en" selected>EN</option>
-                <option value="es">ES</option>
-            </select>
-            <select id="depthSelect" class="select" title="Profundidad Stockfish">
-                <option value="8" data-i18n="depth_8">Prof. 8 · rápido</option>
-                <option value="12" selected data-i18n="depth_12">Prof. 12</option>
-                <option value="14" data-i18n="depth_14">Prof. 14</option>
-                <option value="16" data-i18n="depth_16">Prof. 16 · lento</option>
-            </select>
+            <button id="settingsToggleBtn" class="icon-btn" title="Usuario y ajustes">
+                <i class="fas fa-sliders"></i>
+            </button>
             <button id="showAboutBtn" class="icon-btn" title="Why use ChessAI Coach">
                 <i class="fas fa-circle-info"></i>
             </button>
@@ -53,8 +45,36 @@
             <button id="importPgnBtn" class="icon-btn" title="Pegar PGN manual">
                 <i class="fas fa-file-import"></i>
             </button>
+
+            <div id="settingsPanel" class="settings-panel">
+                <div class="settings-title" data-i18n="settings_title">Usuario y ajustes</div>
+                <div class="seg" role="tablist" aria-label="Plataforma">
+                    <button id="platformChesscom" class="seg-btn seg-on" title="Buscar en Chess.com">Chess.com</button>
+                    <button id="platformLichess" class="seg-btn" title="Buscar en Lichess">Lichess</button>
+                </div>
+                <div class="search">
+                    <i class="fas fa-user search-icon"></i>
+                    <input type="text" id="usernameInput" value="deuthe" placeholder="Usuario..." data-i18n-ph="search_ph" autocomplete="off">
+                    <button id="fetchGamesBtn" data-i18n="search_btn">Buscar</button>
+                </div>
+                <label class="settings-label" data-i18n="settings_voice">Voz</label>
+                <select id="voiceSelect" class="select" title="Coach voice"></select>
+                <label class="settings-label" data-i18n="settings_lang">Idioma</label>
+                <select id="langSelect" class="select" title="Language">
+                    <option value="en" selected>EN</option>
+                    <option value="es">ES</option>
+                </select>
+                <label class="settings-label" data-i18n="settings_depth">Profundidad</label>
+                <select id="depthSelect" class="select" title="Profundidad Stockfish">
+                    <option value="8" data-i18n="depth_8">Prof. 8 · rápido</option>
+                    <option value="12" selected data-i18n="depth_12">Prof. 12</option>
+                    <option value="14" data-i18n="depth_14">Prof. 14</option>
+                    <option value="16" data-i18n="depth_16">Prof. 16 · lento</option>
+                </select>
+            </div>
         </div>
     </header>
+    <div id="settingsBackdrop" class="settings-backdrop hidden"></div>
 
     <!-- Main -->
     <div class="layout">
@@ -156,16 +176,6 @@
                         <button id="qaSendBtn" title="Preguntar"><i class="fas fa-paper-plane"></i></button>
                     </div>
                 </div>
-            </div>
-
-            <div class="navdock">
-                <div class="navdock-btns">
-                    <button id="btnStart" class="nav-btn" title="Inicio"><i class="fas fa-backward-fast"></i></button>
-                    <button id="btnPrev" class="nav-btn" title="Anterior"><i class="fas fa-step-backward"></i></button>
-                    <button id="btnNext" class="nav-btn" title="Siguiente"><i class="fas fa-step-forward"></i></button>
-                    <button id="btnEnd" class="nav-btn" title="Final"><i class="fas fa-forward-fast"></i></button>
-                </div>
-                <div class="move-counter" id="moveCounter">0 / 0</div>
             </div>
         </aside>
     </div>
