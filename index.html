@@ -374,66 +374,6 @@
 
  .service-link:hover { color: #a5b4fc; text-decoration: underline; }
 
- /* Featured Product (Cruip Open Zig-Zag Spotlight) */
- .product-card {
- background: var(--bg-card);
- border: 1px solid var(--border);
- border-radius: var(--radius-lg);
- padding: 40px;
- display: grid;
- grid-template-columns: 1.2fr 0.8fr;
- gap: 36px;
- align-items: center;
- }
-
- .product-badge {
- display: inline-block;
- background: rgba(0, 212, 170, 0.12);
- color: var(--accent);
- border: 1px solid rgba(0, 212, 170, 0.3);
- font-size: 0.75rem;
- font-weight: 700;
- padding: 4px 12px;
- border-radius: 20px;
- text-transform: uppercase;
- letter-spacing: 0.5px;
- margin-bottom: 12px;
- }
-
- .product-title {
- font-size: 1.7rem;
- font-weight: 800;
- color: #ffffff;
- margin-bottom: 10px;
- }
-
- .product-desc {
- color: var(--text-body);
- font-size: 0.95rem;
- line-height: 1.65;
- margin-bottom: 20px;
- }
-
- .product-specs {
- background: var(--bg);
- border: 1px solid var(--border);
- border-radius: var(--radius-md);
- padding: 24px;
- }
-
- .spec-item {
- display: flex;
- justify-content: space-between;
- font-size: 0.82rem;
- margin-bottom: 10px;
- border-bottom: 1px solid rgba(255, 255, 255, 0.04);
- padding-bottom: 8px;
- }
-
- .spec-item:last-child { margin-bottom: 0; border-bottom: none; padding-bottom: 0; }
- .spec-label { color: var(--text-muted); }
- .spec-val { color: var(--accent); font-family: 'JetBrains Mono', monospace; font-weight: 600; }
-
  /* Projects Grid (Cruip Open Showcase) */
  .projects-grid {
  display: grid;
@@ -525,7 +465,6 @@
  @media (max-width: 860px) {
  .services-grid { grid-template-columns: 1fr; }
  .projects-grid { grid-template-columns: 1fr; }
- .product-card { grid-template-columns: 1fr; }
  .hero-title { font-size: 2.6rem; }
  .nav-links { display: none; }
  }
@@ -543,7 +482,6 @@
  <div class="nav-right">
  <div class="nav-links">
  <a href="#services" data-i18n="nav_services">Services</a>
- <a href="#product" data-i18n="nav_product">Product</a>
  <a href="#projects" data-i18n="nav_projects">Projects</a>
  <a href="https://github.com/Deuthe" target="_blank">GitHub</a>
  </div>
@@ -610,7 +548,7 @@
  <div class="service-icon-circle"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#a5b4fc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg></div>
  <h3 class="service-title" data-i18n="srv3_title">OS Virtualization & Tools</h3>
  <p class="service-desc" data-i18n="srv3_desc">Windows Subsystem for Android deployment, multithreaded PowerShell automation, and in-memory payload execution.</p>
- <a href="#product" class="service-link" data-i18n="srv3_link">View WSA Product &rarr;</a>
+ <a href="#projects" class="service-link" data-i18n="srv3_link">View Project Details &rarr;</a>
  </div>
 
  <!-- 4. Network Hardening -->
@@ -644,47 +582,6 @@
  </div>
  </section>
 
- <!-- FEATURED PRODUCT (Spotlight Section) -->
- <section id="product">
- <div class="container">
- <div class="section-header">
- <span class="section-tag" data-i18n="tag_software">Software Product</span>
- <h2 class="section-title" data-i18n="title_product">Featured Tool</h2>
- <p class="section-desc" data-i18n="desc_product">Native virtualization tooling and automated multi-session sandboxing.</p>
- </div>
-
- <div class="product-card">
- <div>
- <span class="product-badge" data-i18n="badge_active_tool"> Active Production Tool</span>
- <h3 class="product-title">WSA Multi-Instance Tool</h3>
- <p class="product-desc" data-i18n="product_desc">
- Automated Windows Subsystem for Android deployment engine for Windows 10 and 11. Handles APK decompilation, package isolation for simultaneous multi-accounting, and cloud licensing with hardware ID binding.
- </p>
- <a href="/products/wsa/install/" class="btn-cta-main" data-i18n="btn_installer_page">Visit Installer Page &rarr;</a>
- </div>
-
- <div class="product-specs">
- <div class="spec-item">
- <span class="spec-label" data-i18n="spec_os">Supported OS</span>
- <span class="spec-val">Win 10 (2004+) / 11</span>
- </div>
- <div class="spec-item">
- <span class="spec-label" data-i18n="spec_mode">Execution</span>
- <span class="spec-val">RAM Decrypted SFX</span>
- </div>
- <div class="spec-item">
- <span class="spec-label" data-i18n="spec_hwid">HWID Lock</span>
- <span class="spec-val">BIOS UUID / TLS 1.3</span>
- </div>
- <div class="spec-item">
- <span class="spec-label" data-i18n="spec_clones">Multi-Instances</span>
- <span class="spec-val">Up to 8 Accounts</span>
- </div>
- </div>
- </div>
- </div>
- </section>
-
  <!-- PROJECTS -->
  <section id="projects">
  <div class="container">
@@ -695,6 +592,16 @@
  </div>
 
  <div class="projects-grid">
+
+ <!-- Live Product -->
+ <div class="project-card">
+ <div>
+ <div class="project-meta">Live Product / Chess Coaching</div>
+ <h3 class="project-name" data-i18n="prj5_title">ChessAI Review Coach</h3>
+ <p class="project-desc" data-i18n="prj5_desc">Self-hosted game review coach powered by the Stockfish engine, with bilingual move-by-move commentary and spoken audio.</p>
+ </div>
+ <a href="/chess/" class="project-link" data-i18n="prj5_link">Try the Coach &rarr;</a>
+ </div>
 
  <!-- Semester 7 -->
  <div class="project-card">
@@ -745,7 +652,6 @@
  <div class="container">
  <div class="footer-links">
  <a href="#services" data-i18n="nav_services">Services</a>
- <a href="#product" data-i18n="nav_product">Product</a>
  <a href="#projects" data-i18n="nav_projects">Projects</a>
  <a href="https://github.com/Deuthe" target="_blank">GitHub</a>
  <a href="https://t.me/deuthe" target="_blank" style="color: #818cf8; font-weight: 600;">Telegram (@deuthe)</a>
@@ -759,7 +665,6 @@
  const translations = {
  en: {
  nav_services: "Services",
- nav_product: "Product",
  nav_projects: "Projects",
  hero_badge: "Infrastructure / Advanced Cybersecurity / Cloud",
  hero_sub: "Infrastructure, Advanced Cybersecurity & Cloud Innovation",
@@ -777,7 +682,7 @@
  srv2_link: "View Lab Topology →",
  srv3_title: "OS Virtualization & Tools",
  srv3_desc: "Windows Subsystem for Android deployment, multithreaded PowerShell automation, and in-memory payload execution.",
- srv3_link: "View WSA Product →",
+ srv3_link: "View Project Details →",
  srv4_title: "Network Hardening",
  srv4_desc: "Corporate network segmentation, VLAN isolation, Fortinet firewall access control lists, and ISO 27001 readiness.",
  srv4_link: "View Project Details →",
@@ -787,16 +692,6 @@
  srv6_title: "Cloud & Pentesting",
  srv6_desc: "Reconnaissance (OSINT), vulnerability assessment on Azure/Kubernetes clusters, and Cloudflare Zero Trust tunnels.",
  srv6_link: "View Project Details →",
- tag_software: "Software Product",
- title_product: "Featured Tool",
- desc_product: "Native virtualization tooling and automated multi-session sandboxing.",
- badge_active_tool: " Active Production Tool",
- product_desc: "Automated Windows Subsystem for Android deployment engine for Windows 10 and 11. Handles APK decompilation, package isolation for simultaneous multi-accounting, and cloud licensing with hardware ID binding.",
- btn_installer_page: "Visit Installer Page →",
- spec_os: "Supported OS",
- spec_mode: "Execution",
- spec_hwid: "HWID Lock",
- spec_clones: "Multi-Instances",
  tag_academic: "Academic & Industry",
  title_projects: "Projects & Lab Research",
  desc_projects: "Engineering deliverables, lab testbeds, and security architecture whitepapers.",
@@ -811,11 +706,13 @@
  prj3_note: "Zero-downtime migration / Fortinet Firewalls / VLANs",
  prj4_title: "Cloud Pentesting & Suricata IDS",
  prj4_desc: "Penetration testing on Azure/Kubernetes clusters and deployment of Suricata IDS for network traffic monitoring.",
- prj4_note: "OSINT / Vulnerability Scans / IDS Rules"
+ prj4_note: "OSINT / Vulnerability Scans / IDS Rules",
+ prj5_title: "ChessAI Review Coach",
+ prj5_desc: "Self-hosted game review coach powered by the Stockfish engine, with bilingual move-by-move commentary and spoken audio.",
+ prj5_link: "Try the Coach →"
  },
  es: {
  nav_services: "Servicios",
- nav_product: "Producto",
  nav_projects: "Proyectos",
  hero_badge: "Infraestructura / Ciberseguridad Avanzada / Cloud",
  hero_sub: "Infraestructura, Ciberseguridad Avanzada e Innovación Cloud",
@@ -833,7 +730,7 @@
  srv2_link: "Ver Topología del Lab →",
  srv3_title: "Virtualización de SO y Herramientas",
  srv3_desc: "Despliegue de Windows Subsystem for Android, automatización PowerShell multihilo y ejecución en memoria.",
- srv3_link: "Ver Producto WSA →",
+ srv3_link: "Ver Detalles del Proyecto →",
  srv4_title: "Fortalecimiento de Redes",
  srv4_desc: "Segmentación de redes corporativas, aislamiento de VLANs, listas de control de acceso Fortinet y preparación ISO 27001.",
  srv4_link: "Ver Detalles del Proyecto →",
@@ -843,16 +740,6 @@
  srv6_title: "Cloud y Pentesting",
  srv6_desc: "Reconocimiento (OSINT), evaluación de vulnerabilidades en clústeres Azure/Kubernetes y túneles Cloudflare Zero Trust.",
  srv6_link: "Ver Detalles del Proyecto →",
- tag_software: "Producto de Software",
- title_product: "Herramienta Destacada",
- desc_product: "Herramientas de virtualización nativa y sandboxing multisessión automatizado.",
- badge_active_tool: " Herramienta en Producción",
- product_desc: "Motor de despliegue automatizado de Windows Subsystem for Android para Windows 10 y 11. Gestiona descompilación de APKs, aislamiento de paquetes para multicuenta simultánea y licencias cloud vinculadas a HWID.",
- btn_installer_page: "Visitar Página del Instalador →",
- spec_os: "SO Compatible",
- spec_mode: "Ejecución",
- spec_hwid: "Bloqueo HWID",
- spec_clones: "Multicuentas",
  tag_academic: "Académico e Industria",
  title_projects: "Proyectos e Investigación de Laboratorio",
  desc_projects: "Entregables de ingeniería, bancos de prueba de laboratorio y whitepapers de arquitectura.",
@@ -867,7 +754,10 @@
  prj3_note: "Migración sin tiempo de inactividad / Firewalls Fortinet / VLANs",
  prj4_title: "Pentesting Cloud e IDS Suricata",
  prj4_desc: "Pruebas de penetración en clústeres Azure/Kubernetes y despliegue de Suricata IDS para monitorización de tráfico.",
- prj4_note: "OSINT / Escaneos de Vulnerabilidades / Reglas IDS"
+ prj4_note: "OSINT / Escaneos de Vulnerabilidades / Reglas IDS",
+ prj5_title: "ChessAI Review Coach",
+ prj5_desc: "Entrenador de ajedrez autoalojado con el motor Stockfish, comentario jugada a jugada bilingüe y audio.",
+ prj5_link: "Probar el Entrenador →"
  }
  };
 
