@@ -73,8 +73,11 @@
                 </select>
             </div>
         </div>
+
+        <!-- Lives inside the topbar so it shares its stacking context with the drawer;
+             keeps the backdrop below the drawer and above the board. -->
+        <div id="settingsBackdrop" class="settings-backdrop hidden"></div>
     </header>
-    <div id="settingsBackdrop" class="settings-backdrop hidden"></div>
 
     <!-- Main -->
     <div class="layout">

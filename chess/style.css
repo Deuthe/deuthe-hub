@@ -749,8 +749,22 @@ body.app-shell {
 @media (max-width: 640px) {
     body.app-shell { overflow-x: hidden; }
 
-    /* Sticky top bar: brand + action icons on row 1, nav on row 2 */
-    .topbar { position: sticky; top: 0; z-index: 30; flex-wrap: wrap; row-gap: 8px; padding: 10px 12px; }
+    /* Sticky top bar: brand + action icons on row 1, nav on row 2.
+       No backdrop-filter on phones: it would make the topbar the containing
+       block for the fixed settings drawer/backdrop (clipping them to the bar
+       and trapping them in this stacking context), which put the board on top
+       of the open menu. The opaque background keeps the bar readable instead. */
+    .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 30;
+        flex-wrap: wrap;
+        row-gap: 8px;
+        padding: 10px 12px;
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+        background: rgba(10, 15, 32, 0.96);
+    }
     .brand { order: 1; }
     .topbar-controls { order: 2; margin-left: auto; gap: 6px; }
     .topbar-nav { order: 3; width: 100%; justify-content: center; flex-wrap: wrap; }
