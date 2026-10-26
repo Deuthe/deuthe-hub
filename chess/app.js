@@ -266,8 +266,75 @@ function normalizeAudioUrl(url) {
 // Split-hosting config: empty means same origin (local run.py).
 // For GitHub Pages, index.html sets window.CHESSAI_BACKEND before app.js loads.
 const BACKEND_URL = (window.CHESSAI_BACKEND || "").replace(/\/$/, "");
+const TURNSTILE_SITE_KEY = (window.CHESSAI_TURNSTILE_SITE_KEY || "").trim();
 function api(path) {
     return BACKEND_URL + path;
+}
+
+// ---- Turnstile (only loaded for uncached analyses) ----
+let turnstileLoader = null;
+let turnstileWidgetId = null;
+let turnstileTokenResolve = null;
+
+function loadTurnstile() {
+    if (!TURNSTILE_SITE_KEY) return Promise.resolve(false);
+    if (window.turnstile) return Promise.resolve(true);
+    if (!turnstileLoader) {
+        turnstileLoader = new Promise((resolve) => {
+            const s = document.createElement("script");
+            s.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+            s.async = true;
+            s.defer = true;
+            s.onload = () => resolve(!!window.turnstile);
+            s.onerror = () => resolve(false);
+            document.head.appendChild(s);
+        });
+    }
+    return turnstileLoader;
+}
+
+function finishTurnstile(token) {
+    if (!turnstileTokenResolve) return;
+    const resolve = turnstileTokenResolve;
+    turnstileTokenResolve = null;
+    resolve(token || null);
+}
+
+async function getTurnstileToken() {
+    if (!TURNSTILE_SITE_KEY) return null;
+    if (!(await loadTurnstile())) {
+        showToast("Verification could not load. Check your connection and retry.", 8000);
+        return null;
+    }
+    if (!turnstileWidgetId) {
+        turnstileWidgetId = window.turnstile.render("#turnstileWidget", {
+            sitekey: TURNSTILE_SITE_KEY,
+            appearance: "interaction-only",
+            execution: "execute",
+            callback: (token) => finishTurnstile(token),
+            "error-callback": () => finishTurnstile(null),
+            "expired-callback": () => finishTurnstile(null)
+        });
+    } else {
+        window.turnstile.reset(turnstileWidgetId);
+    }
+    return await new Promise((resolve) => {
+        const timer = setTimeout(() => {
+            turnstileTokenResolve = null;
+            resolve(null);
+        }, 30000);
+        turnstileTokenResolve = (token) => {
+            clearTimeout(timer);
+            resolve(token);
+        };
+        try {
+            window.turnstile.execute(turnstileWidgetId);
+        } catch (e) {
+            clearTimeout(timer);
+            turnstileTokenResolve = null;
+            resolve(null);
+        }
+    });
 }
 
 async function apiErrorMessage(res, fallback) {
@@ -747,20 +814,51 @@ async function analyzeGame(pgnRaw, username, keepPly = false) {
     currentReport = null;
 
     try {
-        const res = await fetch(api("/api/analyze"), {
+        const payload = {
+            pgn: pgn,
+            user_name: username,
+            depth: parseInt($("#depthSelect").val(), 10) || 12,
+            voice: $("#voiceSelect").val() || (getLang() === "es" ? "alvaro" : "aria"),
+            generate_all_audio: false,
+            lang: getLang()
+        };
+        const sendAnalyze = (turnstileToken) => fetch(api("/api/analyze"), {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                pgn: pgn,
-                user_name: username,
-                depth: parseInt($("#depthSelect").val(), 10) || 12,
-                voice: $("#voiceSelect").val() || (getLang() === "es" ? "alvaro" : "aria"),
-                generate_all_audio: false,
-                lang: getLang()
-            })
+            body: JSON.stringify(turnstileToken
+                ? Object.assign({}, payload, { turnstile_token: turnstileToken })
+                : payload)
         });
 
-        if(!res.ok) throw new Error(await apiErrorMessage(res, "Error en el análisis"));
+        // Cached reports come back without verification. Only a cache miss
+        // asks for a Turnstile token, so opening saved games stays instant.
+        let res = await sendAnalyze(null);
+        let verificationAttempted = false;
+        if (res.status === 403) {
+            let detail = null;
+            try {
+                const body = await res.clone().json();
+                detail = body && body.detail;
+            } catch (e) { /* not JSON */ }
+            if (detail && detail.code === "turnstile_required") {
+                verificationAttempted = true;
+                $("#loaderText").text(getLang() === "es" ? "Verificando..." : "Verifying...");
+                const token = await getTurnstileToken();
+                if (!token) throw new Error(getLang() === "es"
+                    ? "No se pudo completar la verificación."
+                    : "Verification could not be completed.");
+                res = await sendAnalyze(token);
+            }
+        }
+
+        if(!res.ok) {
+            if (verificationAttempted && res.status === 403) {
+                throw new Error(getLang() === "es"
+                    ? "La verificación falló. Inténtalo de nuevo."
+                    : "Verification failed. Please try again.");
+            }
+            throw new Error(await apiErrorMessage(res, "Error en el análisis"));
+        }
         const report = await res.json();
 
         // Normalize audio URLs (backward compat with old cached reports)

@@ -867,3 +867,13 @@ body.app-shell {
 .toast.hidden { display: none; }
 @media (max-width: 720px) { .toast { bottom: 84px; } }
 
+/* Turnstile only appears when Cloudflare needs an interaction. */
+#turnstileWidget {
+    position: fixed;
+    left: 50%;
+    bottom: 96px;
+    transform: translateX(-50%);
+    z-index: 95;
+}
+@media (max-width: 720px) { #turnstileWidget { bottom: 150px; } }
+
