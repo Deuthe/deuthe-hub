@@ -871,9 +871,9 @@ body.app-shell {
 #turnstileWidget {
     position: fixed;
     left: 50%;
-    bottom: 96px;
-    transform: translateX(-50%);
+    top: 50%;
+    transform: translate(-50%, -50%);
     z-index: 95;
 }
-@media (max-width: 720px) { #turnstileWidget { bottom: 150px; } }
+@media (max-width: 720px) { #turnstileWidget { top: 45%; } }
 

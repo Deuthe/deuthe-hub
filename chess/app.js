@@ -322,7 +322,7 @@ async function getTurnstileToken() {
         const timer = setTimeout(() => {
             turnstileTokenResolve = null;
             resolve(null);
-        }, 30000);
+        }, 120000);
         turnstileTokenResolve = (token) => {
             clearTimeout(timer);
             resolve(token);
