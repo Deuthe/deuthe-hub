@@ -323,8 +323,16 @@ async function getTurnstileToken() {
             turnstileTokenResolve = null;
             resolve(null);
         }, 120000);
+        const hintTimer = setTimeout(() => {
+            if (turnstileTokenResolve) {
+                $("#loaderText").text(getLang() === "es"
+                    ? "Confirma que eres humano"
+                    : "Confirm you are human");
+            }
+        }, 2500);
         turnstileTokenResolve = (token) => {
             clearTimeout(timer);
+            clearTimeout(hintTimer);
             resolve(token);
         };
         try {
