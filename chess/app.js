@@ -1171,7 +1171,9 @@ function renderQaSuggestions() {
         es ? "¿Por qué es buena o mala esta jugada?" : "Why is this move good or bad?",
         es ? "¿Cuál era la mejor jugada?" : "What was the best move?"
     ];
-    if (m && m.fen_before && hasCapture(m.fen_before)) {
+    // The chip describes the position currently on the board (after the move
+    // just played), so test fen_after, not the position before that move.
+    if (m && m.fen_after && hasCapture(m.fen_after)) {
         chips.push(es ? "¿Puedo capturar algo?" : "Can I capture something?");
     }
     chips.push(es ? "¿Cómo va la posición?" : "How does the position look?");
