@@ -1056,7 +1056,10 @@ async function playCurrentCommentary() {
             signal: controller.signal
         });
         if (res.status === 429) {
-            ttsCooldownUntil = Date.now() + 60000;
+            const retryAfter = parseInt(res.headers.get("Retry-After"), 10);
+            ttsCooldownUntil = Date.now() + (Number.isFinite(retryAfter) && retryAfter > 0
+                ? Math.min(retryAfter, 3600) * 1000
+                : 60000);
             if (!ttsLimitNoticeShown) {
                 ttsLimitNoticeShown = true;
                 showToast(tr("audio_limit"));
