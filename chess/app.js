@@ -113,7 +113,9 @@ const I18N = {
         saved_tag: "SAVED", you_tag: "YOU", no_moves: "No moves.",
         audio_limit: "Voice quota reached. Using your browser voice for now.",
         history_disabled: "Saved games are disabled on this public deployment.",
-        empty_pgn: "Empty PGN.", analyze_first: "Analyze a game first."
+        empty_pgn: "Empty PGN.", analyze_first: "Analyze a game first.",
+        depth_saved: "Depth saved. Opening a game now re-analyzes it at this depth.",
+        voice_saved: "Voice saved. It applies to the next commentary."
     },
     es: {
         search_ph: "Usuario...", search_btn: "Buscar",
@@ -150,7 +152,9 @@ const I18N = {
         saved_tag: "GUARDADA", you_tag: "TÚ", no_moves: "Sin jugadas.",
         audio_limit: "Cuota de voz agotada. Usando la voz del navegador por ahora.",
         history_disabled: "El historial está desactivado en este despliegue público.",
-        empty_pgn: "PGN vacío.", analyze_first: "Analiza una partida primero."
+        empty_pgn: "PGN vacío.", analyze_first: "Analiza una partida primero.",
+        depth_saved: "Profundidad guardada. Al abrir una partida se reanaliza con esta profundidad.",
+        voice_saved: "Voz guardada. Se aplica al próximo comentario."
     }
 };
 
@@ -562,7 +566,7 @@ $(document).ready(function() {
         swipeX = null; swipeY = null;
     }, { passive: true });
 
-    $("#voiceSelect").change(saveSettingsFromUI);
+    $("#voiceSelect").change(() => { saveSettingsFromUI(); showToast(tr("voice_saved")); });
     $("#langSelect").change(async () => {
         // Switch default voice with language, then save.
         const lang = getLang();
@@ -583,7 +587,7 @@ $(document).ready(function() {
             await analyzeGame(lastAnalyzedPgn, lastAnalyzedUser, true);
         }
     });
-    $("#depthSelect").change(saveSettingsFromUI);
+    $("#depthSelect").change(() => { saveSettingsFromUI(); showToast(tr("depth_saved")); });
     autoPlayToggle.addEventListener("change", saveSettingsFromUI);
 
     $("#qaSendBtn").click(sendQuestion);
@@ -823,10 +827,13 @@ async function analyzeGame(pgnRaw, username, keepPly = false) {
     lastAnalyzedPgn = pgn;
     lastAnalyzedUser = username || "";
 
+    const depth = parseInt($("#depthSelect").val(), 10) || 12;
     // Show Loader
-    showLoader("Analizando la partida con Stockfish...");
+    showLoader(getLang() === "es"
+        ? `Analizando la partida con Stockfish (prof. ${depth})...`
+        : `Analyzing the game with Stockfish (depth ${depth})...`);
     $("#accuracyContainer").addClass("hidden");
-    $("#matchTitle").text("Analizando con Stockfish...");
+    $("#matchTitle").text(getLang() === "es" ? "Analizando con Stockfish..." : "Analyzing with Stockfish...");
     stopAudio();
     currentReport = null;
 
@@ -834,7 +841,7 @@ async function analyzeGame(pgnRaw, username, keepPly = false) {
         const payload = {
             pgn: pgn,
             user_name: username,
-            depth: parseInt($("#depthSelect").val(), 10) || 12,
+            depth: depth,
             voice: $("#voiceSelect").val() || (getLang() === "es" ? "alvaro" : "aria"),
             generate_all_audio: false,
             lang: getLang()
