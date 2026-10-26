@@ -297,6 +297,11 @@ function finishTurnstile(token) {
     if (!turnstileTokenResolve) return;
     const resolve = turnstileTokenResolve;
     turnstileTokenResolve = null;
+    // Remove the widget so a success box does not stay over the board.
+    if (turnstileWidgetId && window.turnstile) {
+        try { window.turnstile.remove(turnstileWidgetId); } catch (e) { /* ignore */ }
+        turnstileWidgetId = null;
+    }
     resolve(token || null);
 }
 
@@ -309,10 +314,14 @@ async function getTurnstileToken() {
     if (!turnstileWidgetId) {
         turnstileWidgetId = window.turnstile.render("#turnstileWidget", {
             sitekey: TURNSTILE_SITE_KEY,
-            appearance: "interaction-only",
+            appearance: "always",
             execution: "execute",
             callback: (token) => finishTurnstile(token),
-            "error-callback": () => finishTurnstile(null),
+            "error-callback": (code) => {
+                console.log("Turnstile error:", code);
+                showToast("Verification error: " + code, 8000);
+                finishTurnstile(null);
+            },
             "expired-callback": () => finishTurnstile(null)
         });
     } else {
