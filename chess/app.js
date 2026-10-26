@@ -15,6 +15,17 @@ const autoPlayToggle = document.getElementById("autoPlayToggle");
 let isAudioPlaying = false;
 let currentSpeechText = "";
 
+// Audio requests: one in flight at a time, cancelled on navigation. Results
+// are memoised so replaying a move never hits the API again.
+let ttsAbort = null;
+let ttsCooldownUntil = 0;
+let ttsLimitNoticeShown = false;
+const ttsUrlCache = new Map(); // "<voice>\0<text>" -> audio url
+
+// Server-side capabilities (see GET /api/config). Public deployments are
+// read-only: settings stay local and the history endpoint is disabled.
+let SERVER_CAPS = { settings_writable: false, history_enabled: false, tts_max_chars: 2000 };
+
 // Classification mapping for styling (labels switch with language)
 const clsMapEN = {
     "brilliant": { label: "Brilliant!", colorClass: "bg-brilliant", icon: "fa-gem" },
@@ -95,7 +106,14 @@ const I18N = {
         settings_title: "Player and settings",
         settings_voice: "Voice",
         settings_lang: "Language",
-        settings_depth: "Depth"
+        settings_depth: "Depth",
+        result_win: "Win", result_loss: "Loss", result_draw: "Draw",
+        games_suffix: "games", saved_suffix: "saved",
+        no_games: "No recent games found.", no_history: "No saved games yet.",
+        saved_tag: "SAVED", you_tag: "YOU", no_moves: "No moves.",
+        audio_limit: "Voice quota reached. Using your browser voice for now.",
+        history_disabled: "Saved games are disabled on this public deployment.",
+        empty_pgn: "Empty PGN.", analyze_first: "Analyze a game first."
     },
     es: {
         search_ph: "Usuario...", search_btn: "Buscar",
@@ -124,9 +142,22 @@ const I18N = {
         settings_title: "Usuario y ajustes",
         settings_voice: "Voz",
         settings_lang: "Idioma",
-        settings_depth: "Profundidad"
+        settings_depth: "Profundidad",
+        result_win: "Victoria", result_loss: "Derrota", result_draw: "Tablas",
+        games_suffix: "partidas", saved_suffix: "guardadas",
+        no_games: "No se encontraron partidas recientes.",
+        no_history: "No hay partidas en el historial.",
+        saved_tag: "GUARDADA", you_tag: "TÚ", no_moves: "Sin jugadas.",
+        audio_limit: "Cuota de voz agotada. Usando la voz del navegador por ahora.",
+        history_disabled: "El historial está desactivado en este despliegue público.",
+        empty_pgn: "PGN vacío.", analyze_first: "Analiza una partida primero."
     }
 };
+
+function tr(key) {
+    const table = I18N[getLang()] || I18N.en;
+    return table[key] != null ? table[key] : (I18N.en[key] != null ? I18N.en[key] : key);
+}
 
 function applyI18n() {
     const t = I18N[getLang()] || I18N.en;
@@ -178,6 +209,28 @@ function hideLoader() {
     const ov = $("#loaderOverlay");
     ov.addClass("hidden");
     ov.removeClass("flex");
+}
+
+let toastTimer = null;
+function showToast(message, ms) {
+    const el = $("#toast");
+    if (!el.length) { console.log(message); return; }
+    el.text(message).removeClass("hidden");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.addClass("hidden"), ms || 5000);
+}
+
+async function loadCapabilities() {
+    try {
+        const res = await fetch(api("/api/config"));
+        if (res.ok) {
+            const data = await res.json();
+            if (data && typeof data === "object") SERVER_CAPS = Object.assign(SERVER_CAPS, data);
+        }
+    } catch (e) { /* keep conservative defaults */ }
+    // The history route is disabled on the public deployment: hide the button
+    // instead of letting it fail with a 404 alert.
+    $("#showHistoryBtn").toggle(!!SERVER_CAPS.history_enabled);
 }
 
 function showSidebar() {
@@ -387,7 +440,10 @@ $(document).ready(function() {
     $("#showAboutBtn").click(() => $("#aboutModal").removeClass("hidden"));
     $("#closeAboutBtn").click(() => $("#aboutModal").addClass("hidden"));
     $("#analyzePgnBtn").click(analyzeManualPgn);
-    $("#showHistoryBtn").click(fetchHistory);
+    $("#showHistoryBtn").click(() => {
+        if (!SERVER_CAPS.history_enabled) { showToast(tr("history_disabled")); return; }
+        fetchHistory();
+    });
 
     // Settings drawer (phones): gear toggles it, backdrop and swipe close it.
     const openSettings = () => {
@@ -515,9 +571,11 @@ $(document).ready(function() {
         }
     });
 
-    // Load settings + voices, then initial fetch
+    // Load capabilities + settings + voices, then initial fetch
     applyI18n();
-    initSettings().finally(fetchGames);
+    loadCapabilities()
+        .then(initSettings)
+        .finally(fetchGames);
 });
 
 function setPlatform(p) {
@@ -591,6 +649,9 @@ function saveSettingsFromUI() {
         };
         // Always persist locally (works on the read-only public deployment).
         saveLocalSettings(payload);
+        // Only write server settings when the backend allows it; otherwise
+        // every change would send a request that is rejected with 403.
+        if (!SERVER_CAPS.settings_writable) return;
         try {
             await fetch(api("/api/settings"), {
                 method: "POST",
@@ -598,7 +659,6 @@ function saveSettingsFromUI() {
                 body: JSON.stringify(payload)
             });
         } catch (e) {
-            // Server settings are read-only in prod; local storage already saved.
             console.log("Ajustes guardados localmente:", e);
         }
     }, 300);
@@ -625,16 +685,16 @@ async function fetchGames() {
         list.empty();
 
         if (!data.games || data.games.length === 0) {
-            list.append("<div class='p-3 text-sm text-gray-400'>No se encontraron partidas recientes.</div>");
+            list.append($("<div class='p-3 text-sm text-gray-400'>").text(tr("no_games")));
             $("#gameCountLabel").text("");
             return;
         }
 
-        $("#gameCountLabel").text(data.games.length + " partidas");
+        $("#gameCountLabel").text(data.games.length + " " + tr("games_suffix"));
 
         data.games.forEach(g => {
             const resultColor = g.status === 'win' ? 'text-green-500' : (g.status === 'loss' ? 'text-red-500' : 'text-gray-400');
-            const resultText = g.status === 'win' ? 'Victoria' : (g.status === 'loss' ? 'Derrota' : 'Tablas');
+            const resultText = g.status === 'win' ? tr("result_win") : (g.status === 'loss' ? tr("result_loss") : tr("result_draw"));
             const oppName = g.opponent_name || 'Rival';
             const dateStr = g.end_time ? new Date(g.end_time * 1000).toLocaleDateString() : '';
 
@@ -657,7 +717,7 @@ async function fetchGames() {
         });
 
     } catch (e) {
-        alert("Error: " + e.message);
+        showToast("Error: " + e.message);
     } finally {
         btn.text("Buscar").prop("disabled", false);
     }
@@ -672,7 +732,7 @@ async function analyzeManualPgn() {
 
 async function analyzeGame(pgnRaw, username, keepPly = false) {
     const pgn = safeDecodePgn(pgnRaw);
-    if(!pgn || !pgn.trim()) { alert("PGN vacío."); return; }
+    if(!pgn || !pgn.trim()) { showToast(tr("empty_pgn")); return; }
 
     const prevPly = keepPly ? currentPlyIndex : 0;
     // Remember the game so a language switch can reload it translated.
@@ -712,7 +772,7 @@ async function analyzeGame(pgnRaw, username, keepPly = false) {
         goToMove(Math.min(prevPly, report.moves.length));
 
     } catch(e) {
-        alert("Error en análisis: " + e.message);
+        showToast("Error en análisis: " + e.message, 8000);
     } finally {
         hideLoader();
     }
@@ -722,10 +782,11 @@ function setupUIForReport(report) {
     const meta = report.meta;
     // Header shows colors explicitly + marks the user's side with a TÚ tag.
     const you = meta.user_color === "black" ? "black" : "white";
+    const youTag = ` <span class="you-tag">${escapeHtml(tr("you_tag"))}</span>`;
     $("#matchTitle").html(
-        `<span class="dot dot-w"></span> ${escapeHtml(meta.white)}${you === "white" ? ' <span class="you-tag">TÚ</span>' : ""} ` +
+        `<span class="dot dot-w"></span> ${escapeHtml(meta.white)}${you === "white" ? youTag : ""} ` +
         `<span class="vs">vs</span> ` +
-        `<span class="dot dot-b"></span> ${escapeHtml(meta.black)}${you === "black" ? ' <span class="you-tag">TÚ</span>' : ""}`
+        `<span class="dot dot-b"></span> ${escapeHtml(meta.black)}${you === "black" ? youTag : ""}`
     );
 
     // Orient the board to the user's color (Black players see Black at bottom).
@@ -747,8 +808,9 @@ function applyAccuracy(meta) {
     const b = meta.black_accuracy || 0;
     $("#whiteAccuracy").text(`${w}%`);
     $("#blackAccuracy").text(`${b}%`);
-    $("#whiteNameLabel").html(`${escapeHtml(meta.white)}${meta.user_color === "white" ? ' <span class="you-tag">TÚ</span>' : ""}`);
-    $("#blackNameLabel").html(`${escapeHtml(meta.black)}${meta.user_color === "black" ? ' <span class="you-tag">TÚ</span>' : ""}`);
+    const youTag = ` <span class="you-tag">${escapeHtml(tr("you_tag"))}</span>`;
+    $("#whiteNameLabel").html(`${escapeHtml(meta.white)}${meta.user_color === "white" ? youTag : ""}`);
+    $("#blackNameLabel").html(`${escapeHtml(meta.black)}${meta.user_color === "black" ? youTag : ""}`);
     const paint = (el, pct, cmp) => {
         const color = cmp > 0 ? "#22c55e" : (cmp < 0 ? "#ef4444" : "#facc15");
         el.css("background", `conic-gradient(${color} 0 ${pct}%, rgba(255,255,255,0.08) ${pct}% 100%)`);
@@ -762,7 +824,7 @@ function renderMoveList() {
     const box = $("#moveList");
     box.empty();
     if (!currentReport || !currentReport.moves || currentReport.moves.length === 0) {
-        box.append('<span class="text-gray-500 text-xs font-sans">Sin jugadas.</span>');
+        box.append($('<span class="text-gray-500 text-xs font-sans">').text(tr("no_moves")));
         return;
     }
     currentReport.moves.forEach((m) => {
@@ -884,8 +946,8 @@ function goToMove(plyIndex) {
     // Initial board state
     if(plyIndex === 0) {
         board.position('start');
-        const eval_val = currentReport.eval_history[0].eval_cp;
-        updateEvalBar(eval_val);
+        const initial = currentReport.eval_history && currentReport.eval_history[0];
+        if (initial) updateEvalBar(initial.eval_cp);
         clearBoardHighlights();
         clearArrow();
         lastArrow = null;
@@ -948,35 +1010,80 @@ function goToMove(plyIndex) {
 
 async function playCurrentCommentary() {
     if(!currentReport || currentPlyIndex === 0) return;
-    const moveData = currentReport.moves[currentPlyIndex - 1];
+    const ply = currentPlyIndex;
+    const moveData = currentReport.moves[ply - 1];
 
     if (moveData.audio_url) {
-        playAudioUrl(normalizeAudioUrl(moveData.audio_url));
-    } else {
-        // Request on-demand TTS from backend or fallback to Web Speech
-        try {
-            playAudioIcon.className = "fas fa-spinner fa-spin";
-            const res = await fetch(api("/api/tts"), {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({ text: currentSpeechText, voice: $("#voiceSelect").val() || (getLang() === "es" ? "alvaro" : "aria"), lang: getLang() })
-            });
-            if (res.ok) {
-                const data = await res.json();
-                moveData.audio_url = normalizeAudioUrl(data.audio_url);
-                playAudioUrl(moveData.audio_url);
-            } else {
-                speakText(currentSpeechText);
+        playAudioUrl(normalizeAudioUrl(moveData.audio_url), currentSpeechText);
+        return;
+    }
+
+    const text = currentSpeechText;
+    const voice = $("#voiceSelect").val() || (getLang() === "es" ? "alvaro" : "aria");
+    const cacheKey = voice + "\u0000" + text;
+
+    // Replayed text: never ask the backend twice for the same clip.
+    if (ttsUrlCache.has(cacheKey)) {
+        moveData.audio_url = ttsUrlCache.get(cacheKey);
+        playAudioUrl(moveData.audio_url, text);
+        return;
+    }
+
+    // Quota exhausted in this session: fall back to the browser voice instead
+    // of retrying every move and making the limit last longer.
+    if (Date.now() < ttsCooldownUntil) {
+        speakText(text);
+        return;
+    }
+    ttsLimitNoticeShown = false;
+
+    if (ttsAbort) ttsAbort.abort();
+    const controller = new AbortController();
+    ttsAbort = controller;
+    const stillCurrent = () =>
+        !controller.signal.aborted && ply === currentPlyIndex && text === currentSpeechText;
+
+    try {
+        playAudioIcon.className = "fas fa-spinner fa-spin";
+        // Let fast arrow-key navigation settle; another navigation aborts this
+        // request before it reaches the backend.
+        await new Promise(r => setTimeout(r, 180));
+        if (!stillCurrent()) return;
+        const res = await fetch(api("/api/tts"), {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({ text: text, voice: voice, lang: getLang() }),
+            signal: controller.signal
+        });
+        if (res.status === 429) {
+            ttsCooldownUntil = Date.now() + 60000;
+            if (!ttsLimitNoticeShown) {
+                ttsLimitNoticeShown = true;
+                showToast(tr("audio_limit"));
             }
-        } catch (e) {
-            speakText(currentSpeechText);
+            if (stillCurrent()) speakText(text);
+            return;
         }
+        if (!res.ok) throw new Error(await apiErrorMessage(res, "TTS " + res.status));
+        const data = await res.json();
+        if (!data || !data.audio_url) throw new Error("No audio URL returned");
+        const url = normalizeAudioUrl(data.audio_url);
+        ttsUrlCache.set(cacheKey, url);
+        moveData.audio_url = url;
+        if (stillCurrent()) playAudioUrl(url, text);
+    } catch (e) {
+        if (e && e.name === "AbortError") return;
+        console.log("TTS unavailable, using browser voice:", e);
+        if (stillCurrent()) speakText(text);
+    } finally {
+        if (ttsAbort === controller) ttsAbort = null;
     }
 }
 
 function playAudioUrl(url, text) {
     if(!url) return;
-    showSubtitles(url, text !== undefined ? text : currentSpeechText);
+    const spoken = (text !== undefined && text !== null) ? text : currentSpeechText;
+    showSubtitles(url, spoken);
     try {
         audioPlayer.src = url;
         const p = audioPlayer.play();
@@ -986,15 +1093,19 @@ function playAudioUrl(url, text) {
                 playAudioIcon.className = "fas fa-pause";
             }).catch(e => {
                 console.log("Audio autoplay prevented or error:", e);
-                speakText(currentSpeechText);
+                speakText(spoken);
             });
         }
     } catch (e) {
-        speakText(currentSpeechText);
+        speakText(spoken);
     }
 }
 
 function stopAudio() {
+    if (ttsAbort) {
+        try { ttsAbort.abort(); } catch (e) { /* ignore */ }
+        ttsAbort = null;
+    }
     if(audioPlayer) {
         try { audioPlayer.pause(); } catch (e) { /* ignore */ }
     }
@@ -1073,7 +1184,7 @@ function renderQaSuggestions() {
 
 async function sendQuestion() {
     const q = $("#qaInput").val().trim();
-    if (!currentReport) { alert("Analiza una partida primero."); return; }
+    if (!currentReport) { showToast(tr("analyze_first")); return; }
     if (!q) return;
     const box = $("#qaAnswer");
     box.removeClass("hidden").text("Pensando...");
@@ -1109,24 +1220,24 @@ async function fetchHistory() {
         list.empty();
 
         if (!data || data.length === 0) {
-            list.append("<div class='p-3 text-sm text-gray-400'>No hay partidas en el historial.</div>");
+            list.append($("<div class='p-3 text-sm text-gray-400'>").text(tr("no_history")));
             $("#gameCountLabel").text("");
             return;
         }
 
-        $("#gameCountLabel").text(data.length + " guardadas");
+        $("#gameCountLabel").text(data.length + " " + tr("saved_suffix"));
 
         data.forEach(h => {
             const meta = h.meta;
             if(!meta) return;
             const resultColor = meta.user_status === 'win' ? 'text-green-500' : (meta.user_status === 'loss' ? 'text-red-500' : 'text-gray-400');
-            const resultText = meta.user_status === 'win' ? 'Victoria' : (meta.user_status === 'loss' ? 'Derrota' : 'Tablas');
+            const resultText = meta.user_status === 'win' ? tr("result_win") : (meta.user_status === 'loss' ? tr("result_loss") : tr("result_draw"));
 
             const el = $(`
                 <div class="p-3 border-b border-gray-700 hover:bg-gray-700 cursor-pointer transition-colors game-item bg-gray-800">
                     <div class="flex justify-between items-center mb-1">
                         <span class="text-xs font-bold text-gray-300">vs ${escapeHtml(meta.opponent_name || "Rival")}</span>
-                        <span class="text-[10px] uppercase font-bold bg-blue-900 text-blue-200 px-1 rounded"><i class="fas fa-save mr-1"></i> GUARDADA</span>
+                        <span class="text-[10px] uppercase font-bold bg-blue-900 text-blue-200 px-1 rounded"><i class="fas fa-save mr-1"></i> ${escapeHtml(tr("saved_tag"))}</span>
                     </div>
                     <div class="flex justify-between items-center">
                         <span class="text-sm font-bold ${resultColor}">${resultText}</span>
@@ -1138,7 +1249,7 @@ async function fetchHistory() {
             list.append(el);
         });
     } catch (e) {
-        alert("Error cargando historial: " + e.message);
+        showToast("Error cargando historial: " + e.message);
     }
 }
 
@@ -1166,7 +1277,7 @@ async function loadFromHistory(gameId) {
         goToMove(0);
 
     } catch(e) {
-        alert("Error cargando partida: " + e.message);
+        showToast("Error cargando partida: " + e.message);
     } finally {
         hideLoader();
     }
